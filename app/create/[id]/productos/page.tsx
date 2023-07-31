@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { SelectItem } from '../../../components/SelectItem'
+import { useRouter } from "next/navigation";
 
 interface Producto {
     nombre?: string
@@ -22,6 +23,7 @@ function Index({ params }: { params: { id: string } }) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabase = createClient(url!, apiKey!);
+    const router = useRouter()
 
     const [formulario, setFormulario] = useState<Producto>({
         nombre: "",
@@ -33,6 +35,7 @@ function Index({ params }: { params: { id: string } }) {
     });
     const [productoImagenes, setProductoImagenes] = useState<any>([{}]);
     const [procesandoCreacion, setProcesandoCreacion] = useState<boolean>(false);
+    const [tienda, setTienda] = useState();
 
     useEffect(() => {
         const getTiendaData = async (idTienda: number) => {
@@ -47,8 +50,8 @@ function Index({ params }: { params: { id: string } }) {
                     console.error('Error al obtener la tienda:', error.message);
                     return null;
                 }
-                console.log('Data tienda: ', data)
-                return data;
+                console.log('Data tienda: ', data);
+                setTienda(data);
             } catch (error: any) {
                 console.error('Error en la consulta:', error);
                 return null;
@@ -76,6 +79,7 @@ function Index({ params }: { params: { id: string } }) {
     }
 
     const handleSubmit = async () => {
+        setProcesandoCreacion(true);
         try {
             formulario.tienda_id = +params.id;
             console.log('Enviando...:', formulario);
@@ -85,6 +89,7 @@ function Index({ params }: { params: { id: string } }) {
                 .select();
             if (error) {
                 console.error('Error al insertar el producto:', error.message);
+                setProcesandoCreacion(false);
             } else {
                 console.log('Producto registrado con éxito:', data);
                 data.forEach((producto) => {
@@ -94,6 +99,11 @@ function Index({ params }: { params: { id: string } }) {
             }
         } catch (error: any) {
             console.error('Error en la inserción:', error.message);
+            setProcesandoCreacion(false);
+        } finally {
+            setProcesandoCreacion(false);
+            //@ts-ignore
+            router.push(`/${tienda.url}`)
         }
     };
 
@@ -101,7 +111,7 @@ function Index({ params }: { params: { id: string } }) {
         const { data, error } = await supabase.storage
             .from('cartalogo_imagenes')
             //@ts-ignore
-            .upload(`cartalogo/${Math.floor(Math.random() * 1000000) + 1}.png`, productoImagenes.file);
+            .upload(`${tienda.url}/${Math.floor(Math.random() * 1000000) + 1}.png`, productoImagenes.file);
         if (error) {
             console.error('Error acá: ', error)
         } else {
@@ -117,13 +127,18 @@ function Index({ params }: { params: { id: string } }) {
         console.log('Imagen subida correctamente');
     }
 
+    if (!tienda) return <h1>No te apures, cargando tu tienda...😎</h1>
 
     return (
         <section>
             <div className=" bg-[#2b42ff] mx-auto w-full min-h-screen flex flex-col justify-center items-center">
                 <h1 className="text-3xl font-bold text-white my-5 mx-3 tracking-wide">
-                    Te pedimos que registres por lo menos 1 producto para continuar 👀
+                    {/* @ts-ignore */}
+                    Bienvenido, {tienda!.nombre}
                 </h1>
+                <h3 className="text-xl font-bold text-white my-5 mx-3 tracking-wide">
+                    Te pedimos que registres por lo menos 1 producto para continuar 👀
+                </h3>
                 <h5 className="text-lg font-light text-white my-1 mx-3 tracking-wide">
                     No te preocupes, podrás seguir agregando productos más adelante
                 </h5>
@@ -176,7 +191,7 @@ function Index({ params }: { params: { id: string } }) {
                             </Form.Control>
                         </Form.Field>
                         {/* mas field */}
-                        <Form.Field
+                        {/* <Form.Field
                             className="grid mb-[10px]"
                             name="mas_buscado"
                             id="mas_buscado"
@@ -197,7 +212,7 @@ function Index({ params }: { params: { id: string } }) {
                                     required
                                 />
                             </Form.Control>
-                        </Form.Field>
+                        </Form.Field> */}
 
                         <Form.Field
                             className="grid mb-[10px]"
@@ -318,19 +333,3 @@ function Index({ params }: { params: { id: string } }) {
 }
 
 export default Index;
-
-{/* <Form.Submit className="flex-1" asChild>
-    <button
-        onClick={handleSubmit}
-        type="button"
-        className={`
-                                box-border w-full text-white shadow-blackA7 
-                                hover:bg-gray-700
-                                inline-flex h-[35px] items-center 
-                                justify-center rounded-[4px] ${procesandoCreacion ? 'bg-green-500' : 'bg-black'} px-[15px] font-medium leading-none shadow-[0_2px_10px]
-                                focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]
-                                `}
-    >
-        {procesandoCreacion ? 'Registrando tienda...' : 'Registrar tienda'}
-    </button>
-</Form.Submit> */}

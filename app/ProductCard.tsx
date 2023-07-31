@@ -51,7 +51,7 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
             </div>
             <div className="mt-4 px-5 pb-5">
                 <h5 className="text-xl font-bold mt-5 tracking-tight text-slate-900">
-                    {producto.name}
+                    {producto.nombre}
                 </h5>
                 <p className="text-md tracking-tight mt-1 mb-3 text-gray-500">
                     Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import Image from "next/image";
 import * as Toast from '@radix-ui/react-toast';
+import { useRouter } from "next/navigation";
 
 interface Formulario {
     nombre?: string;
@@ -28,6 +29,7 @@ function Create() {
     const [showToastSuccess, setShowToastSuccess] = useState(false);
     const [imagenLogo, setImagenLogo] = useState();
     const [imagenPortada, setImagenPortada] = useState();
+    const router = useRouter()
 
     const [formulario, setFormulario] = useState<Formulario>({
         nombre: "",
@@ -58,7 +60,6 @@ function Create() {
 
     function changeImagenLogo(event: any) {
         const logoFile = event.target.files[0]
-        console.log('Logo File:', logoFile)
         setImagenLogo(logoFile);
     }
 
@@ -67,8 +68,9 @@ function Create() {
         setImagenPortada(portadaFile);
     }
 
-    const saveImagenes = async (logoFile: any, portadaFile: any) => {
-        console.log('Existe el nombre. Guardando imagenes...');
+    const saveImagenes = async () => {
+        console.log('Existe el nombre. Guardando imagenes:', imagenLogo, imagenPortada);
+        setProcesandoCreacion(true);
         try {
             let folderName = makeUrlForTienda(formulario.nombre!);
             console.log('Folder name:', folderName);
@@ -76,55 +78,58 @@ function Create() {
             const { data: logoImagenData, error: errorLogoImagenData } = await supabase.storage
                 .from('cartalogo_imagenes')
                 //@ts-ignore
-                .upload(`${folderName}/${Math.floor(Math.random() * 1000000) + 1}.png`, logoFile);
+                .upload(`${folderName}/${Math.floor(Math.random() * 1000000) + 1}.png`, imagenLogo);
 
             const { data: portadaImagenData, error: errorPortadaImagenData } = await supabase.storage
                 .from('cartalogo_imagenes')
                 //@ts-ignore
-                .upload(`${folderName}/${Math.floor(Math.random() * 1000000) + 1}.png`, portadaFile);
+                .upload(`${folderName}/${Math.floor(Math.random() * 1000000) + 1}.png`, imagenPortada);
             if (errorLogoImagenData || errorPortadaImagenData) {
                 console.error('Error acá: ', errorPortadaImagenData);
             } else {
-                const { data: logoUrl } = supabase.storage
-                    .from('cartalogo_imagenes').getPublicUrl(logoImagenData.path);
-                const { data: portadaUrl } = supabase.storage
-                    .from('cartalogo_imagenes').getPublicUrl(portadaImagenData.path);
-                console.log('Imagenes subidas correctamente. Ver imagenes:', logoUrl.publicUrl, portadaUrl.publicUrl);
+                const [logoUrlResponse, portadaUrlResponse] = await Promise.all([
+                    supabase.storage.from('cartalogo_imagenes').getPublicUrl(logoImagenData.path),
+                    supabase.storage.from('cartalogo_imagenes').getPublicUrl(portadaImagenData.path),
+                ]);
+                console.log('Imagenes subidas correctamente. Ver imagenes:',
+                    logoUrlResponse.data.publicUrl,
+                    portadaUrlResponse.data.publicUrl);
                 setFormulario({
                     ...formulario,
-                    url_logo: logoUrl.publicUrl,
-                    imagen_portada: portadaUrl.publicUrl
-                })
-                console.log('Formulario actual:', formulario);
+                    url_logo: logoUrlResponse.data.publicUrl,
+                    imagen_portada: portadaUrlResponse.data.publicUrl
+                });
+                setFormulario((formValue) => {
+                    console.log('El nuevo valor de form:', formValue);
+                    handleSubmit(formValue);
+                    return formValue;
+                });
             }
         } catch (error) {
             console.log('Error en subida: ', error)
         }
     }
 
-    const handleSubmit = async () => {
-        setProcesandoCreacion(true);
+    const handleSubmit = async (formValue: Formulario) => {
+        console.log('Handle submit: ', formValue);
         try {
-            if (formulario.nombre && imagenLogo && imagenPortada) {
-                saveImagenes(imagenLogo, imagenPortada).then(async () => {
-                    let jsonData = Object.fromEntries(
-                        Object.entries(formulario).filter(([_, valor]) => valor !== "")
-                    );
-                    jsonData.url = makeUrlForTienda(jsonData.nombre);
-                    console.log("Json data: ", jsonData);
-                    const { data, error } = await supabase
-                        .from("tiendas")
-                        .insert(jsonData)
-                        .select();
-                    if (error) {
-                        console.error("Error al insertar la tienda:", error.message);
-                        setShowToastError(true);
-                        setProcesandoCreacion(false);
-                    } else {
-                        console.log("Tienda registrada con éxito:", data);
-                        setShowToastSuccess(true);
-                    }
-                });
+            let jsonData = Object.fromEntries(
+                Object.entries(formValue).filter(([_, valor]) => valor !== "")
+            );
+            jsonData.url = makeUrlForTienda(jsonData.nombre);
+            console.log("JSON FINAL ENVIADO: ", jsonData);
+            const { data, error } = await supabase
+                .from("tiendas")
+                .insert(jsonData)
+                .select();
+            if (error) {
+                console.error("Error al insertar la tienda:", error.message);
+                setShowToastError(true);
+                setProcesandoCreacion(false);
+            } else {
+                console.log("Tienda registrada con éxito:", data);
+                setShowToastSuccess(true);
+                router.push(`/create/${data[0].id}/productos`);
             }
         } catch (error: any) {
             console.error("Error en la inserción:", error.message);
@@ -198,7 +203,7 @@ function Create() {
                                 width={64}
                                 height={64}
                                 alt="Avatar"
-                                src="https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/248271.png"
+                                src="https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/hola2/330858.png"
                             />
                             <div>
                                 <div className="flex justify-start gap-0.5 text-yellow-400">
@@ -413,14 +418,14 @@ function Create() {
                         </Form.Root>
                         <Form.Submit asChild>
                             <button
-                                onClick={handleSubmit}
+                                onClick={saveImagenes}
                                 type="button"
                                 className={`
                                 box-border w-full text-white shadow-blackA7 
                                 hover:bg-gray-700
                                 inline-flex h-[35px] items-center 
-                                justify-center rounded-[4px] ${procesandoCreacion ? 'bg-green-500' : 'bg-black'} px-[15px] font-medium leading-none shadow-[0_2px_10px]
-                                focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]
+                                justify-center rounded-[4px] ${procesandoCreacion ? 'bg-green-500' : 'bg-black'} px-[15px] font-medium 
+                                leading-none mt-[10px]
                                 `}
                             >
                                 {procesandoCreacion ? 'Registrando tienda...' : 'Registrar tienda'}
