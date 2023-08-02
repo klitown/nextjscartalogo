@@ -5,14 +5,14 @@ import Image from "next/image";
 
 interface Props {
     producto: any
-    onClick: () => void
-    toggleToast: () => any
+    onClick?: () => void
+    toggleToast?: () => any
     showAddCart?: boolean,
+    key: any
 }
 
-const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Props) => {
+const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, key }: Props) => {
     const [alreadyAdded, setAlreadyAdded] = useState(false);
-    const priceFormatted = parseInt(`${producto.price}`, 10).toLocaleString("es-ES");
     const {
         inCart,
         cartTotal,
@@ -21,22 +21,17 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
         updateItemQuantity
     } = useCart();
 
-    // useEffect(() => {
-    //     console.log('Producto en ProductCard: ', producto, priceFormatted);
-    // }, [producto]);
-
-
     useEffect(() => {
         const productInCart = inCart(producto.id);
         setAlreadyAdded(productInCart);
     }, [cartTotal]);
 
     function handleClick() {
-        toggleToast();
+        // toggleToast();
     }
 
     return (
-        <div className="flex w-[300px] flex-col overflow-hidden rounded-lg border cursor-pointer
+        <div key={key} className="flex w-[300px] flex-col overflow-hidden rounded-lg border cursor-pointer
                                         border-gray-100 bg-white shadow-md hover:scale-105 transition-transform ease-in-out"
             onClick={onClick}
         >
@@ -106,11 +101,8 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
                 }
 
             </div>
-
         </div>
-
     );
 }
-
 
 export default ProductCard;

@@ -2,10 +2,12 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import MasBuscados from "../MasBuscados";
 import Portada from "../components/Portada";
+import Header from "../components/Header";
 
 export default async function Page({ params }: { params: { slug: string } }) {
 
     const supabase = createServerComponentClient({ cookies });
+
     const { data: tienda } = await supabase
         .from("tiendas")
         .select()
@@ -16,6 +18,12 @@ export default async function Page({ params }: { params: { slug: string } }) {
         .from("productos")
         .select()
         .match({ tienda_id: tienda![0].id })
+
+    const categoryIds: number[] = productos?.map((producto) => producto.categoria_id) as number[];
+    const categorias = await supabase
+        .from('categorias')
+        .select('*')
+        .in('id', categoryIds) as unknown as Array<{ codigo: string, descripcion: string, id: number, nombre: string }>
 
     const saveImagenes = (imagenes: any) => {
         const productosConImagenes = productos!.map((producto) => {
@@ -42,10 +50,15 @@ export default async function Page({ params }: { params: { slug: string } }) {
     ***********/
 
     if (tienda?.length === 0 || productos?.length === 0) return <h1>Sin datos</h1>
+    if (!categorias) return <h1>Ocurrió un error</h1>
 
     return (
         <div className="container mx-auto">
-
+            {/* @ts-ignore */}
+            <Header categorias={categorias.data!}
+                tiendaData={tienda![0]}
+                data-superjson
+            />
             <Portada
                 tiendaNombre={tienda![0].nombre}
                 tiendaDescripcion={tienda![0].descripcion}
@@ -53,7 +66,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 data-superjson
             />
             <MasBuscados productos={productos!} data-superjson />
-
         </div>
 
     )
