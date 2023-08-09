@@ -1,7 +1,8 @@
 'use client';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Image from "next/image";
+import { useRouter } from 'next/navigation'
 
 function Header({ tiendaData, categorias }: {
     tiendaData: any,
@@ -9,9 +10,10 @@ function Header({ tiendaData, categorias }: {
 }) {
 
     const [searchValue, setSearchValue] = useState<string>("");
+    const router = useRouter()
 
     const handleSearchProduct = () => {
-        // navigate(`/${tienda}/busqueda/${searchValue}`)
+        router.push(`/${tiendaData.url}/busqueda/${searchValue}`)
     }
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { headers } from "next/headers";
 import Header from "@/app/components/Header";
-import ProductCard from "@/app/ProductCard";
 import ProductosPorCategoria from "@/app/ProductosPorCategoria";
 
 async function CategoriasPage({ params }: { params: { id: number } }) {

@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import MasBuscados from "../MasBuscados";
 import Portada from "../components/Portada";
 import Header from "../components/Header";
+import ProductosAgrupadosCategoria from "../ProductosAgrupadosCategoria";
 
 export default async function Page({ params }: { params: { slug: string } }) {
 
@@ -66,6 +67,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 data-superjson
             />
             <MasBuscados productos={productos!} data-superjson />
+            {/* @ts-ignore */}
+            <ProductosAgrupadosCategoria productos={productos!} categorias={categorias.data!} data-superjson />
         </div>
 
     )

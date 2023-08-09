@@ -14,7 +14,7 @@ function Portada({ urlPortada, tiendaNombre, tiendaDescripcion }: Portada) {
     return (
         <section style={{
             position: 'relative',
-            height: '60vh',
+            height: '80vh',
             borderRadius: '30px',
             border: 'none',
             marginTop: '1.25rem',
