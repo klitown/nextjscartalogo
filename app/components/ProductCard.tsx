@@ -1,5 +1,5 @@
 'use client'
-import { useCart } from "react-use-cart";
+import { CartProvider, useCart } from "react-use-cart";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -8,10 +8,9 @@ interface Props {
     onClick?: () => void
     toggleToast?: () => any
     showAddCart?: boolean,
-    key: any
 }
 
-const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, key }: Props) => {
+const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Props) => {
     const [alreadyAdded, setAlreadyAdded] = useState(false);
     const {
         inCart,
@@ -31,12 +30,13 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, key }
     }
 
     return (
-        <div key={key} className="flex w-[95%] md:w-[320px] h-[500px] flex-col overflow-hidden rounded-lg border cursor-pointer
+
+        <div className="flex w-[95%] md:w-[320px] h-[500px] flex-col overflow-hidden rounded-lg border cursor-pointer
                                         border-gray-100 bg-white shadow-md hover:scale-105 transition-transform ease-in-out"
             onClick={onClick}
         >
             <div className="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl">
-                <Image src={producto.imagenes.length >= 1 ? producto.imagenes[0].path
+                <Image src={producto.imagenes.length >= 1 ? producto.imagenes[0]
                     : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/646051.png'}
                     alt="Imagen del producto" fill={true} priority={true}
                 />

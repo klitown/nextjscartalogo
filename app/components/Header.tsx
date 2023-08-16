@@ -4,8 +4,9 @@ import Sidebar from "./Sidebar";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
 
-function Header({ tiendaData, categorias }: {
-    tiendaData: any,
+
+function Header({ tienda, categorias }: {
+    tienda: any,
     categorias: Array<{ codigo: string, descripcion: string, id: number, nombre: string }>
 }) {
 
@@ -13,7 +14,7 @@ function Header({ tiendaData, categorias }: {
     const router = useRouter()
 
     const handleSearchProduct = () => {
-        router.push(`/${tiendaData.url}/busqueda/${searchValue}`)
+        router.push(`/${tienda.url}/busqueda/${searchValue}`)
     }
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -24,16 +25,20 @@ function Header({ tiendaData, categorias }: {
         <header className="flex flex-col md:flex-row items-center md:justify-between border-b border-gray-200 p-3">
             <div className="flex flex-row justify-between w-full">
                 <div className="flex justify-center items-center">
-                    <Sidebar tiendaData={tiendaData} categorias={categorias} />
+                    <Sidebar tienda={tienda} categorias={categorias} />
                 </div>
                 <div className="flex justify-center items-center">
-                    <Image src={tiendaData.url_logo ? tiendaData.url_logo : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/white.png'} width={32} height={32} alt="Logo de la tienda" />
+                    <Image src={tienda.url_logo ? tienda.url_logo
+                        : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/white.png'}
+                        alt="Logo de la tienda" width={50} height={50} priority={true}
+                    />
                 </div>
                 <div className="flex justify-center items-center border-gray-100">
                     <span className="border-e border-e-gray-100">
                         <div
                             onClick={() => {
                                 // navegar al carrito
+                                router.push(`/${tienda.url}/carrito`)
                             }}
                             className="h-16 w-16 
                                 flex flex-col justify-center items-center border-b-2 border-black hover:border-b-4 hover:border-blue-700 cursor-pointer"

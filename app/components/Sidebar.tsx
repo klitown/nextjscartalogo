@@ -1,17 +1,17 @@
 'use client';
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import Link from 'next/link'
+
 
 interface Props {
     categorias: Array<{ codigo: string, descripcion: string, id: number, nombre: string }>,
-    tiendaData: any
+    tienda: any
 }
 
-function Categorias({ categorias, tiendaData }: Props) {
+function Categorias({ categorias, tienda }: Props) {
 
     const [isOpen, setIsOpen] = useState(false);
     const sidebarRef = useRef(null);
-
     useEffect(() => {
         function handleClickOutside(event: any) {
             // @ts-ignore
@@ -73,10 +73,8 @@ function Categorias({ categorias, tiendaData }: Props) {
                 </h1>
                 <ul>
                     {categorias.map((categoria) => (
-                        <Link replace
-                            href={{
-                                pathname: `/${tiendaData.url}/categorias/${categoria.id}`
-                            }}
+                        <Link href={`/${tienda.url}/${categoria.codigo}`} replace
+                            onClick={closeMenu}
                             className="flex items-center border-b border-b-gray-200 p-3 cursor-pointer hover:bg-gray-100"
                             key={categoria.id}
                         >
