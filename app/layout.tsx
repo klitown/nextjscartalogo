@@ -7,6 +7,8 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Cartalogo',
   description: 'Tu tienda digital',
+  applicationName: "Cartalogo V1",
+
 }
 
 export default function RootLayout({
