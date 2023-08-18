@@ -1,4 +1,4 @@
-function Page({ params }: { children: React.ReactNode; params: { slug: string } }) {
+function Page({ params }: { params: { slug: string } }) {
     return (
         <div className="container mx-auto flex flex-col">
 

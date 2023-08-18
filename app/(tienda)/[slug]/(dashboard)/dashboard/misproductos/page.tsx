@@ -2,7 +2,7 @@ import Image from "next/image";
 import { createServerClient } from "../../../(infoTienda)/layout";
 
 
-export default async function Page({ params }: { children: React.ReactNode; params: { slug: string } }) {
+async function Page({ params }: { params: { slug: string } }) {
 
     async function getProductosData() {
         const supabase = createServerClient();
@@ -57,3 +57,4 @@ export default async function Page({ params }: { children: React.ReactNode; para
         </div>
     );
 }
+export default Page
