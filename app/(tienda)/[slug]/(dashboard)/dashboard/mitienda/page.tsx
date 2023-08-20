@@ -40,23 +40,21 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 </p>
             </div> */}
 
-            <div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button className="bg-indigo-500 hover:bg-indigo-700">
-                            <Edit className="mr-2 h-4 w-4" /> Editar información
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle className="text-3xl">
-                                Editar información de la tienda
-                            </DialogTitle>
-                        </DialogHeader>
-                        <EditarTienda tienda={tienda} />
-                    </DialogContent>
-                </Dialog>
-            </div>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button className="bg-indigo-500 hover:bg-indigo-700 w-60">
+                        <Edit className="mr-2 h-4 w-4" /> Editar información
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-neutral-50">
+                    <DialogHeader>
+                        <DialogTitle className="text-3xl">
+                            Editar información de la tienda
+                        </DialogTitle>
+                    </DialogHeader>
+                    <EditarTienda tienda={tienda} />
+                </DialogContent>
+            </Dialog>
 
             <div className="flex flex-col justify-center items-center mt-5">
                 <Image src={tienda.url_logo} alt="Logo de la tienda"

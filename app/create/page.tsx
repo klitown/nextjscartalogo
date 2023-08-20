@@ -78,12 +78,12 @@ function Create() {
             const { data: logoImagenData, error: errorLogoImagenData } = await supabase.storage
                 .from('cartalogo_imagenes')
                 //@ts-ignore
-                .upload(`${folderName}/${Math.floor(Math.random() * 1000000) + 1}.png`, imagenLogo);
+                .upload(`${folderName}/logo_${Math.floor(Math.random() * 1000000) + 1}.png`, imagenLogo);
 
             const { data: portadaImagenData, error: errorPortadaImagenData } = await supabase.storage
                 .from('cartalogo_imagenes')
                 //@ts-ignore
-                .upload(`${folderName}/${Math.floor(Math.random() * 1000000) + 1}.png`, imagenPortada);
+                .upload(`${folderName}/portada_${Math.floor(Math.random() * 1000000) + 1}.png`, imagenPortada);
             if (errorLogoImagenData || errorPortadaImagenData) {
                 console.error('Error acá: ', errorPortadaImagenData);
             } else {
