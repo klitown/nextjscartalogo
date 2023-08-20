@@ -1,12 +1,23 @@
-function Page({ params }: { params: { slug: string } }) {
+import Image from "next/image";
+import { getTiendaInfo } from "../../../(infoTienda)/layout";
+import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import EditarTienda from "@/app/components/EditarTienda";
+
+
+export default async function Page({ params }: { params: { slug: string } }) {
+
+    const tienda = await getTiendaInfo('nicolas-nicolas');
+
     return (
-        <div className="container mx-auto flex flex-col">
+        <div className="container mx-auto flex flex-col relative">
 
-            <h1 className="text-5xl font-bold text-center">
-                {params.slug.toUpperCase()}
-            </h1>
-
-            <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-4 my-5">
+            <h2 className="text-3xl font-bold mb-5 text-left">
+                Información de la tienda
+            </h2>
+            <hr className="my-3" />
+            {/* <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-4 my-5">
                 <div className="flex items-center gap-2 text-green-800">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -27,14 +38,69 @@ function Page({ params }: { params: { slug: string } }) {
                 <p className="mt-2 text-md text-green-700">
                     La información mostrada acá son los datos públicos para tus clientes y visitantes de tu tienda
                 </p>
+            </div> */}
+
+            <div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="bg-indigo-500 hover:bg-indigo-700">
+                            <Edit className="mr-2 h-4 w-4" /> Editar información
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="text-3xl">
+                                Editar información de la tienda
+                            </DialogTitle>
+                        </DialogHeader>
+                        <EditarTienda tienda={tienda} />
+                    </DialogContent>
+                </Dialog>
             </div>
 
-            <p>
-                En proceso..
-            </p>
+            <div className="flex flex-col justify-center items-center mt-5">
+                <Image src={tienda.url_logo} alt="Logo de la tienda"
+                    width={300} height={300}
+                    sizes="(max-width: 1300px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    style={{
+                        borderRadius: '1rem',
+                    }}
+                />
+                <h2 className="text-4xl font-bold my-10 text-center">
+                    {tienda.nombre.toUpperCase()}
+                </h2>
+
+                <div className="flow-root">
+                    <dl className="-my-3 divide-y divide-gray-100 text-lg">
+                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                            <dt className="font-semibold text-xl text-gray-900">
+                                Teléfono
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2">
+                                {tienda.telefono}
+                            </dd>
+                        </div>
+                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                            <dt className="font-semibold text-xl text-gray-900">
+                                Ubicación
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2">
+                                {tienda.ubicacion.toUpperCase()}
+                            </dd>
+                        </div>
+                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                            <dt className="font-semibold text-xl text-gray-900">
+                                Descripción
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2">
+                                {tienda.descripcion}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+
+            </div>
 
         </div>
     );
 }
-
-export default Page;
