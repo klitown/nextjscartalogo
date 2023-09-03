@@ -1,127 +1,147 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import { CartProvider } from "react-use-cart";
-import { Provider } from "./Provider";
-import ProductosAgrupadosCategoria from "./ProductosAgrupadosCategoria";
+import { useRouter } from 'next/navigation'
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import required modules
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
 
 interface Props {
+    tiendaUrl: string
     productos: any,
     categorias: any
 }
 
-const MasBuscados = ({ productos, categorias }: Props) => {
+const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
 
+    const [loading, setLoading] = useState(true);
+    const [categoriasMap, setCategoriasMap] = useState<any>();
+    const router = useRouter()
+
+    useEffect(() => {
+        getInfo();
+    }, []);
+
+    const getInfo = () => {
+        const map = new Map();
+        // Llenar el mapa con las categorías
+        categorias.forEach((categoria: any) => {
+            map.set(categoria.id, {
+                ...categoria,
+                productos: []
+            });
+        });
+
+        // Agrupar los productos por categoría
+        productos.forEach((producto: any) => {
+            if (map.has(producto.categoria_id)) {
+                const categoria = map.get(producto.categoria_id);
+                categoria.productos.push(producto);
+                map.set(producto.categoria_id, categoria);
+            }
+        });
+        setCategoriasMap(map);
+        setLoading(false);
+    }
 
     const toggleToast = () => {
         //asd
     }
 
-    const navigateToDetails = (id: number) => {
-        //asd
+    const navigateToDetails = (idProducto: number) => {
+        router.push(`${tiendaUrl}/producto/${idProducto}`)
     }
 
-    const categoriasMap = new Map();
-    // Llenar el mapa con las categorías
-    categorias.forEach((categoria: any) => {
-        categoriasMap.set(categoria.id, {
-            ...categoria,
-            productos: []
-        });
-    });
 
-    // Agrupar los productos por categoría
-    productos.forEach((producto: any) => {
-        if (categoriasMap.has(producto.categoria_id)) {
-            const categoria = categoriasMap.get(producto.categoria_id);
-            categoria.productos.push(producto);
-            categoriasMap.set(producto.categoria_id, categoria);
-        }
-    });
+    if (loading) return <h1>Loading...</h1>
 
-    const sliderRef = useRef<any>(null);
-
-    const handleScroll = (direction: any) => {
-        const slider = sliderRef.current;
-
-        if (slider) {
-            const scrollWidth = slider.scrollWidth;
-            const clientWidth = slider.clientWidth;
-
-            if (direction === "left") {
-                slider.scrollLeft -= clientWidth;
-            } else if (direction === "right") {
-                slider.scrollLeft += clientWidth;
-            }
-        }
-    };
 
     return (
-        <div className="container mx-auto">
-            <div className='flex justify-start items-center px-3 mt-10'>
-                <h1 className="font-bold text-5xl mt-5 mb-0 font-worksans text-black">
-                    Los productos más buscados
-                </h1>
-            </div>
-            <div className="container mx-auto">
-                <div className="relative overflow-x-hidden my-20">
-                    <div className="flex-no-wrap relative flex items-center justify-center gap-4 w-full overflow-hidden p-0">
-                        {
-                            productos.map((producto: any, index: any) => (
-                                <div key={producto.id}>
-                                    {
-                                        producto.mas_buscado ?
-                                            <ProductCard toggleToast={toggleToast} producto={producto}
-                                                onClick={() => navigateToDetails(producto.id)} />
-                                            : null
-                                    }
-                                </div>
-                            ))
-                        }
-                    </div>
+        <div className="lg:container lg:mx-auto mx-3">
+
+            <div className="lg:container lg:mx-auto">
+                <div className='flex justify-start items-center px-3 mt-10'>
+                    <h1 className="font-bold text-5xl md:text-5xl mt-5 mb-0 font-worksans text-black">
+                        Los productos más buscados
+                    </h1>
+                </div>
+                <div className="my-16 lg:my-4 border-2 border-yellow-500 rounded-xl p-5">
+                    {
+                        productos.length > 0 ?
+                            <Swiper
+                                slidesPerView={1}
+                                centerInsufficientSlides={true}
+                                spaceBetween={30}
+                                autoplay={{
+                                    delay: 3500,
+                                    disableOnInteraction: false,
+                                }}
+                                loop={true}
+                                navigation={true}
+                                pagination={true}
+                                modules={[Autoplay, Navigation, Pagination]}
+                                className=""
+                            >
+                                {
+                                    productos.map((producto: any, index: number) => {
+                                        return <SwiperSlide key={`${producto.nombre} + ${index}`} className="my-10">
+                                            {
+                                                producto.mas_buscado ?
+                                                    <ProductCard toggleToast={toggleToast} producto={producto}
+                                                        onClick={() => navigateToDetails(producto.id)} />
+                                                    : null
+                                            }
+                                        </SwiperSlide>
+                                    })
+                                }
+                            </Swiper>
+                            :
+                            <h1>Error!</h1>
+                    }
                 </div>
             </div>
 
+
             {/* PRODUCTOS AGRUPADOS POR CATEGORIA */}
-            <div className="container mx-auto">
-                {Array.from(categoriasMap.values()).map(categoria => (
-                    <div className="border  rounded-xl p-5 my-10" key={categoria.id}>
+            <div className="lg:container lg:mx-auto">
+                {Array.from(categoriasMap!.values()).map((categoria: any, index) => (
+                    <div className="border rounded-xl p-5 my-10" key={categoria.id + index}>
                         <div className='flex justify-start items-center px-3 mb-5'>
                             <h1 className="font-bold text-5xl mt-5 mb-0 font-worksans text-black">
                                 {categoria.nombre}
                             </h1>
                         </div>
-                        <div className="relative">
-                            <div
-                                ref={sliderRef}
-                                className="w-full flex snap-x overflow-x-hidden overflow-y-hidden scroll-snap-type-x-mandatory 
-                            transition-transform duration-300 scroll-smooth  p-4 rounded-xl"
-                                style={{ scrollSnapAlign: "center" }}
-                            >
-                                {categoria.productos.map((producto: any) => (
-                                    <div key={producto.id} className="snap-always snap-center mx-10">
-                                        <ProductCard
-                                            toggleToast={toggleToast}
-                                            producto={producto}
-                                            onClick={() => navigateToDetails(producto.id)}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
 
-                            <button
-                                className="absolute bg-indigo-500 text-white px-6 py-4 rounded-full left-0 top-1/2 transform -translate-y-1/2"
-                                onClick={() => handleScroll("left")}
-                            >
-                                &lt;
-                            </button>
-                            <button
-                                className="absolute bg-indigo-500 text-white px-6 py-4 rounded-full right-0 top-1/2 transform -translate-y-1/2"
-                                onClick={() => handleScroll("right")}
-                            >
-                                &gt;
-                            </button>
-                        </div>
+                        <Swiper
+                            spaceBetween={30}
+                            pagination={{
+                                clickable: true,
+                            }}
+                            rewind={true}
+                            navigation={true}
+                            modules={[Autoplay, Pagination, Navigation]}
+                            className=""
+                        >
+
+                            {categoria.productos.map((producto: any, index: number) => (
+                                <SwiperSlide key={producto.id + index} className="my-10">
+                                    <ProductCard
+                                        toggleToast={toggleToast}
+                                        producto={producto}
+                                        onClick={() => navigateToDetails(producto.id)}
+                                    />
+                                </SwiperSlide>
+                            ))}
+
+                        </Swiper>
+
+
 
                     </div>
                 ))}

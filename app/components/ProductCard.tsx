@@ -1,5 +1,5 @@
 'use client'
-import { CartProvider, useCart } from "react-use-cart";
+import { useCart } from "react-use-cart";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -31,7 +31,7 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
 
     return (
 
-        <div className="flex w-[95%] md:w-[320px] h-[500px] flex-col overflow-hidden rounded-lg border cursor-pointer
+        <div className="flex w-[95%] md:w-[320px] flex-col overflow-hidden rounded-lg border cursor-pointer
                                         border-gray-100 bg-white shadow-md hover:scale-105 transition-transform ease-in-out"
             onClick={onClick}
         >

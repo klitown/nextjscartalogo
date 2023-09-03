@@ -1,0 +1,24 @@
+import DetalleProducto from "@/app/components/DetalleProducto";
+import { createServerClient } from "../../layout";
+
+export default async function Page({ params }: { params: { slug: string, id: string } }) {
+
+    async function getProductoData() {
+        const supabase = createServerClient();
+        const { data, error } = await supabase.rpc('obtener_producto_por_id_y_url', {
+            tienda_url_param: params.slug,
+            producto_id_param: params.id
+        });
+        return data
+    }
+
+    const res = await getProductoData();
+    const producto = res[0];
+
+    return (
+        <>
+            <DetalleProducto producto={producto} />
+        </>
+    );
+}
+

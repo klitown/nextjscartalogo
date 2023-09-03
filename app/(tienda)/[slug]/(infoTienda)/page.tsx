@@ -33,8 +33,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 urlPortada={tienda.imagen_portada}
                 data-superjson
             />
-            <MasBuscados productos={productos} categorias={categorias} />
-            {/* <ProductosAgrupadosCategoria productos={productos} categorias={categorias} data-superjson /> */}
+            <MasBuscados tiendaUrl={tienda.url} productos={productos} categorias={categorias} />
         </div>
 
 

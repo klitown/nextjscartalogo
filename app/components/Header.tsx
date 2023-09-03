@@ -34,14 +34,15 @@ function Header({ tienda, categorias }: {
                     />
                 </div>
                 <div className="flex justify-center items-center border-gray-100">
-                    <span className="border-e border-e-gray-100">
+                    <span className="">
                         <div
                             onClick={() => {
                                 // navegar al carrito
                                 router.push(`/${tienda.url}/carrito`)
                             }}
                             className="h-16 w-16 
-                                flex flex-col justify-center items-center border-b-2 border-black hover:border-b-4 hover:border-blue-700 cursor-pointer"
+                                flex flex-col justify-center items-center border-black hover:border-b-4 
+                                hover:border-blue-700 cursor-pointer"
                         >
                             {/* <span className="hidden lg:block">Carrito</span> */}
                             <Image src="/icon-carrito.png" width={32} height={32} alt="Icono carrito" />

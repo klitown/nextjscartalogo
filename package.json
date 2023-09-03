@@ -41,6 +41,7 @@
     "react-hook-form": "^7.45.4",
     "react-use-cart": "^1.13.0",
     "superjson": "^1.13.1",
+    "swiper": "^10.2.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.6",

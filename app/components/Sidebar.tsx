@@ -72,11 +72,11 @@ function Categorias({ categorias, tienda }: Props) {
                     Categorías
                 </h1>
                 <ul>
-                    {categorias.map((categoria) => (
-                        <Link href={`/${tienda.url}/${categoria.codigo}`} replace
+                    {categorias.map((categoria, index) => (
+                        <Link href={`/${tienda.url}/${categoria.codigo}`}
                             onClick={closeMenu}
                             className="flex items-center border-b border-b-gray-200 p-3 cursor-pointer hover:bg-gray-100"
-                            key={categoria.id}
+                            key={`${categoria.id} + ${index}`}
                         >
                             <span className="flex-1 text-black text-xl">
                                 {categoria.nombre}
