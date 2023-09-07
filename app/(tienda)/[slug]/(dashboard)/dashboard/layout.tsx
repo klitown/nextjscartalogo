@@ -7,12 +7,36 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { DialogClose } from "@radix-ui/react-dialog";
-import { ArchiveIcon, HeartFilledIcon, HeartIcon, HomeIcon, RocketIcon } from '@radix-ui/react-icons'
+import { ArchiveIcon, HeartIcon, HomeIcon, RocketIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
+import { redirect } from "next/navigation";
+import { createServerClient, getTiendaInfo } from "../../(infoTienda)/layout";
 
+export default async function ProductDetailLayout({ children, params }: { children: React.ReactNode; params: { slug: string } }) {
 
-export default function ProductDetailLayout({ children, params }: { children: React.ReactNode; params: { slug: string } }) {
+    const supabase = createServerClient();
+    const tienda = await getTiendaInfo(params.slug);
+
+    if (!tienda) {
+        return redirect("/");
+    }
+
+    const { data: activeSession } = await supabase.auth.getSession();
+
+    if (!activeSession.session) {
+        console.log("No hay sesión")
+        return redirect("/login");
+    } else {
+        console.log("Hay sesión: ", activeSession);
+    }
+
+    if (tienda.user_id !== activeSession.session.user.id) {
+        console.log("El user_id de la tienda es distinto que el user_id de la sesión activa: ", tienda.user_id !== activeSession.session.user.id);
+        return redirect("/login");
+    } else {
+        console.log("El user_id de la tienda corresponde al del usuario", tienda.user_id === activeSession.session.user.id);
+    }
+
     return (
         <div className="flex flex-col h-screen">
             <header className="bg-white">
@@ -64,7 +88,7 @@ export default function ProductDetailLayout({ children, params }: { children: Re
                             </SheetContent>
                         </Sheet>
                         {/* USER AVATAR SETTINGS */}
-                        <UserNav />
+                        <UserNav user={activeSession.session.user} />
                     </div>
                     <hr className="my-3" />
                 </div>

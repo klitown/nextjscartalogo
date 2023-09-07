@@ -8,7 +8,7 @@ import EditarTienda from "@/app/components/EditarTienda";
 
 export default async function Page({ params }: { params: { slug: string } }) {
 
-    const tienda = await getTiendaInfo('nicolas-nicolas');
+    const tienda = await getTiendaInfo(params.slug);
 
     return (
         <div className="container mx-auto flex flex-col relative">

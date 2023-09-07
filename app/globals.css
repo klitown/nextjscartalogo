@@ -17,3 +17,29 @@
     justify-content: center;
     align-items: center;
 }
+
+@layer components {
+    .bg-primary {
+        @apply bg-[#2B43FF]
+    }
+}
+@layer components {
+    .bg-secondary {
+        @apply bg-[#276FE8]
+    }
+}
+@layer components {
+    .bg-terciary {
+        @apply bg-[#38B6FF]
+    }
+}
+@layer components {
+    .bg-cuarto {
+        @apply bg-[#28D4E8]
+    }
+}
+@layer components {
+    .bg-quinto {
+        @apply bg-[#2CFFDC]
+    }
+}

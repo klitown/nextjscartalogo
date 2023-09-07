@@ -11,15 +11,17 @@ const createServerClient = cache(() => {
         cookies: () => cookieStore
     })
 });
+
 const getTiendaInfo = cache(async (urlTienda: string) => {
     const supabase = createServerClient();
-    const { data: tienda } = await supabase
+    const { data: tienda, error } = await supabase
         .from("tiendas")
         .select()
         .eq("url", urlTienda)
         .single();
     return tienda
 });
+
 const getCategoriasInfo = cache(async (idTienda: number) => {
     const supabase = createServerClient();
     const { data, error } = await supabase.rpc('obtener_categorias_de_tienda', {
@@ -31,9 +33,10 @@ const getCategoriasInfo = cache(async (idTienda: number) => {
 
 export { createServerClient, getTiendaInfo, getCategoriasInfo }
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children, params }:
+    { children: React.ReactNode, params: { slug: string } }) {
 
-    const tienda = await getTiendaInfo('nicolas-nicolas');
+    const tienda = await getTiendaInfo(params.slug);
     const categorias = await getCategoriasInfo(tienda.id);
 
     return (

@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   title: 'Cartalogo',
   description: 'Tu tienda digital',
   applicationName: "Cartalogo V1",
-
 }
 
 export default function RootLayout({
@@ -23,7 +22,6 @@ export default function RootLayout({
         {children}
         <Toaster />
       </body>
-
     </html>
   )
 }
