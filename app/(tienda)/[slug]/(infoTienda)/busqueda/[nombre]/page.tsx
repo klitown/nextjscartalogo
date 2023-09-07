@@ -5,16 +5,21 @@ import { cache } from "react";
 
 async function BusquedaPage({ params }: { params: { nombre: string, slug: string } }) {
 
+    let nombreProducto = params.nombre;
+    nombreProducto = nombreProducto.replace(/%20/g, ' ');
+
     const getProductosPorNombre = cache(async () => {
         const supabase = createServerClient();
         const { data, error } = await supabase.rpc('obtener_productos_con_imagenes_por_nombre', {
             tienda_url: params.slug,
-            nombre_producto: params.nombre
+            nombre_producto: nombreProducto
         });
         return data
     });
+
     const productos = await getProductosPorNombre();
     console.log('sadsadsadsad', productos)
+
     const navigateToDetails = (idProducto: number) => {
         console.log('Navegando a...', idProducto)
     }
@@ -27,15 +32,17 @@ async function BusquedaPage({ params }: { params: { nombre: string, slug: string
                 </h3>
             </div>
             {
-                productos?.length >= 1 ? <>
-                    {
-                        productos?.map((producto: any) => (
-                            <div key={producto.id}>
-                                <ProductCard producto={producto} key={producto.id} data-superjson />
-                            </div>
-                        ))
-                    }
-                </> : <h2 className="mx-auto p-5">No se encontraron productos que coincidan con tu búsqueda😓</h2>
+                productos?.length >= 1 ?
+                    <div className="flex flex-row flex-wrap gap-10">
+                        {
+                            productos?.map((producto: any) => (
+                                <div key={producto.id}>
+                                    <ProductCard producto={producto} key={producto.id} data-superjson />
+                                </div>
+                            ))
+                        }
+                    </div>
+                    : <h2 className="mx-auto p-5">No se encontraron productos que coincidan con tu búsqueda😓</h2>
             }
         </div>
     );
