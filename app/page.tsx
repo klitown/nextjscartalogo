@@ -1,9 +1,14 @@
 "use client";
 
+import { useState, useEffect, useMemo, useRef } from 'react';
 import localFont from 'next/font/local'
 import { Red_Hat_Display } from 'next/font/google'
 import Image from 'next/image'
 import { CheckCheckIcon } from 'lucide-react';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import required modules
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 
 // Font files can be colocated inside of `app`
 const agrandir = localFont({
@@ -18,29 +23,52 @@ const redHat = Red_Hat_Display({
 
 const features = [
     {
-        name: 'Push to deploy.',
+        name: 'Visita a tu tienda',
         description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+            'Con tu tienda en línea, tus clientes solo deben navegar a tu sitio web y empezar a ver tus productos',
     },
     {
-        name: 'SSL certificates.',
-        description: 'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
+        name: 'Agregar al carrito',
+        description: 'Una vez que se elija un producto, se añade el producto al carrito integrado de tu sitio web',
     },
     {
-        name: 'Database backups.',
-        description: 'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
+        name: 'Finalizar compra',
+        description: 'El pedido te llega directamente al Whatsapp con todos los detalles incluidos.',
     },
 ]
 
 function Home() {
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const images = useMemo(() => [
+        '/desktop.png',
+        '/portada_movil.png',
+        // Add more image URLs as needed
+    ], []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            // Avanzar al siguiente índice de imagen
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        }, 3500); // Cambiar de imagen cada 10 segundos
+
+        // Limpia el intervalo cuando el componente se desmonta
+        return () => clearInterval(interval);
+    }, [images]);
+
+    const comoFuncionaRef = useRef<any>();
+    const preguntasFrecuentesRef = useRef<any>();
+    const preciosRef = useRef<any>();
+
     return (
         <>
-            <main className={`bg-[url('/bg.svg')] bg-white/90 bg-no-repeat bg-cover backdrop-blur-xl 
-            h-screen flex flex-col justify-start items-center`}>
+
+            <main className={`bg-[url('/bg.svg')] bg-white/90 bg-no-repeat bg-cover backdrop-blur-xl md:h-screen
+            flex flex-col justify-start items-center`}>
                 <header className=" w-full p-5">
                     <div className="px-4 sm:px-6 lg:px-8">
-                        <div className="flex h-16 items-center justify-between">
-                            <div className="md:flex md:items-center md:gap-12">
+                        <div className="flex h-16 items-center justify-center md:justify-between">
+                            <div className="items-center flex justify-center md:flex md:items-center md:gap-12 ">
                                 <Image src="/cartalogoWhite.png"
                                     priority={true}
                                     width={200}
@@ -52,58 +80,30 @@ function Home() {
                                 <nav aria-label="Global">
                                     <ul className="flex items-center gap-6 text-md text-white">
                                         <li>
-                                            <a
-                                                className="text-white transition hover:text-white-500/75"
-                                                href="/"
+                                            <div
+                                                className="text-white transition hover:text-white-500/75 cursor-pointer hover:border-b hover:border-b-white"
+                                                onClick={() => comoFuncionaRef.current.scrollIntoView({ behavior: 'smooth' })}
                                             >
-                                                About
-                                            </a>
+                                                Como funciona
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div
+                                                className="text-white transition hover:text-white-500/75 cursor-pointer hover:border-b hover:border-b-white"
+                                                onClick={() => preguntasFrecuentesRef.current.scrollIntoView({ behavior: 'smooth' })}
+                                            >
+                                                Preguntas frecuentes
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div
+                                                className="text-white transition hover:text-white-500/75 cursor-pointer hover:border-b hover:border-b-white"
+                                                onClick={() => preciosRef.current.scrollIntoView({ behavior: 'smooth' })}
+                                            >
+                                                Precios
+                                            </div>
                                         </li>
 
-                                        <li>
-                                            <a
-                                                className="text-white transition hover:text-white-500/75"
-                                                href="/"
-                                            >
-                                                Careers
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a
-                                                className="text-white transition hover:text-white-500/75"
-                                                href="/"
-                                            >
-                                                History
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a
-                                                className="text-white transition hover:text-white-500/75"
-                                                href="/"
-                                            >
-                                                Services
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a
-                                                className="text-white transition hover:text-white-500/75"
-                                                href="/"
-                                            >
-                                                Projects
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a
-                                                className="text-white transition hover:text-white-500/75"
-                                                href="/"
-                                            >
-                                                Blog
-                                            </a>
-                                        </li>
                                     </ul>
                                 </nav>
                             </div>
@@ -112,11 +112,11 @@ function Home() {
                     </div>
                 </header>
 
-                <section className="flex flex-col justify-center md:flex-row w-full h-screen">
+                <section className="flex flex-col justify-center md:flex-row w-full md:h-screen">
 
-                    <div className='flex flex-col basis-full justify-center items-start p-10'>
+                    <div className='flex flex-col basis-full justify-center md:justify-center items-start'>
                         <div className='bg-white/30 backdrop-blur-lg rounded-xl p-10'>
-                            <h1 className={`${agrandir.className} text-7xl font-bold text-white`}>
+                            <h1 className={`${agrandir.className} text-6xl md:text-7xl font-bold text-white`}>
                                 Tu
                                 <span className='animate-text bg-gradient-to-r from-[#2CFFDC] via-[#FFF] to-[#2CFFDC] mx-4 bg-clip-text text-transparent'>
                                     nueva tienda
@@ -125,7 +125,7 @@ function Home() {
                                 te está <br /> esperando
                             </h1>
                             <p className={`${redHat.className} text-xl text-white max-w-xl tracking-wide mt-3`}>
-                                Imagina tener tu propia tienda virtual, donde puedas mostrar tus productos al mundo y hacer crecer tu negocio
+                                Te interesa tener tu propia tienda virtual, donde puedas mostrar tus productos al mundo y hacer crecer tu negocio
                                 desde la comodidad de tu hogar.
                                 <br />
                                 Con nuestro servicio, tendrás todas las herramientas que necesitas para crear tu tienda en línea de manera sencilla y efectiva.
@@ -133,45 +133,51 @@ function Home() {
                         </div>
                     </div>
 
-                    <div className='flex basis-1/2'>
+                    <div className='hidden md:flex basis-1/2 relative p-10'>
 
+                        <Image fill
+                            src={images[currentImageIndex]}
+                            className='aspect-square rounded-md object-scale-down h-48 w-96 mr-10 shadow-md transition-opacity duration-500 ease-in-out transform'
+                            alt='Imagen de la tienda' />
 
                     </div>
+
+
+
                 </section>
 
             </main>
-
 
             <section>
                 <div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:h-screen lg:grid-cols-2">
                         <div className="relative z-10 lg:py-16">
                             <div className="relative h-64 sm:h-80 lg:h-full">
-                                <img alt="House"
-                                    src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                                    className="absolute inset-0 h-full w-full object-cover" />
+                                <Image src="/portada_1.jpg" fill alt="Imagen de portada"
+                                    className='absolute inset-2 h-full w-full object-cover ml-0 md:ml-5 rounded-xl'
+                                />
                             </div>
                         </div>
 
-                        <div className="relative flex items-center bg-terciary rounded-tr-xl rounded-br-xl">
-                            <span className="hidden lg:absolute lg:inset-y-0 lg:-start-16 lg:block lg:w-16 lg: bg-terciary rounded-tl-xl roudned-bl-xl"></span>
-
-                            <div className="p-8 sm:p-16 lg:p-24">
-                                <h2 className={`${agrandir.className} text-7xl font-bold text-black`}>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore,
-                                    debitis.
+                        <div className="relative flex justify-center items-center bg-terciary rounded-xl">
+                            <div className="p-8 sm:p-16 lg:p-24 flex justify-center items-center flex-col">
+                                <h2 className={`${agrandir.className} text-6xl md:text-7xl font-bold text-black`}>
+                                    Tu propia tienda, a un click de distancia
                                 </h2>
 
-                                <p className={`${redHat.className} text-xl max-w-xl tracking-wide mt-3 text-gray-600`}>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid,
-                                    molestiae! Quidem est esse numquam odio deleniti, beatae, magni
-                                    dolores provident quaerat totam eos, aperiam architecto eius quis
-                                    quibusdam fugiat dicta.
+                                <p className={`${redHat.className} text-2xl max-w-xl tracking-wide mt-3 text-white`}>
+                                    Desde productos hasta servicios personalizados, construí tu marca con nosotros y crecé tu negocio desde la comodidad de tu hogar.
+                                    Nosotros nos encargamos de todo el mantenimiento para que te enfoques en lo que verdaderamente importa:
+                                    <span className='font-extrabold tracking-wider ml-2'>
+                                        vender.
+                                    </span>
                                 </p>
 
                                 <a href="#"
-                                    className="mt-8 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500">
-                                    Get in Touch
+                                    className="mt-8 inline-block rounded border border-indigo-600 bg-black px-12 py-3 text-lg font-medium 
+                                    transition-opacity ease-in
+                                    text-white focus:outline-none focus:ring active:text-indigo-500 hover:bg-white hover:text-black">
+                                    Ver tienda demo
                                 </a>
                             </div>
                         </div>
@@ -179,23 +185,28 @@ function Home() {
                 </div>
             </section>
 
-            <div className="bg-[url('/1.svg')] overflow-hidden bg-white py-24 sm:py-32">
-                <div className="mx-auto max-w-7xl px-6 lg:px-8 bg-white rounded-xl">
+            <div ref={comoFuncionaRef} className="bg-[url('/1.svg')] overflow-hidden bg-white py-24 sm:py-32">
+                <div className="mx-auto max-w-7xl px-6 lg:px-8 bg-white/80 backdrop-blur-lg md:bg-white rounded-xl border border-gray-200 shadow-xl">
                     <div
                         className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2 overflow-hidden">
-                        <div className="lg:pr-8 lg:pt-4">
+                        <div className="lg:pr-8 lg:pt-4 py-4">
                             <div className="lg:max-w-lg">
-                                <h2 className="text-base font-semibold leading-7 text-indigo-600">Deploy faster</h2>
-                                <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">A better workflow</p>
-                                <p className="mt-6 text-lg leading-8 text-gray-600">
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque,
-                                    iste dolor cupiditate blanditiis ratione.
+                                <h2 className="text-base font-semibold leading-7 text-indigo-600">
+                                    Proceso de venta
+                                </h2>
+                                <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                                    Contruí una mejor experiencia
                                 </p>
-                                <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+                                <p className="mt-6 text-lg leading-8 text-gray-600">
+                                    No pierdas ventas debido a procesos de compra complicados.
+                                    Con nosotros, tus clientes pueden comprar de manera rápida y sencilla,
+                                    lo que se traduce en una experiencia de compra más agradable y mayores beneficios para tu negocio
+                                </p>
+                                <dl className="mt-3 max-w-xl space-y-6 p-3 text-base leading-7 text-gray-600 lg:max-w-none">
                                     {features.map((feature) => (
-                                        <div key={feature.name} className="relative pl-9">
-                                            <dt className="inline font-semibold text-gray-900">
-                                                {feature.name}
+                                        <div key={feature.name} className="relative p-5 border border-gray-300 rounded-xl bg-white/40">
+                                            <dt className="inline font-bold text-indigo-500">
+                                                {feature.name}:
                                             </dt>{' '}
                                             <dd className="inline">{feature.description}</dd>
                                         </div>
@@ -210,8 +221,91 @@ function Home() {
                 </div>
             </div>
 
+            <section ref={preguntasFrecuentesRef}>
+                <div className="items-center w-full my-10 px-5 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl border border-gray-200 rounded-xl shadow-xl">
+                    <div>
+                        <div className="max-w-2xl">
+                            <p className={`${agrandir.className} text-7xl font-bold text-black`}>
+                                Preguntas frecuentes
+                            </p>
+                        </div>
+                    </div>
+                    <div className="w-full mx-auto mt-12 text-left">
+                        <div className="relative items-center gap-12 m-auto lg:inline-flex md:order-first">
+                            <div className="p-4 mx-auto lg:max-w-7xl lg:p-0">
+                                <ul role="list" className="grid grid-cols-1 gap-4 list-none lg:grid-cols-3 lg:gap-12">
+                                    <li>
+                                        <div>
+                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
+                                                ¿Son una plataforma de ecommerce?
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 text-base text-gray-500">
+                                            Nos consideramos una plataforma de ecommerce. Queremos conectar clientes con negocios de manera sencilla,
+                                            al alcance de todos.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
+                                                ¿Los planes son mensuales?
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 text-base text-gray-500">
+                                            Sì, los planes tienen un costo mensual fijo.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
+                                                ¿Cobran comisión por venta?
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 text-base text-gray-500">
+                                            No cobramos ninguna comisión por venta. Solamente cobramos el pago mensual.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
+                                                ¿Ustedes gestionan mis pedidos?
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 text-base text-gray-500">
+                                            Nosotros nos encargamos de conectar tu negocio con los clientes.
+                                            Luego, la finalización del pedido corre por cuenta del negocio.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
+                                                ¿Qué métodos de pago puedo ofrecer a mis clientes?
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 text-base text-gray-500">
+                                            Estamos trabajando para integrar una pasarela de pagos para permitir
+                                            cobrar a los clientes mediante transferencias y tarjetas.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
+                                                ¿Ofrecen asistencia técnica?
+                                            </p>
+                                        </div>
+                                        <div className="mt-2 text-base text-gray-500">
+                                            Sí, ofrecemos soporte técnico para ayudarte con cualquier pregunta o problema que puedas tener.
+                                            Nuestro equipo está siempre en línea brindarte asistencia.
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            <section aria-labelledby="pricing-one" id="pricing-one" className='container mx-auto mt-20'>
+            <section ref={preciosRef} aria-labelledby="pricing-one" id="pricing-one" className='container mx-auto mt-20 bg-[url(/grid.svg)]'>
                 <div className="relative items-center w-full px-8 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl">
                     <p className={`${agrandir.className} text-7xl font-bold text-black mb-10`}>
                         Precios
@@ -331,293 +425,50 @@ function Home() {
                 </div>
             </section>
 
-            <section>
-                <div className="items-center w-full px-5 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl">
-                    <div>
-                        <div className="max-w-2xl">
-                            <p className={`${agrandir.className} text-7xl font-bold text-black`}>
-                                Preguntas frecuentes
-                            </p>
-                        </div>
-                    </div>
-                    <div className="w-full mx-auto mt-12 text-left">
-                        <div className="relative items-center gap-12 m-auto lg:inline-flex md:order-first">
-                            <div className="p-4 mx-auto lg:max-w-7xl lg:p-0">
-                                <ul role="list" className="grid grid-cols-2 gap-4 list-none lg:grid-cols-3 lg:gap-12">
-                                    <li>
-                                        <div>
-                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
-                                                Can I used Lexingtøn Themes for my site?
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 text-base text-gray-500">
-                                            Upswing securities passively index inverse bondholders
-                                            capitalization financial health Moodys debt managed.
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>
-                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
-                                                Will i get updates?
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 text-base text-gray-500">
-                                            Upswing securities passively index inverse bondholders
-                                            capitalization financial health Moodys debt managed.
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>
-                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
-                                                How much do disputes cost?
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 text-base text-gray-500">
-                                            Upswing securities passively index inverse bondholders
-                                            capitalization financial health Moodys debt managed.
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>
-                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
-                                                How do refunds work?
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 text-base text-gray-500">
-                                            Plus, our platform is constantly evolving to meet the changing needs.
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>
-                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
-                                                Is there a fee to use Google Pay?
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 text-base text-gray-500">
-                                            Plus, our platform is constantly evolving to meet the changing needs.
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>
-                                            <p className="mt-5 text-lg font-medium leading-6 text-black">
-                                                Customer support
-                                            </p>
-                                        </div>
-                                        <div className="mt-2 text-base text-gray-500">
-                                            Plus, our platform is constantly evolving to meet the changing needs.
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section className='bg-primary container mx-auto rounded-xl'>
                 <div className="flex flex-col justify-center flex-1 px-8 py-8 md:px-12 lg:flex-none lg:px-24">
-                    <div>
-                        <div className="relative">
-                            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                                <div className="relative sm:overflow-hidden">
-                                    <div className="relative px-4 py-16 sm:px-6 lg:px-8">
-                                        <div className="max-w-2xl p-10 mx-auto text-center">
-                                            <div>
-                                                <p className={`${agrandir.className} text-7xl font-bold text-white`}>
-                                                    I am a slightly longer heading than the others
-                                                </p>
-                                                <p className="max-w-xl mt-4 text-lg tracking-tight text-white/70">
-                                                    If you could kick the person in the pants responsible for most of your trouble, you wouldnt sit for
-                                                    a month
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center justify-center w-full max-w-xl pt-8 mx-auto md:pt-6">
-                                            <form className="w-full">
-                                                <div className="w-full sm:relative sm:flex sm:items-center">
-                                                    <div className="relative w-full sm:static sm:flex-auto">
-                                                        <input type="email" id="email-address"
-                                                            placeholder="Email address"
-                                                            className="relative z-10 w-full px-6 py-3 text-base text-center text-black 
-                                                            appearance-none bg-white custom-blur lg:text-left border-white/10 peer
-                                                            placeholder:text-black/70 focus:border-white/50 focus:outline-none rounded-xl" />
-                                                    </div>
-                                                    <button
-                                                        className="inline-flex items-center justify-center w-full px-6 py-3 mt-2 text-center text-white duration-200 bg-black border-2 lg:m-0 lg:ml-2 lg:mt-0 e hover:bg-gray-100 rounded-xl hover:text-black focus:outline-none lg:w-auto"
-                                                        type="submit">
-                                                        Submit
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div className="relative px-4 py-10 sm:px-6 lg:px-8">
+                        <div className="w-full p-0 mx-auto text-center">
+                            <p className={`${agrandir.className} text-5xl font-bold text-white`}>
+                                Ponete en contacto con nosotros y solicitá una prueba
+                            </p>
+                            <p className=" mt-4 text-lg tracking-tight text-white/70">
+                                Contactanos via whatsapp y solicitá una tienda de prueba, o
+                                ante cualquier duda que tengas, estamos para ayudarte.
+                            </p>
+                        </div>
+                        <div className="flex items-center justify-center w-full max-w-xl pt-8 mx-auto md:pt-6">
+                            <button onClick={() => {
+                                window.open('https://wa.me/+595982989819?text=Hola%20Cartalogo%20estoy%20interesado%20en%20abrir%20una%20tienda%20con%20Cartalogo', '_blank')
+                            }}
+                                type="button"
+                                className="group inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-6 py-4 mt-2
+                                        text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-green-600">
+                                Quiero abrir mi tienda
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="ml-2 scale-110 w-4 h-4">
+                                    <path fill="currentColor" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <footer className="bg-white mt-32" aria-labelledby="footer-heading">
-                <h2 id="footer-heading" className="sr-only">Footer</h2>
-                <div className="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-16">
-                    <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-                        <div className="text-white xl:col-span-1">
-                            <a href="/"
-                                className="text-lg font-bold tracking-tighter text-black transition duration-500 ease-in-out transform tracking-relaxed lg:pr-8">
-                                <svg className="w-5 h-5" viewBox="0 0 232 232" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M166.524 51.4683L116.367 101.625L65.5235 51.4683L116.367 0.62434L166.524 51.4683ZM231.11 116.054L180.953 166.898L130.796 116.054L180.953 65.8969L231.11 116.054ZM101.939 116.054L51.0948 166.898L0.250934 116.054L51.0948 65.8969L101.939 116.054ZM166.524 181.326L116.367 231.483L65.5235 181.326L116.367 130.482L166.524 181.326Z"
-                                        fill="#0c0c0c"></path>
-                                </svg> </a>
-                        </div>
-                        <div className="grid grid-cols-2 gap-8 mt-12 xl:mt-0 xl:col-span-2">
-                            <div className="md:grid md:grid-cols-2 md:gap-8">
-                                <div>
-                                    <h3 className="font-semibold leading-6 text-black uppercase">
-                                        Navigation
-                                    </h3>
-                                    <ul role="list" className="mt-4 space-y-2">
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Pricing
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                All UI Kits
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Custom pages
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Next.js
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Gatsby
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Remix
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Alpine.js
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Svelte
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                About
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="mt-12 md:mt-0">
-                                    <h3 className="font-semibold leading-6 text-black uppercase">
-                                        UI/UX &amp; Dev
-                                    </h3>
-                                    <ul role="list" className="mt-4 space-y-2">
-                                        <li>
-                                            <a href="https://www.wickedbackgrounds.com/" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Wicked Backgrounds
-                                            </a>
-                                        </li>
+            <hr className='my-10' />
 
-                                        <li>
-                                            <a href="https://www.colorsandfonts.com/" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Colors &amp; Fonts
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="https://www.serendipitytheme.com/" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Serendipity</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://www.brutalist.one/" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Brutalist One</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="md:grid md:grid-cols-2 md:gap-8">
-                                <div>
-                                    <h3 className="font-semibold leading-6 text-black uppercase">
-                                        Legal
-                                    </h3>
-                                    <ul role="list" className="mt-4 space-y-2">
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Changelog
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                FAQ
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Refund
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                License
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Privacy Policy
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Terms
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="mt-12 md:mt-0">
-                                    <h3 className="font-semibold leading-6 text-black uppercase">
-                                        Socials
-                                    </h3>
-                                    <ul role="list" className="mt-4 space-y-2">
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Twitter
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Dribbble
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                                                Indie Hackers
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+            <footer className="bg-gray-50 mt-5">
+                <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <div className="flex justify-center text-teal-600 sm:justify-start">
+                            <Image src={"/cartalogoBlack.png"} alt='Logo de cartalogo' width={200} height={200} />
                         </div>
+
+                        <p className="mt-4 text-center text-sm text-gray-500 lg:mt-0 lg:text-right">
+                            Copyright &copy; 2023 - 🇵🇾
+                        </p>
                     </div>
                 </div>
             </footer>
-
 
         </>
 

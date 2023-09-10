@@ -32,13 +32,13 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
     return (
 
         <div className="flex w-[95%] md:w-[320px] flex-col overflow-hidden rounded-lg border cursor-pointer
-                                        border-gray-100 bg-white shadow-md hover:scale-105 transition-transform ease-in-out"
+                                        border-gray-100 bg-white hover:shadow-2xl shadow-md transition-transform ease-in-out"
             onClick={onClick}
         >
             <div className="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl">
-                <Image src={producto.imagenes.length >= 1 ? producto.imagenes[0]
-                    : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/646051.png'}
-                    alt="Imagen del producto" fill={true} priority={true}
+                <Image src={producto.imagenes[0]} alt="Imagen del producto" fill priority={true}
+                    className="aspect-square object-scale-down overflow-hidden"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 {/* <span className="absolute top-0 left-0 m-2 rounded-full bg-green-500 px-2 text-center text-sm font-medium text-white">
                     Más vendido

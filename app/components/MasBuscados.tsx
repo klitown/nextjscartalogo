@@ -82,15 +82,29 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                                     delay: 3500,
                                     disableOnInteraction: false,
                                 }}
-                                loop={true}
+                                loop={false}
                                 navigation={true}
-                                pagination={true}
-                                modules={[Autoplay, Navigation, Pagination]}
-                                className=""
+                                modules={[Autoplay, Navigation]}
+                                breakpoints={{
+                                    // when window width is >= 640px
+                                    640: {
+                                        slidesPerView: 1,
+                                    },
+                                    1024: {
+                                        slidesPerView: 2,
+                                    },
+                                    1280: {
+                                        slidesPerView: 3,
+                                    },
+                                }}
                             >
                                 {
                                     productos.map((producto: any, index: number) => {
-                                        return <SwiperSlide key={`${producto.nombre} + ${index}`} className="my-10">
+                                        return <SwiperSlide
+                                            key={`${producto.nombre} + ${index}`}
+                                            className="my-10"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
                                             {
                                                 producto.mas_buscado ?
                                                     <ProductCard toggleToast={toggleToast} producto={producto}
