@@ -18,7 +18,7 @@ async function BusquedaPage({ params }: { params: { nombre: string, slug: string
     });
 
     const productos = await getProductosPorNombre();
-    console.log('sadsadsadsad', productos)
+
 
     const navigateToDetails = (idProducto: number) => {
         console.log('Navegando a...', idProducto)
@@ -37,7 +37,10 @@ async function BusquedaPage({ params }: { params: { nombre: string, slug: string
                         {
                             productos?.map((producto: any) => (
                                 <div key={producto.id}>
-                                    <ProductCard producto={producto} key={producto.id} data-superjson />
+                                    <ProductCard
+                                        tiendaUrl={params.slug}
+                                        producto={producto}
+                                        key={producto.id} />
                                 </div>
                             ))
                         }
