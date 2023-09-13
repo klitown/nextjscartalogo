@@ -1,5 +1,17 @@
 import DetalleProducto from "@/app/components/DetalleProducto";
 import { createServerClient } from "../../layout";
+import { Metadata } from "next";
+
+type Props = {
+    params: { slug: string };
+};
+
+export const generateMetadata = ({ params }: Props): Metadata => {
+    return {
+        title: `Viendo producto - ${params.slug} - Cartalogo`,
+        description: `Vista la tienda ${params.slug} - Cartalogo`
+    };
+};
 
 export default async function Page({ params }: { params: { slug: string, id: string } }) {
 

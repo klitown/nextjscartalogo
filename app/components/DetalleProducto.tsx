@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "react-use-cart";
+import ImageGallery from "react-image-gallery";
+import './cards.css'
+import Image from "next/image";
 
 function DetalleProducto({ producto }: any) {
 
     const [alreadyAdded, setAlreadyAdded] = useState(false);
+    const [images, setImages] = useState<Array<{ original: string, thumbnail?: string }>>([]);
+
     const {
         inCart,
         cartTotal,
@@ -21,11 +26,37 @@ function DetalleProducto({ producto }: any) {
         setAlreadyAdded(productInCart);
     }, [cartTotal]);
 
+    useEffect(() => {
+        setImagenes()
+    }, []);
+
+    const setImagenes = () => {
+        let imagenes: Array<{ original: string, thumbnail?: string }> = [];
+        if (producto.imagenes.length >= 1) {
+            producto.imagenes.forEach((imagen: string) => {
+                imagenes.push({
+                    original: imagen,
+                    thumbnail: imagen
+                });
+            })
+        }
+        setImages(imagenes);
+    }
+
     return (
         <div className="container mx-auto flex flex-col lg:flex-row min-h-screen my-20">
-            <div className="bg-pink-300 basis-full lg:basis-1/2">
-                <h1>foto</h1>
+
+            <div className="basis-full flex justify-start items-start md:basis-1/2 lg:basis-1/2">
+                <ImageGallery
+                    additionalClass=""
+                    items={images}
+                    showFullscreenButton={false}
+                    showPlayButton={false}
+                    showBullets={true}
+                    autoPlay={true}
+                />
             </div>
+
             <div className="basis-full lg:basis-1/2 flex flex-col justify-start p-5 gap-10">
                 <div className="flex flex-row justify-between">
                     <h1 className="text-3xl font-bold">
@@ -76,7 +107,7 @@ function DetalleProducto({ producto }: any) {
                         ))}
                     </>
                         :
-                        <Button className="py-6" onClick={($event) => {
+                        <Button className="py-6 hover:scale-105 transition-all ease-in" onClick={($event) => {
                             $event.stopPropagation();
                             {/* @ts-ignore */ }
                             addItem(producto);
@@ -86,9 +117,6 @@ function DetalleProducto({ producto }: any) {
                             Agregar al carrito
                         </Button>
                 }
-
-
-
 
 
             </div>

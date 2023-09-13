@@ -10,6 +10,7 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import Link from "next/link";
 
 
 interface Props {
@@ -107,8 +108,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                                         >
                                             {
                                                 producto.mas_buscado ?
-                                                    <ProductCard toggleToast={toggleToast} producto={producto}
-                                                        onClick={() => navigateToDetails(producto.id)} />
+                                                    <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
                                                     : null
                                             }
                                         </SwiperSlide>
@@ -146,6 +146,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                             {categoria.productos.map((producto: any, index: number) => (
                                 <SwiperSlide key={producto.id + index} className="my-10">
                                     <ProductCard
+                                        tiendaUrl={tiendaUrl}
                                         toggleToast={toggleToast}
                                         producto={producto}
                                         onClick={() => navigateToDetails(producto.id)}

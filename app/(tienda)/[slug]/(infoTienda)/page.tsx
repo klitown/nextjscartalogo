@@ -2,6 +2,19 @@ import Portada from '../../../components/Portada';
 import MasBuscados from '../../../components/MasBuscados';
 import { createServerClient, getCategoriasInfo, getTiendaInfo } from './layout';
 
+import { Metadata } from "next";
+
+type Props = {
+    params: { slug: string };
+};
+
+export const generateMetadata = ({ params }: Props): Metadata => {
+    return {
+        title: `${params.slug} - Cartalogo`,
+        description: `Vista la tienda ${params.slug} - Cartalogo`
+    };
+};
+
 
 export default async function Page({ params }: { params: { slug: string } }) {
 

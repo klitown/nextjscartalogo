@@ -6,10 +6,6 @@ import { Red_Hat_Display } from 'next/font/google'
 import Image from 'next/image'
 import { CheckCheckIcon } from 'lucide-react';
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-// import required modules
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-
 // Font files can be colocated inside of `app`
 const agrandir = localFont({
     src: './agrandir.otf',
@@ -305,122 +301,139 @@ function Home() {
                 </div>
             </section>
 
+            {/* PRICING SECTION */}
             <section ref={preciosRef} aria-labelledby="pricing-one" id="pricing-one" className='container mx-auto mt-20 bg-[url(/grid.svg)]'>
                 <div className="relative items-center w-full px-8 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl">
                     <p className={`${agrandir.className} text-7xl font-bold text-black mb-10`}>
                         Precios
                     </p>
                     <div className="grid max-w-2xl grid-cols-1 -mx-4 gap-y-10 sm:mx-auto lg:max-w-none lg:grid-cols-3 xl:gap-x-4 lg:-mx-8">
-                        <section className="flex flex-col px-6 sm:px-8 lg:py-8">
-                            <h3 className="mt-5 text-lg text-black">Wannabe</h3>
+                        <section className="flex flex-col px-6 py-8 sm:px-8 lg:py-8 border border-gray-200  rounded-3xl">
+                            <h3 className="mt-5 text-lg text-black">BÁSICO</h3>
                             <p className="mt-2 text-sm text-gray-500">
-                                Good for those trying to get there.
+                                Excelente para empezar
                             </p>
                             <p className="order-first text-5xl font-light tracking-tight text-black">
-                                $2
+                                120.000gs
                             </p>
                             <ul role="list" className="flex flex-col order-last mt-10 text-sm text-gray-500 gap-y-3">
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Connect 1 websites </span>
+                                    <span className="ml-4"> Página de ecommerce con template básico </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Connect up to 2 bank accounts </span>
+                                    <span className="ml-4"> Funcionalidad de carrito con redirección a Whatsapp  </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Track up to 15 credit cards </span>
+                                    <span className="ml-4"> Opción de autogestión de productos </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Analytics support </span>
+                                    <span className="ml-4">
+                                        Soporte a convenir
+                                    </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Export up to 3 months data </span>
+                                    <span className="ml-4">
+                                        Límite de 30 productos
+                                    </span>
                                 </li>
                             </ul>
                             <a className="items-center justify-center w-full px-6 py-2.5 mt-8 text-center text-white duration-200 bg-black border-2 border-black rounded-full nline-flex hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black" aria-label="Wannabe tier" href="/register">
-                                Button
+                                Estoy interesado
                             </a>
                         </section>
-                        <section className="flex flex-col order-first px-6 py-8 bg-black rounded-3xl sm:px-8 lg:order-none">
-                            <h3 className="mt-5 text-lg text-white">Indie Hacker</h3>
+                        <section className="flex flex-col px-6 py-8 bg-black rounded-3xl sm:px-8 lg:order-none">
+                            <h3 className="mt-5 text-lg text-white">PRO</h3>
                             <p className="mt-2 text-sm text-gray-100">
-                                Perfect for those leaving 9-5 and working 24/7.
+                                Especial para fidelizar tu tienda
                             </p>
                             <p className="order-first text-5xl font-light tracking-tight text-white">
-                                $29
+                                275.000gs
                             </p>
                             <ul role="list" className="flex flex-col order-last mt-10 text-sm text-white gap-y-3">
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Connect 80 websites </span>
+                                    <span className="ml-4"> Página de ecommerce con opciones extras de interfaz </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Connect up to 5 bank accounts </span>
+                                    <span className="ml-4"> Acceso completo al panel de administración </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Track up to 50 credit cards </span>
+                                    <span className="ml-4"> Métricas de productos, vistas e interacciones mensuales </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Analytics support </span>
+                                    <span className="ml-4"> Soporte técnico prioritario </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Export up to 12 months data </span>
+                                    <span className="ml-4"> Hasta 3 fotos por producto </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Cloud service 24/7 </span>
+                                    <span className="ml-4"> Diseño de flyers básicos para complemento de la tienda </span>
                                 </li>
-                                <li className="flex items-center">
-                                    <CheckCheckIcon />
-                                    <span className="ml-4"> Track in multiple users </span>
-                                </li>
+
                             </ul>
                             <a className="items-center justify-center w-full px-6 py-2.5 mt-8 text-center text-black duration-200 bg-white border-2 border-white rounded-full nline-flex hover:bg-transparent hover:border-white hover:text-white focus:outline-none focus-visible:outline-white text-sm focus-visible:ring-white" aria-label="Indie hacker tier" href="/register">
-                                Button
+                                Estoy interesado
                             </a>
                         </section>
-                        <section className="flex flex-col px-6 sm:px-8 lg:py-8">
-                            <h3 className="mt-5 text-lg text-black">Big fish</h3>
+                        <section className="flex flex-col px-6 py-8 bg-gray-100 rounded-3xl sm:px-8 lg:order-none">
+                            <h3 className="mt-5 text-lg text-black">PERSONALIZADO</h3>
                             <p className="mt-2 text-sm text-gray-500">
-                                For even the biggest enterprise companies.
+                                Para los que quieran ir más allá
                             </p>
                             <p className="order-first text-5xl font-light tracking-tight text-black">
-                                $99
+                                Contáctanos
                             </p>
                             <ul role="list" className="flex flex-col order-last mt-10 text-sm text-gray-500 gap-y-3">
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Connect unlimited websites </span>
+                                    <span className="ml-4">
+                                        Página de ecommerce con diseño a elección
+                                    </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Connect up to 15 bank accounts </span>
+                                    <span className="ml-4"> Funcionalidad de carrito con pago online nacional e internacional </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Track up to 200 credit cards </span>
+                                    <span className="ml-4"> Acceso completo al dashboard de administración </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Analytics support </span>
+                                    <span className="ml-4"> Métricas a elección (visitas, productos más vistos, interacciones y más) </span>
                                 </li>
                                 <li className="flex items-center">
                                     <CheckCheckIcon />
-                                    <span className="ml-4"> Export up to 24 months data </span>
+                                    <span className="ml-4"> Hasta 5 fotos por producto </span>
+                                </li>
+                                <li className="flex items-center">
+                                    <CheckCheckIcon />
+                                    <span className="ml-4"> Diseño de flyers a elección </span>
+                                </li>
+                                <li className="flex items-center">
+                                    <CheckCheckIcon />
+                                    <span className="ml-4"> Nos adaptamos a tus necesidades especificas </span>
                                 </li>
                             </ul>
                             <a className="items-center justify-center w-full px-6 py-2.5 mt-8 text-center text-white duration-200 bg-black border-2 border-black rounded-full nline-flex hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black" aria-label="Big fish tier" href="/register">
-                                Button
+                                Estoy interesado
                             </a>
                         </section>
+                    </div>
+                    <div className='text-gray-400 my-4'>
+                        * Para servicios adicionales o personalizados consultar presupuesto - los planes iniciales son modelos predefinidos, el
+                        costo puede varíar de acuerdo a las implementaciones o desarrollo que el cliente requiera. <br />
+                        * Funcionalidad de pago online en base al cliente: obligación de RUC (requerimiento de procesadora BANCARD).
                     </div>
                 </div>
             </section>

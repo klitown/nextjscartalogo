@@ -2,9 +2,9 @@
 import { CartProvider } from "react-use-cart";
 import ProductCard from "./ProductCard";
 import React, { useRef } from "react";
-import { Provider } from "./Provider";
 
-function ProductosAgrupadosCategorias({ productos, categorias }: any) {
+
+function ProductosAgrupadosCategorias({ productos, categorias, tiendaUrl }: any) {
 
     const categoriasMap = new Map();
     // Llenar el mapa con las categorías
@@ -67,6 +67,7 @@ function ProductosAgrupadosCategorias({ productos, categorias }: any) {
                             {categoria.productos.map((producto: any) => (
                                 <div key={producto.id} className="snap-always snap-center mx-10">
                                     <ProductCard
+                                        tiendaUrl={tiendaUrl}
                                         toggleToast={toggleToast}
                                         producto={producto}
                                         onClick={() => navigateToDetails(producto.id)}

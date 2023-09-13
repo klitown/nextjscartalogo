@@ -2,15 +2,17 @@
 import { useCart } from "react-use-cart";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Props {
     producto: any
     onClick?: () => void
     toggleToast?: () => any
     showAddCart?: boolean,
+    tiendaUrl: string
 }
 
-const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Props) => {
+const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, tiendaUrl }: Props) => {
     const [alreadyAdded, setAlreadyAdded] = useState(false);
     const {
         inCart,
@@ -30,38 +32,47 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
     }
 
     return (
-
-        <div className="flex w-[95%] md:w-[320px] flex-col overflow-hidden rounded-lg border cursor-pointer
-                                        border-gray-100 bg-white hover:shadow-2xl shadow-md transition-transform ease-in-out"
-            onClick={onClick}
-        >
-            <div className="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl">
-                <Image src={producto.imagenes[0]} alt="Imagen del producto" fill priority={true}
-                    className="aspect-square object-scale-down overflow-hidden"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                {/* <span className="absolute top-0 left-0 m-2 rounded-full bg-green-500 px-2 text-center text-sm font-medium text-white">
+        <div>
+            <Link href={`/${tiendaUrl}/producto/${producto.id}`}>
+                <div className="flex w-[95%] md:w-[320px] flex-col overflow-hidden rounded-lg border cursor-pointer
+                                        border-gray-100 bg-white hover:shadow-2xl shadow-sm transition-transform ease-in-out"
+                    onClick={onClick}
+                >
+                    <div className="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl">
+                        <Image src={producto.imagenes[0]} alt="Imagen del producto" fill priority={true}
+                            className="aspect-square object-scale-down overflow-hidden"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                        {/* <span className="absolute top-0 left-0 m-2 rounded-full bg-green-500 px-2 text-center text-sm font-medium text-white">
                     Más vendido
                 </span> */}
-            </div>
-            <div className="mt-4 px-5 pb-5">
-                <h5 className="text-xl font-bold mt-5 tracking-tight text-slate-900">
-                    {producto.nombre}
-                </h5>
-                <p className="text-md tracking-tight mt-1 mb-3 text-gray-500">
-                    Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}
-                </p>
+                    </div>
+                    <div className="mt-4 px-5 pb-5">
+                        <h5 className="text-xl font-bold mt-5 tracking-tight text-slate-900">
+                            {producto.nombre}
+                        </h5>
+                        <p className="text-md tracking-tight mt-1 mb-3 text-gray-500">
+                            Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}
+                        </p>
+                    </div>
+                </div>
+            </Link>
+            <div className="flex w-[100%] md:w-[320px] flex-col overflow-hidden my-4 cursor-pointer hover:shadow-2xl shadow-sm transition-transform ease-in-out"
+            >
                 {
                     alreadyAdded ? <>
                         {items.map((item) => (
-                            <div key={item.id} onClick={($event) => {
-                                $event.stopPropagation();
+                            <div key={item.id} onClick={(e) => {
+                                e.stopPropagation();
                             }}>
                                 {
                                     item.id === producto.id &&
                                     <div className="flex justify-around items-center gap-1">
                                         <button
-                                            onClick={() => updateItemQuantity(item.id, item.quantity! - 1)
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                updateItemQuantity(item.id, item.quantity! - 1)
+                                            }
                                             }
                                             type="button"
                                             className="bg-red-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
@@ -70,7 +81,10 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
                                         </button>
                                         <p className='text-xl font-sans text-black font-bold'>{item.quantity}</p>
                                         <button
-                                            onClick={() => updateItemQuantity(item.id, item.quantity! + 1)
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                updateItemQuantity(item.id, item.quantity! + 1)
+                                            }
                                             }
                                             type="button"
                                             className="bg-green-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
@@ -83,10 +97,10 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
                         ))}
                     </>
                         :
-                        <button className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm 
+                        <button className="flex items-center justify-center bg-slate-900 px-5 py-2.5 text-center text-sm 
                 font-medium text-white w-full hover:bg-green-500"
-                            onClick={($event) => {
-                                $event.stopPropagation();
+                            onClick={(e) => {
+                                e.stopPropagation();
                                 {/* @ts-ignore */ }
                                 addItem(producto);
                                 //handleClick();
@@ -99,7 +113,6 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true }: Pro
                             Agregar al carrito
                         </button>
                 }
-
             </div>
         </div>
     );
