@@ -31,6 +31,9 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, tiend
         // toggleToast();
     }
 
+    console.log(producto);
+
+
     return (
         <div>
             <Link href={`/${tiendaUrl}/producto/${producto.id}`}>
@@ -39,10 +42,14 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, tiend
                     onClick={onClick}
                 >
                     <div className="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl">
-                        <Image src={producto.imagenes[0]} alt="Imagen del producto" fill priority={true}
-                            className="aspect-square object-scale-down overflow-hidden"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
+                        {producto.imagenes.length >= 1 ?
+                            <Image src={producto.imagenes[0]} alt="Imagen del producto" fill priority={true}
+                                className="aspect-square object-scale-down overflow-hidden"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                            : <h1>Error en la imagen</h1>
+                        }
+
                         {/* <span className="absolute top-0 left-0 m-2 rounded-full bg-green-500 px-2 text-center text-sm font-medium text-white">
                     Más vendido
                 </span> */}
