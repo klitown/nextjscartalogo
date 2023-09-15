@@ -95,7 +95,7 @@ export default function AuthForm() {
                                         showLinks={true}
                                         onlyThirdPartyProviders
                                         providers={['google']}
-                                        redirectTo="http://cartalogo.digital/auth/callback"
+                                        redirectTo="https://cartalogo.digital/auth/callback"
                                         localization={{
                                             variables: {
                                                 sign_in: {
