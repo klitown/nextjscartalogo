@@ -1,42 +1,46 @@
 "use client";
-import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import Image from "next/image";
 import * as Toast from '@radix-ui/react-toast';
 import { useRouter } from "next/navigation";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from "@supabase/supabase-js";
 
 interface Formulario {
-    nombre?: string;
+    nombre: string;
+    telefono: number | null;
+    ubicacion: string;
+    plan_id: number;
+    url: string;
+    url_logo: string;
+    imagen_portada: string;
     descripcion?: string;
-    telefono?: number;
-    ubicacion?: string;
-    redes?: Array<string> | string;
+    redes?: Array<string>;
     colores?: Array<string> | string;
-    plan_id?: number;
-    url?: string;
-    url_logo?: string;
-    imagen_portada?: string;
 }
 
 function Create() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const supabase = createClient(url!, apiKey!);
+
 
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
     const [showToastError, setShowToastError] = useState(false);
     const [showToastSuccess, setShowToastSuccess] = useState(false);
     const [imagenLogo, setImagenLogo] = useState();
+    const [instagram, setInstagram] = useState<string>('');
+    const [facebook, setFacebook] = useState<string>('');
     const [imagenPortada, setImagenPortada] = useState();
     const router = useRouter()
+    const supabase = createClient(url!, apiKey!);
 
     const [formulario, setFormulario] = useState<Formulario>({
         nombre: "",
         descripcion: "",
-        telefono: 0,
+        telefono: null,
         ubicacion: "",
-        redes: "",
+        redes: [],
         colores: "",
         plan_id: 1,
         url: "",
@@ -69,12 +73,13 @@ function Create() {
     }
 
     const saveImagenes = async () => {
-        console.log('Existe el nombre. Guardando imagenes:', imagenLogo, imagenPortada);
+        if (imagenLogo === undefined || imagenPortada === undefined) {
+            setShowToastError(true);
+            return
+        }
         setProcesandoCreacion(true);
         try {
             let folderName = makeUrlForTienda(formulario.nombre!);
-            console.log('Folder name:', folderName);
-
             const { data: logoImagenData, error: errorLogoImagenData } = await supabase.storage
                 .from('cartalogo_imagenes')
                 //@ts-ignore
@@ -85,7 +90,10 @@ function Create() {
                 //@ts-ignore
                 .upload(`${folderName}/portada_${Math.floor(Math.random() * 1000000) + 1}.png`, imagenPortada);
             if (errorLogoImagenData || errorPortadaImagenData) {
-                console.error('Error acá: ', errorPortadaImagenData);
+                console.error('Error acá: ', {
+                    errorLogoImagenData,
+                    errorPortadaImagenData
+                });
             } else {
                 const [logoUrlResponse, portadaUrlResponse] = await Promise.all([
                     supabase.storage.from('cartalogo_imagenes').getPublicUrl(logoImagenData.path),
@@ -110,13 +118,27 @@ function Create() {
         }
     }
 
+    const getSession = async () => {
+        const supabaseAca = createClientComponentClient({
+            supabaseUrl: url,
+            supabaseKey: apiKey
+        })
+        const { data: activeSession, error } = await supabaseAca.auth.getSession();
+        return activeSession?.session?.user.id ? activeSession.session.user.id : null
+    }
+
     const handleSubmit = async (formValue: Formulario) => {
-        console.log('Handle submit: ', formValue);
         try {
             let jsonData = Object.fromEntries(
                 Object.entries(formValue).filter(([_, valor]) => valor !== "")
             );
             jsonData.url = makeUrlForTienda(jsonData.nombre);
+            jsonData.redes = [instagram, facebook];
+            jsonData.user_id = await getSession();
+            if (jsonData.user_id === null) {
+                console.error('No autorizado')
+                return
+            }
             console.log("JSON FINAL ENVIADO: ", jsonData);
             const { data, error } = await supabase
                 .from("tiendas")
@@ -129,7 +151,7 @@ function Create() {
             } else {
                 console.log("Tienda registrada con éxito:", data);
                 setShowToastSuccess(true);
-                router.push(`/create/${data[0].id}/productos`);
+                router.push(`/${data[0].url}/dashboard`);
             }
         } catch (error: any) {
             console.error("Error en la inserción:", error.message);
@@ -250,14 +272,14 @@ function Create() {
                                 </div>
 
                                 <p className="mt-1 text-lg font-medium text-gray-700">
-                                    Wilson Morinigo
+                                    Recomendaciones
                                 </p>
                             </div>
                         </div>
 
                         <p className="line-clamp-2 sm:line-clamp-none mt-4 text-gray-500">
-                            Con Cartalogo, aumenté mis ventas en un 60%. Con el tiempo ganado,
-                            puedo dedicarme a otros asuntos de mi tienda
+                            <span className="font-bold">Fotografía de alta calidad:</span> Asegúrate de que las imágenes de tus productos sean de alta resolución y calidad. <br />
+                            Esto ayuda a los clientes a ver los detalles y la calidad de los productos.
                         </p>
                     </blockquote>
                 </aside>
@@ -273,12 +295,14 @@ function Create() {
                     </p>
 
                     <div className="flex flex-col bg-white p-5 rounded-xl border border-gray-200 mt-10">
+
                         <Form.Root className="w-[300px] lg:w-[400px]">
+
                             {/* NOMBRE FIELD */}
                             <Form.Field className="grid mb-[10px]" name="nombre" id="nombre">
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        Nombre de la tienda
+                                        <span className="text-red-500">*</span> Nombre de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -303,7 +327,7 @@ function Create() {
                             >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        Teléfono de la tienda
+                                        <span className="text-red-500">*</span> Teléfono de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -314,7 +338,7 @@ function Create() {
                                             outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
                                         type="text"
                                         name="telefono"
-                                        value={formulario.telefono}
+                                        value={formulario.telefono === null ? "" : formulario.telefono}
                                         onChange={handleChange}
                                         required
                                     />
@@ -328,7 +352,7 @@ function Create() {
                             >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        Ubicación de la tienda
+                                        <span className="text-red-500">*</span> Ubicación de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -350,7 +374,7 @@ function Create() {
                             <Form.Field className="grid mb-[10px]" name="logo" id="logo">
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        Logo de la tienda
+                                        <span className="text-red-500">*</span> Logo de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -372,7 +396,7 @@ function Create() {
                             <Form.Field className="grid mb-[10px]" name="logo" id="portada">
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        Portada de la tienda
+                                        <span className="text-red-500">*</span> Portada de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -398,7 +422,7 @@ function Create() {
                             >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        Descripción de la tienda
+                                        <span className="text-red-500">*</span> Descripción de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -412,6 +436,46 @@ function Create() {
                                         value={formulario.descripcion}
                                         onChange={handleChange}
                                         required
+                                    />
+                                </Form.Control>
+                            </Form.Field>
+                            <Form.Field className="grid mb-[10px]" name="instagram" id="instagram">
+                                <div className="flex items-baseline justify-between">
+                                    <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
+                                        Instagram
+                                    </Form.Label>
+                                </div>
+                                <Form.Control asChild>
+                                    <input
+                                        id="instagram"
+                                        className="box-border w-full bg-white shadow-blackA9 inline-flex h-[35px] appearance-none items-center justify-center 
+            rounded-[4px] px-[10px] text-[15px] leading-none text-black shadow-[0_0_0_1px] 
+            outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
+                                        type="text"
+                                        name="instagram"
+                                        value={instagram}
+                                        onChange={(e) => setInstagram(e.target.value)}
+                                    />
+                                </Form.Control>
+                            </Form.Field>
+
+                            {/* Campo para Facebook */}
+                            <Form.Field className="grid mb-[10px]" name="facebook" id="facebook">
+                                <div className="flex items-baseline justify-between">
+                                    <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
+                                        Facebook
+                                    </Form.Label>
+                                </div>
+                                <Form.Control asChild>
+                                    <input
+                                        id="facebook"
+                                        className="box-border w-full bg-white shadow-blackA9 inline-flex h-[35px] appearance-none items-center justify-center 
+            rounded-[4px] px-[10px] text-[15px] leading-none text-black shadow-[0_0_0_1px] 
+            outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
+                                        type="text"
+                                        name="facebook"
+                                        value={facebook}
+                                        onChange={(e) => setFacebook(e.target.value)}
                                     />
                                 </Form.Control>
                             </Form.Field>

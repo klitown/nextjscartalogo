@@ -45,6 +45,21 @@ function Header({ tienda, categorias }: {
                             alt="Logo de la tienda" width={100} height={100} priority={true}
                         />
                     </div>
+                    <span className="block md:hidden">
+                        <div
+                            onClick={() => {
+                                // navegar al carrito
+                                router.push(`/${tienda.url}/carrito`)
+                            }}
+                            className="h-16 w-16 
+                                flex flex-col justify-center items-center border-black hover:border-b-4 
+                                hover:border-blue-700 cursor-pointer"
+                        >
+                            {/* <span className="hidden lg:block">Carrito</span> */}
+                            <Image src="/icon-carrito.png" width={32} height={32} alt="Icono carrito" />
+                            <span className="sr-only">Carrito</span>
+                        </div>
+                    </span>
                 </div>
 
                 <div className="hidden lg:flex justify-end gap-3 items-center basis-1/2">

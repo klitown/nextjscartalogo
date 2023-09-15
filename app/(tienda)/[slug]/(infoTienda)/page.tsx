@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     const productos = await getProductosData();
     const categorias = await getCategoriasInfo(tienda.id);
 
-    console.log("Productos: ", productos);
+    console.log("Tienda: ", tienda);
 
     /*********
     UI SECTION

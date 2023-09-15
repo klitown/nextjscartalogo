@@ -59,7 +59,7 @@ function Home() {
     return (
         <>
 
-            <main className={`bg-[url('/bg.svg')] bg-white/90 bg-no-repeat bg-cover backdrop-blur-xl md:h-screen
+            <div className={`bg-[url('/bg.svg')] bg-white/90 bg-no-repeat bg-cover backdrop-blur-xl md:h-screen
             flex flex-col justify-start items-center`}>
                 <header className=" w-full p-5">
                     <div className="px-4 sm:px-6 lg:px-8">
@@ -111,8 +111,8 @@ function Home() {
                 <section className="flex flex-col justify-center md:flex-row w-full md:h-screen">
 
                     <div className='flex flex-col basis-full justify-center md:justify-center items-start'>
-                        <div className='bg-white/30 backdrop-blur-lg rounded-xl p-10'>
-                            <h1 className={`${agrandir.className} text-6xl md:text-7xl font-bold text-white`}>
+                        <div className='bg-white/30 backdrop-blur-lg rounded-xl p-10 overflow-hidden'>
+                            <h1 className={`${agrandir.className} text-5xl md:text-7xl font-bold text-white`}>
                                 Tu
                                 <span className='animate-text bg-gradient-to-r from-[#2CFFDC] via-[#FFF] to-[#2CFFDC] mx-4 bg-clip-text text-transparent'>
                                     nueva tienda
@@ -120,15 +120,15 @@ function Home() {
 
                                 te está <br /> esperando
                             </h1>
-                            <p className={`${redHat.className} text-xl text-white max-w-xl tracking-wide mt-3`}>
-                                Te interesa tener tu propia tienda virtual, donde puedas mostrar tus productos al mundo y hacer crecer tu negocio
+                            <p className={`${redHat.className} text-xl text-white max-w-xl leading-7 tracking-wide mt-3`}>
+                                Tener presencia digital no tiene por qué ser demandante. <br />
+                                Imaginate tener tu propio ecommerce, donde podés mostrar tus productos al mundo y hacer crecer tu negocio
                                 desde la comodidad de tu hogar.
                                 <br />
                                 Con nuestro servicio, tendrás todas las herramientas que necesitas para crear tu tienda en línea de manera sencilla y efectiva.
                             </p>
                         </div>
                     </div>
-
                     <div className='hidden md:flex basis-1/2 relative p-10'>
 
                         <Image fill
@@ -142,7 +142,7 @@ function Home() {
 
                 </section>
 
-            </main>
+            </div>
 
             <section>
                 <div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
@@ -221,7 +221,7 @@ function Home() {
                 <div className="items-center w-full my-10 px-5 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl border border-gray-200 rounded-xl shadow-xl">
                     <div>
                         <div className="max-w-2xl">
-                            <p className={`${agrandir.className} text-7xl font-bold text-black`}>
+                            <p className={`${agrandir.className} text-2xl md:text-7xl font-bold text-black`}>
                                 Preguntas frecuentes
                             </p>
                         </div>
@@ -390,7 +390,7 @@ function Home() {
                             <p className="mt-2 text-sm text-gray-500">
                                 Para los que quieran ir más allá
                             </p>
-                            <p className="order-first text-5xl font-light tracking-tight text-black">
+                            <p className="order-first text-3xl md:text-5xl font-light tracking-tight text-black">
                                 Contáctanos
                             </p>
                             <ul role="list" className="flex flex-col order-last mt-10 text-sm text-gray-500 gap-y-3">
@@ -473,7 +473,12 @@ function Home() {
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <div className="flex justify-center text-teal-600 sm:justify-start">
-                            <Image src={"/cartalogoBlack.png"} alt='Logo de cartalogo' width={200} height={200} />
+                            <Image src={"/cartalogoBlack.png"}
+                                alt='Logo de cartalogo'
+                                width={200}
+                                height={200}
+                                priority
+                            />
                         </div>
 
                         <p className="mt-4 text-center text-sm text-gray-500 lg:mt-0 lg:text-right">

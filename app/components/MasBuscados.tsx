@@ -12,7 +12,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import Link from "next/link";
 
-
 interface Props {
     tiendaUrl: string
     productos: any,
@@ -27,6 +26,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
 
     useEffect(() => {
         getInfo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getInfo = () => {
@@ -127,30 +127,57 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                 {Array.from(categoriasMap!.values()).map((categoria: any, index) => (
                     <div className="border rounded-xl p-5 my-10" key={categoria.id + index}>
                         <div className='flex justify-start items-center px-3 mb-5'>
-                            <h1 className="font-bold text-5xl mt-5 mb-0 font-worksans text-black">
+                            <h1 className="font-bold text-5xl mb-0 font-worksans text-black">
                                 {categoria.nombre}
                             </h1>
                         </div>
-
+                        <div className="my-3 px-3">
+                            <Link
+                                href={`/${tiendaUrl}/${categoria.codigo}`}
+                                className={`block select-none space-y-1 p-3 leading-none no-underline
+                                border border-gray-200 rounded-lg bg-indigo-500 text-white w-full md:w-32 text-center
+                                outline-none transition-colors hover:bg-indigo-700`}
+                            >
+                                Ver todo
+                            </Link>
+                        </div>
+                        <hr />
                         <Swiper
+                            slidesPerView={1}
+                            centerInsufficientSlides={true}
                             spaceBetween={30}
-                            pagination={{
-                                clickable: true,
+                            autoplay={{
+                                delay: 3500,
+                                disableOnInteraction: false,
                             }}
-                            rewind={true}
+                            loop={false}
                             navigation={true}
-                            modules={[Autoplay, Pagination, Navigation]}
-                            className=""
+                            modules={[Autoplay, Navigation]}
+                            breakpoints={{
+                                // when window width is >= 640px
+                                640: {
+                                    slidesPerView: 1,
+                                },
+                                1024: {
+                                    slidesPerView: 2,
+                                },
+                                1280: {
+                                    slidesPerView: 3,
+                                },
+                            }}
                         >
 
                             {categoria.productos.map((producto: any, index: number) => (
-                                <SwiperSlide key={producto.id + index} className="my-10">
-                                    <ProductCard
-                                        tiendaUrl={tiendaUrl}
-                                        toggleToast={toggleToast}
-                                        producto={producto}
-                                        onClick={() => navigateToDetails(producto.id)}
-                                    />
+                                <SwiperSlide
+                                    key={`${producto.nombre} + ${index}`}
+                                    className="my-10"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {
+                                        producto.mas_buscado ?
+                                            <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
+                                            : null
+                                    }
                                 </SwiperSlide>
                             ))}
 

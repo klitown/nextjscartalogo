@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { createServerClient } from "../../../(infoTienda)/layout";
+import { createServerClient, getTiendaInfo } from "../../../(infoTienda)/layout";
+import SubirProducto from "@/app/components/SubirProducto";
 
 
 async function Page({ params }: { params: { slug: string } }) {
@@ -12,8 +13,15 @@ async function Page({ params }: { params: { slug: string } }) {
         return data
     }
 
-    const productos = await getProductosData();
-    console.log(productos);
+    let productos = await getProductosData();
+    const tienda = await getTiendaInfo(params.slug);
+
+    const renovarProductos = async () => {
+        "use server"
+        // productos = await getProductosData();
+
+    }
+
 
     return (
         <div className="container mx-auto">
@@ -53,6 +61,8 @@ async function Page({ params }: { params: { slug: string } }) {
                     ))
                 }
             </div>
+
+            <SubirProducto tienda={tienda} renovarProductos={renovarProductos} />
 
         </div>
     );
