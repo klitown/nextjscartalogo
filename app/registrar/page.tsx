@@ -37,7 +37,11 @@ function Create() {
     const supabase = createClient(url!, apiKey!);
 
     useEffect(() => {
-        canEnter().then((res) => setAuth(res))
+        canEnter().then((res) => {
+            setAuth(res)
+            console.log('r', res);
+
+        });
     }, []);
 
     const canEnter = async () => {

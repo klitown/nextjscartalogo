@@ -95,7 +95,7 @@ export default function AuthForm() {
                                         showLinks={true}
                                         onlyThirdPartyProviders
                                         providers={['google']}
-                                        redirectTo="https://cartalogo.digital"
+                                        redirectTo="https://cartalogo.digital/registrar"
                                         localization={{
                                             variables: {
                                                 sign_in: {
