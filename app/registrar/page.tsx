@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import Image from "next/image";
 import * as Toast from '@radix-ui/react-toast';
@@ -28,12 +28,22 @@ function Create() {
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
     const [showToastError, setShowToastError] = useState(false);
     const [showToastSuccess, setShowToastSuccess] = useState(false);
+    const [auth, setAuth] = useState(false);
     const [imagenLogo, setImagenLogo] = useState();
     const [instagram, setInstagram] = useState<string>('');
     const [facebook, setFacebook] = useState<string>('');
     const [imagenPortada, setImagenPortada] = useState();
     const router = useRouter()
     const supabase = createClient(url!, apiKey!);
+
+    useEffect(() => {
+        canEnter().then((res) => setAuth(res))
+    }, []);
+
+    const canEnter = async () => {
+        let a = await getSession();
+        return a !== null
+    }
 
     const [formulario, setFormulario] = useState<Formulario>({
         nombre: "",
@@ -159,6 +169,8 @@ function Create() {
         }
         setProcesandoCreacion(false);
     };
+
+    if (auth === null) return <h1>Error.</h1>
 
     return (
         <section className="bg-white">
