@@ -11,13 +11,26 @@ export default async function Page({ params, searchParams }: {
     const supabase = createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
+    const getUserStore = async (user_id: string) => {
+        const { data, error } = await supabase.rpc("tienda_by_user_id", { user_id });
+
+        if (error) {
+            console.error("Error al llamar a la función almacenada:", error);
+            return
+        } else {
+            console.log("Tienda obtenida:", data);
+        }
+        return data
+    };
+
     if (code && user) {
         console.log('code: ', code);
-        redirect(`https://cartalogo.digital/${user.id}`)
+        const tienda: any = getUserStore(user.id);
+        redirect(`https://cartalogo.digital/${tienda.url}`)
     } else {
         console.log('user', user);
         console.log('code', code);
-        redirect('https://cartalogo.digital/nicolas')
+        redirect('https://cartalogo.digital/login')
     }
 
     return (

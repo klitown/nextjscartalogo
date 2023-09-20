@@ -50,7 +50,6 @@ function Index({ params }: { params: { id: string } }) {
                     console.error('Error al obtener la tienda:', error.message);
                     return null;
                 }
-                console.log('Data tienda: ', data);
                 setTienda(data);
             } catch (error: any) {
                 console.error('Error en la consulta:', error);
