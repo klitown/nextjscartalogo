@@ -1,4 +1,5 @@
 import { createServerClient } from "../(tienda)/[slug]/(infoTienda)/layout";
+import { redirect } from 'next/navigation';
 
 export default async function Page({ params, searchParams }: {
     params: { slug: string },
@@ -12,9 +13,11 @@ export default async function Page({ params, searchParams }: {
 
     if (code && user) {
         console.log('code: ', code);
-        window.location.href = 'https://cartalogo.digital/nicolas';
+        redirect(`https://cartalogo.digital/${user.id}`)
     } else {
-        window.location.href = 'https://cartalogo.digital/login';
+        console.log('user', user);
+        console.log('code', code);
+        redirect('https://cartalogo.digital/login')
     }
 
     return (
