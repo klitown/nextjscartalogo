@@ -23,13 +23,11 @@ export default async function Page({ params, searchParams }: {
         return data
     };
 
-    if (code && user) {
+    if (code) {
         console.log('code: ', code);
-        const tienda: any = getUserStore(user.id);
+        const tienda: any = getUserStore('0708e5f4-aa43-4459-be0f-ad5c599cda89');
         redirect(`https://cartalogo.digital/${tienda.url}`)
     } else {
-        console.log('user', user);
-        console.log('code', code);
         redirect('https://cartalogo.digital/login')
     }
 
