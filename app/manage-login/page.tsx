@@ -17,7 +17,7 @@ export default async function Page({ params, searchParams }: {
     } else {
         console.log('user', user);
         console.log('code', code);
-        redirect('https://cartalogo.digital/login')
+        redirect('https://cartalogo.digital/nicolas')
     }
 
     return (
