@@ -24,7 +24,6 @@ function Create() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
     const [showToastError, setShowToastError] = useState(false);
     const [showToastSuccess, setShowToastSuccess] = useState(false);
@@ -38,9 +37,11 @@ function Create() {
 
     useEffect(() => {
         canEnter().then((res) => {
-            setAuth(res)
-            console.log('r', res);
-
+            console.log("Res en registrar: ", res);
+            setAuth(res);
+            if (res === false) {
+                router.push('/login');
+            }
         });
     }, []);
 

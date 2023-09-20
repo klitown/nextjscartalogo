@@ -18,6 +18,7 @@ export default function AuthForm() {
                         fill
                         alt="Night"
                         src="/bg-login.avif"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="absolute inset-0 h-full w-full object-cover opacity-80"
                     />
                     <div className="hidden lg:relative lg:block lg:p-12">
@@ -37,7 +38,7 @@ export default function AuthForm() {
                         </a>
 
                         <h2 className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-                            Bienvenido a Cartalogo 🦑
+                            Bienvenido/a a Cartalogo 🦑
                         </h2>
 
                         <p className="mt-4 leading-relaxed text-white/90">
@@ -72,7 +73,7 @@ export default function AuthForm() {
                             <h1
                                 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
                             >
-                                Bienvenido a Cartalogo 🦑
+                                Bienvenido/a a Cartalogo 🦑
                             </h1>
 
                             <p className="mt-4 leading-relaxed text-gray-500">
@@ -86,12 +87,13 @@ export default function AuthForm() {
                                     priority={true}
                                     width={500}
                                     height={500}
+                                    style={{ height: 'auto', width: 'auto' }}
                                     alt="Logo de Cartalogo" />
                                 <div className='border border-gray-200 p-10 rounded-xl my-12'>
                                     <Auth
                                         supabaseClient={supabase}
                                         appearance={{ theme: ThemeSupa }}
-                                        theme="dark"
+                                        theme="light"
                                         onlyThirdPartyProviders
                                         providers={['google']}
                                         redirectTo="https://cartalogo.digital/registrar"
