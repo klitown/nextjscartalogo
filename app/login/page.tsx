@@ -96,7 +96,7 @@ export default function AuthForm() {
                                         theme="light"
                                         onlyThirdPartyProviders
                                         providers={['google']}
-                                        redirectTo="https://cartalogo.digital/mas"
+                                        redirectTo="localhost:3000/afterlogin"
                                         localization={{
                                             variables: {
                                                 sign_in: {
