@@ -20,6 +20,8 @@ export default function Page({ params, searchParams }: {
     const getInitialData = async () => {
         const supabase = createClientComponentClient();
         const { data } = await supabase.auth.getUser();
+        console.log('data: ', data);
+
         setUser(data.user);
     }
 
