@@ -13,8 +13,10 @@ export default function Page({ params, searchParams }: {
         const supabase = createServerClient();
         const { data } = await supabase.auth.getUser();
         console.log('data: ', data);
-        user = data;
+        return data
     }
+
+    user = getInitialData()
 
     return (
         <>
