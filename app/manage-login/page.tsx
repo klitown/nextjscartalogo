@@ -12,9 +12,10 @@ export default async function Page({ params, searchParams }: {
     const { data: { user } } = await supabase.auth.getUser();
     let tienda: any;
 
-    const getUserStore = async (user_id: string) => {
-        const { data, error } = await supabase.rpc("tienda_by_user_id", { user_id });
-
+    const getUserStore = async () => {
+        const { data, error } = await supabase.rpc("tienda_by_user_id", {
+            user_id: user!.id
+        });
         if (error) {
             console.error("Error al llamar a la función almacenada:", error);
             return
@@ -24,9 +25,9 @@ export default async function Page({ params, searchParams }: {
         return data
     };
 
-    if (code) {
+    if (code && user) {
         console.log('code: ', code);
-        tienda = getUserStore('0708e5f4-aa43-4459-be0f-ad5c599cda89');
+        tienda = getUserStore();
         //redirect(`https://cartalogo.digital/${tienda.url}`)
     } else {
         //redirect('https://cartalogo.digital/login')
@@ -34,7 +35,7 @@ export default async function Page({ params, searchParams }: {
 
     return (
         <>
-            {tienda ? tienda : 'sin tienda'}
+            {tienda}
         </>
     )
 }
