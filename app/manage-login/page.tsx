@@ -18,6 +18,7 @@ export default async function Page({ params, searchParams }: {
         });
         if (error) {
             console.error("Error al llamar a la función almacenada:", error);
+            console.error("User aca: ", user!.id)
             return
         } else {
             console.log("Tienda obtenida:", data);
@@ -25,7 +26,7 @@ export default async function Page({ params, searchParams }: {
         return data
     };
 
-    if (code && user) {
+    if (code) {
         console.log('code: ', code);
         tienda = getUserStore();
         //redirect(`https://cartalogo.digital/${tienda.url}`)
