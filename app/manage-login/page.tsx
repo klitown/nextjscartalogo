@@ -1,42 +1,31 @@
+"use client"
+
+import { useEffect, useState } from "react";
 import { createServerClient } from "../(tienda)/[slug]/(infoTienda)/layout";
 import { redirect } from 'next/navigation';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export default async function Page({ params, searchParams }: {
+export default function Page({ params, searchParams }: {
     params: { slug: string },
     searchParams: { [key: string]: string | string[] | undefined },
 }) {
 
+    const [user, setUser] = useState<any>();
     const { code } = searchParams;
 
-    const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    let tienda: any;
+    useEffect(() => {
+        getInitialData();
+    }, []);
 
-    const getUserStore = async () => {
-        const { data, error } = await supabase.rpc("tienda_by_user_id", {
-            user_id: user!.id
-        });
-        if (error) {
-            console.error("Error al llamar a la función almacenada:", error);
-            console.error("User aca: ", user!.id)
-            return
-        } else {
-            console.log("Tienda obtenida:", data);
-        }
-        return data
-    };
-
-    if (code) {
-        console.log('code: ', code);
-        tienda = getUserStore();
-        //redirect(`https://cartalogo.digital/${tienda.url}`)
-    } else {
-        //redirect('https://cartalogo.digital/login')
+    const getInitialData = async () => {
+        const supabase = createClientComponentClient();
+        const { data } = await supabase.auth.getUser();
+        setUser(data.user);
     }
 
     return (
         <>
-            {tienda}
+            {JSON.stringify(user, null, 0)}
         </>
     )
 }
