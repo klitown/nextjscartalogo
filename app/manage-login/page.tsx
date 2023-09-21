@@ -27,10 +27,10 @@ export default function Page({ params, searchParams }: {
 
     const getUserStore = async (user_id: string) => {
         const supabase = createClientComponentClient();
-        const { data, error } = await supabase.rpc("tienda_by_user_id", { user_id });
+        const { data, error } = await supabase.rpc("get_store_by_user_id", { user_id });
         if (error) {
             console.error("Error al llamar a la función almacenada:", error);
-            console.error("User aca: ", user!.id)
+            console.error("User aca: ", user)
             return
         } else {
             console.log("Tienda obtenida:", data);
@@ -44,7 +44,7 @@ export default function Page({ params, searchParams }: {
 
     return (
         <>
-            {JSON.stringify(user, null, 0)}
+            {JSON.stringify(user.id, null, 0)}
         </>
     )
 }
