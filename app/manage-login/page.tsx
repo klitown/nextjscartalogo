@@ -1,50 +1,47 @@
-"use client"
 
-import { useEffect, useState } from "react";
+
 import { createServerClient } from "../(tienda)/[slug]/(infoTienda)/layout";
 import { redirect } from 'next/navigation';
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export default function Page({ params, searchParams }: {
+export default async function Page({ params, searchParams }: {
     params: { slug: string },
     searchParams: { [key: string]: string | string[] | undefined },
 }) {
 
-    const [user, setUser] = useState<any>();
     const { code } = searchParams;
 
-    useEffect(() => {
-        getInitialData();
-    }, []);
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    let tienda: any;
 
-    const getInitialData = async () => {
-        const supabase = createClientComponentClient();
-        const { data } = await supabase.auth.getUser();
-        console.log('data: ', data);
-        setUser(data.user);
-        getUserStore(data.user!.id)
-    }
-
-    const getUserStore = async (user_id: string) => {
-        const supabase = createClientComponentClient();
-        const { data, error } = await supabase.rpc("get_store_by_user_id", { user_id });
+    const getUserStore = async () => {
+        if (!user) {
+            console.error('No user');
+            return
+        }
+        const { data, error } = await supabase.rpc("get_store_by_user_id", {
+            user_id: user!.id
+        });
         if (error) {
             console.error("Error al llamar a la función almacenada:", error);
-            console.error("User aca: ", user)
             return
         } else {
             console.log("Tienda obtenida:", data);
-            if (code && user) {
-                redirect(`https://cartalogo.digital/${data.url}`)
-            } else {
-                console.log('asdsad')
-            }
         }
+        return data
     };
+
+    if (code) {
+        console.log('code: ', code);
+        tienda = getUserStore();
+        redirect(`https://cartalogo.digital/${tienda.url}`)
+    } else {
+        redirect('https://cartalogo.digital/holaquetal')
+    }
 
     return (
         <>
-            {user && <> {JSON.stringify(user.id, null, 0)}</>}
+            {tienda}
         </>
     )
 }
