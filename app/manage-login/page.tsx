@@ -44,7 +44,7 @@ export default function Page({ params, searchParams }: {
 
     return (
         <>
-            {JSON.stringify(user.id, null, 0)}
+            {user && <> {JSON.stringify(user.id, null, 0)}</>}
         </>
     )
 }
