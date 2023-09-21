@@ -11,16 +11,16 @@ export default async function Page({ params, searchParams }: {
     const { code } = searchParams;
 
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { session } } = await supabase.auth.getSession();
     let tienda: any;
 
     const getUserStore = async () => {
-        if (!user) {
-            console.error('No user');
+        if (!session) {
+            console.error('No session');
             return
         }
         const { data, error } = await supabase.rpc("get_store_by_user_id", {
-            user_id: user!.id
+            user_id: session!.user.id
         });
         if (error) {
             console.error("Error al llamar a la función almacenada:", error);
