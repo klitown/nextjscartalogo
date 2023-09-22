@@ -11,11 +11,15 @@ export async function GET(request: NextRequest) {
     const code = requestUrl.searchParams.get('code')
 
     if (code) {
-        console.log("Here route callback: ", code)
         const supabase = createRouteHandlerClient<any>({ cookies })
         await supabase.auth.exchangeCodeForSession(code)
         const { data: activeSession } = await supabase.auth.getSession();
-        console.log("Usuario acá: ", activeSession.session?.user.email)
+        const { data, error } = await supabase.rpc("tienda_by_user_id", {
+            user_id: activeSession.session?.user.id
+        });
+        console.log("Data acá: ", data);
+        console.log("Error acá: ", error);
+        return NextResponse.redirect(`/${data.url}`)
     }
 
     // URL to redirect to after sign in process completes
