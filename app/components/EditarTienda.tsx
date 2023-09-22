@@ -29,8 +29,9 @@ const FormSchema = z.object({
         message: "La ubicación no es válida",
     }),
     url_logo: z.string(),
+    instagram: z.string(),
+    facebook: z.string().optional(),
     logoFile: z.any()
-    // redes: z.string().array().nonempty().min(1),
     // colores: z.string().array().nonempty().min(1)
 })
 
@@ -50,7 +51,8 @@ export default function EditarTienda({ tienda }: any) {
             logoFile: undefined,
             // imagen_portada: "",
             descripcion: tienda.descripcion,
-            // redes: [],
+            instagram: obtenerNombreUsuarioInstagram(tienda.redes),
+            facebook: `${tienda.redes.find((red: any) => red && red.includes("facebook")) ?? ''}`,
             // colores: []
         },
     })
@@ -58,6 +60,17 @@ export default function EditarTienda({ tienda }: any) {
     const [isFetching, setIsFetching] = useState(false);
     const [imagenLogo, setImagenLogo] = useState();
     const { toast } = useToast();
+
+    // Función para extraer el nombre de usuario de Instagram
+    function obtenerNombreUsuarioInstagram(redes: string[]) {
+        const instagramUrl = redes.find(red => red && red.includes("instagram"));
+        if (instagramUrl) {
+            const partesUrl = instagramUrl.split('/');
+            return partesUrl[partesUrl.length - 1];
+        } else {
+            return ''; // Si no se encuentra Instagram, retorna un string vacío
+        }
+    }
 
     function changeImagenLogo(event: any) {
         const logoFile = event.target.files[0]
@@ -94,9 +107,17 @@ export default function EditarTienda({ tienda }: any) {
                     }
                 }
             }
+            const { instagram, facebook } = formData;
+            //@ts-ignore
+            delete formData.instagram;
+            //@ts-ignore
+            delete formData.facebook;
             const { data: res, error } = await supabase
                 .from('tiendas')
-                .update({ ...formData })
+                .update({
+                    ...formData,
+                    redes: [`https://instagram.com/${instagram}`, facebook]
+                })
                 .eq('id', tienda.id)
                 .select()
             if (error) throw error;
@@ -122,6 +143,7 @@ export default function EditarTienda({ tienda }: any) {
         <div className="p-5">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+
                     <FormField
                         control={form.control}
                         name="nombre"
@@ -185,7 +207,6 @@ export default function EditarTienda({ tienda }: any) {
                             </FormItem>
                         )}
                     />
-
                     <FormField
                         control={form.control}
                         name="descripcion"
@@ -201,6 +222,36 @@ export default function EditarTienda({ tienda }: any) {
                                         className="resize-none"
                                         {...field}
                                     />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="instagram"
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>
+                                    Instagram
+                                </FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ingresa tu usuario de instagram" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="facebook"
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>
+                                    Facebook
+                                </FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ingrese el link tu facebook" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

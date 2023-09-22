@@ -14,14 +14,18 @@ export async function GET(request: NextRequest) {
         const supabase = createRouteHandlerClient<any>({ cookies })
         await supabase.auth.exchangeCodeForSession(code)
         const { data: activeSession } = await supabase.auth.getSession();
-        const { data, error } = await supabase.rpc("get_store_by_user_id", {
+        const { data: tienda, error } = await supabase.rpc("get_store_by_user_id", {
             user_id: activeSession.session?.user.id
         });
-        console.log("Data acá: ", data);
-        console.log("Error acá: ", error);
-        return NextResponse.redirect(`${requestUrl.origin}/${data.url}`)
+        console.log("Data tienda acá: ", tienda);
+        if (error) {
+            console.log("Error acá: ", error);
+            return NextResponse.redirect(requestUrl.origin);
+        }
+        if (!tienda) {
+            return NextResponse.redirect(`${requestUrl.origin}/registrar`)
+        }
+        return NextResponse.redirect(`${requestUrl.origin}/${tienda.url}/dashboard`)
     }
 
-    // URL to redirect to after sign in process completes
-    return NextResponse.redirect(requestUrl.origin)
 }

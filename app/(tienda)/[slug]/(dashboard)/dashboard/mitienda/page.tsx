@@ -4,11 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import EditarTienda from "@/app/components/EditarTienda";
+import { ITienda } from "@/lib/interfaces/ITienda";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
 
-    const tienda = await getTiendaInfo(params.slug);
+    const tienda: ITienda = await getTiendaInfo(params.slug);
+
+    // Función para extraer el nombre de usuario de Instagram
+    function obtenerNombreUsuarioInstagram(redes: string[]) {
+        const instagramUrl = redes.find(red => red && red.includes("instagram"));
+        if (instagramUrl) {
+            const partesUrl = instagramUrl.split('/');
+            return partesUrl[partesUrl.length - 1];
+        } else {
+            return ''; // Si no se encuentra Instagram, retorna un string vacío
+        }
+    }
 
     return (
         <div className="container mx-auto flex flex-col relative">
@@ -83,7 +95,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                                 Ubicación
                             </dt>
                             <dd className="text-gray-700 sm:col-span-2">
-                                {tienda.ubicacion.toUpperCase()}
+                                {tienda.ubicacion?.toUpperCase()}
                             </dd>
                         </div>
                         <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
@@ -92,6 +104,26 @@ export default async function Page({ params }: { params: { slug: string } }) {
                             </dt>
                             <dd className="text-gray-700 sm:col-span-2">
                                 {tienda.descripcion}
+                            </dd>
+                        </div>
+                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                            <dt className="font-semibold text-xl text-gray-900">
+                                Instagram
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2">
+                                {obtenerNombreUsuarioInstagram(tienda.redes!)}
+                            </dd>
+                        </div>
+                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                            <dt className="font-semibold text-xl text-gray-900">
+                                Facebook
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2">
+                                {tienda.redes?.includes("facebook") && (
+                                    <>
+                                        {tienda.redes.find(red => red === "facebook")}
+                                    </>
+                                )}
                             </dd>
                         </div>
                     </dl>

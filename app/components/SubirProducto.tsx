@@ -9,6 +9,7 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons
 
 import { useRouter } from "next/navigation";
 import { SelectItem } from "./SelectItem";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Producto {
     nombre?: string
@@ -25,6 +26,7 @@ function SubirProducto({ tienda, renovarProductos }: any) {
     const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabase = createClient(url!, apiKey!);
     const router = useRouter()
+    const { toast } = useToast();
 
     const [formulario, setFormulario] = useState<Producto>({
         nombre: "",
@@ -37,6 +39,7 @@ function SubirProducto({ tienda, renovarProductos }: any) {
     const [productoImagenes, setProductoImagenes] = useState<any>([{}]);
     const [procesandoCreacion, setProcesandoCreacion] = useState<boolean>(false);
 
+    const [categorias, setCategorias] = useState<any>([]);
 
     const handleChange = (event: any) => {
         const { name, value, type, checked } = event.target;
@@ -50,6 +53,17 @@ function SubirProducto({ tienda, renovarProductos }: any) {
             ...productoImagenes,
             file: file
         });
+    }
+
+    useEffect(() => {
+        getCategorias()
+    }, []);
+
+    const getCategorias = async () => {
+        let { data: categorias, error } = await supabase
+            .from('categorias')
+            .select('*')
+        setCategorias(categorias);
     }
 
     const handleCategoria = ($event: string) => {
@@ -83,6 +97,10 @@ function SubirProducto({ tienda, renovarProductos }: any) {
             //@ts-ignore
             // router.push(`/${tienda.url}`)
             console.log('completado');
+            toast({
+                variant: "success",
+                title: "¡El producto se cargó correctamente!",
+            })
             setFormulario({
                 nombre: "",
                 descripcion: "",
@@ -234,12 +252,16 @@ function SubirProducto({ tienda, renovarProductos }: any) {
                                                 <Select.Label className="px-[25px] text-xs leading-[25px] text-mauve11">
                                                     Seleccionar categoria
                                                 </Select.Label>
-                                                <SelectItem value="3">Teléfonos</SelectItem>
-                                                <SelectItem value="4">Monitores</SelectItem>
-                                                <SelectItem value="5">Sonido</SelectItem>
-                                                <SelectItem value="6">Electronica</SelectItem>
-                                                <SelectItem value="7">Moda y ropa</SelectItem>
-                                                <SelectItem value="10">Deportes</SelectItem>
+                                                {
+                                                    categorias.map((categoria: { id: number, nombre: string, descripcion: string }) => {
+                                                        return (
+                                                            <SelectItem key={categoria.id} value={categoria.id}>
+                                                                {categoria.nombre}
+                                                            </SelectItem>
+                                                        )
+                                                    })
+                                                }
+
                                             </Select.Group>
 
                                             <Select.Separator className="h-[1px] bg-violet6 m-[5px]" />

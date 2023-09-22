@@ -148,7 +148,7 @@ function Create() {
                 Object.entries(formValue).filter(([_, valor]) => valor !== "")
             );
             jsonData.url = makeUrlForTienda(jsonData.nombre);
-            jsonData.redes = [instagram, facebook];
+            jsonData.redes = [`https://instagram.com/${instagram}`, facebook];
             jsonData.user_id = await getSession();
             if (jsonData.user_id === null) {
                 console.error('No autorizado')

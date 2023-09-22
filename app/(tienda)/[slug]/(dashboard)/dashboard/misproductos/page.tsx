@@ -18,10 +18,12 @@ async function Page({ params }: { params: { slug: string } }) {
 
     const renovarProductos = async () => {
         "use server"
-        // productos = await getProductosData();
-
+        const supabase = createServerClient();
+        const { data, error } = await supabase.rpc('obtener_productos_con_imagenes', {
+            tienda_url: params.slug
+        });
+        productos = data;
     }
-
 
     return (
         <div className="container mx-auto">
