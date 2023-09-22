@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
         console.log("Here route callback: ", code)
         const supabase = createRouteHandlerClient<any>({ cookies })
         await supabase.auth.exchangeCodeForSession(code)
+        const { data: activeSession } = await supabase.auth.getSession();
+        console.log("Usuario acá: ", activeSession.session?.user.email)
     }
 
     // URL to redirect to after sign in process completes

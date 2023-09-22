@@ -87,25 +87,29 @@ export default function AuthForm() {
                                     priority={true}
                                     width={500}
                                     height={500}
-                                    style={{ height: 'auto', width: 'auto' }}
+                                    style={{ height: 'auto', width: 'auto', margin: 10 }}
                                     alt="Logo de Cartalogo" />
-                                <div className='border border-gray-200 p-10 rounded-xl my-12'>
-                                    <Auth
-                                        supabaseClient={supabase}
-                                        appearance={{ theme: ThemeSupa }}
-                                        theme="light"
-                                        onlyThirdPartyProviders
-                                        providers={['google']}
-                                        // redirectTo="https://cartalogo.digital/manage-login"
-                                        localization={{
-                                            variables: {
-                                                sign_in: {
-                                                    social_provider_text: "Ingresar con Google"
-                                                },
+                                <Auth
+                                    supabaseClient={supabase}
+                                    appearance={{
+                                        theme: ThemeSupa,
+                                        className: {
+                                            button: 'my-10'
+                                        }
+                                    }}
+                                    theme="light"
+
+                                    onlyThirdPartyProviders
+                                    providers={['google']}
+                                    // redirectTo="https://cartalogo.digital/manage-login"
+                                    localization={{
+                                        variables: {
+                                            sign_in: {
+                                                social_provider_text: "Ingresar con Google"
                                             },
-                                        }}
-                                    />
-                                </div>
+                                        },
+                                    }}
+                                />
                             </div>
                             <div className="col-span-12 w-full sm:col-span-12 flex items-center justify-center">
                                 <p className="text-sm text-gray-500">
