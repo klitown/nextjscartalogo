@@ -28,4 +28,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${requestUrl.origin}/${tienda.url}/dashboard`)
     }
 
+    return NextResponse.redirect(requestUrl.origin)
+
 }
