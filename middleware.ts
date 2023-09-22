@@ -4,25 +4,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(req: NextRequest) {
-
     const res = NextResponse.next()
     const supabase = createMiddlewareClient({ req, res })
-
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (user) {
-        console.log("Ya existe usuario");
-        return NextResponse.redirect(new URL('/holaquetal', req.url))
-    }
-
-    if (!user && req.nextUrl.pathname !== '/') {
-        console.log("No existe usuario");
-        return NextResponse.redirect(new URL('/quetalhola', req.url))
-    }
-
+    await supabase.auth.getSession()
     return res
-}
-
-export const config = {
-    matcher: ['/', '/manage-login'],
 }
