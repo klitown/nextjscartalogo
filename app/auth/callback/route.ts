@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     const code = requestUrl.searchParams.get('code')
 
     if (code) {
+        console.log("Here route callback: ", code)
         const supabase = createRouteHandlerClient<any>({ cookies })
         await supabase.auth.exchangeCodeForSession(code)
     }
