@@ -3,9 +3,12 @@ import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Image from 'next/image'
+import { useState } from 'react'
 
 export default function AuthForm() {
+
     const supabase = createClientComponentClient()
+    const [view, setView] = useState<'sign_up' | 'sign_in'>('sign_in');
 
     return (
 
@@ -94,28 +97,55 @@ export default function AuthForm() {
                                     appearance={{
                                         theme: ThemeSupa,
                                         className: {
-                                            button: 'my-10'
+                                            button: 'my-10 w-full',
+                                            container: 'text-2xl'
                                         }
                                     }}
                                     theme="light"
+                                    onlyThirdPartyProviders
+                                    view={view}
                                     providers={['google']}
                                     localization={{
                                         variables: {
                                             sign_in: {
                                                 social_provider_text: "Ingresar con Google"
                                             },
+                                            sign_up: {
+                                                social_provider_text: "Registrarse con Google"
+                                            },
                                         },
                                     }}
                                 />
+                                <hr />
+                                {
+                                    view === 'sign_in' ?
+                                        <p>
+                                            ¿No tienes cuenta? <span
+                                                className='text-blue-500 cursor-pointer border-b border-indigo-700 hover:text-blue-300'
+                                                onClick={() => setView("sign_up")}
+                                            >
+                                                Regístrate con Google
+                                            </span>
+                                        </p>
+                                        :
+                                        <p>
+                                            ¿Ya tienes una cuenta? <span
+                                                className='text-blue-500 cursor-pointer border-b border-indigo-700 hover:text-blue-300'
+                                                onClick={() => setView("sign_in")}
+                                            >
+                                                Ingresa con Google
+                                            </span>
+                                        </p>
+                                }
                             </div>
-                            <div className="col-span-12 w-full sm:col-span-12 flex items-center justify-center">
+                            {/* <div className="col-span-12 w-full sm:col-span-12 flex items-center justify-center">
                                 <p className="text-sm text-gray-500">
                                     Ingresando a Cartalogo, acepta nuestros
                                     <a className="text-blue-700 underline ml-1">
                                         términos y condiciones
                                     </a>
                                 </p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </main>
