@@ -33,7 +33,6 @@ const ProductCard = ({ producto, onClick, toggleToast, showAddCart = true, tiend
 
     console.log(producto);
 
-
     return (
         <div>
             <Link href={`/${tiendaUrl}/producto/${producto.id}`}>

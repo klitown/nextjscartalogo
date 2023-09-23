@@ -174,7 +174,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {
-                                        producto.mas_buscado ?
+                                        !producto.mas_buscado ?
                                             <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
                                             : null
                                     }

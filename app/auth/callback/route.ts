@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             console.log("Error acá: ", error);
             return NextResponse.redirect(requestUrl.origin);
         }
-        if (!tienda) {
+        if (tienda.id === null) {
             return NextResponse.redirect(`${requestUrl.origin}/registrar`)
         }
         return NextResponse.redirect(`${requestUrl.origin}/${tienda.url}/dashboard`)
