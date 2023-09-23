@@ -8,6 +8,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { createClient } from "@supabase/supabase-js";
 
 interface Formulario {
+    user_id: number | null,
     nombre: string;
     telefono: number | null;
     ubicacion: string;
@@ -37,7 +38,6 @@ function Create() {
 
     useEffect(() => {
         canEnter().then((res) => {
-            console.log("Res en registrar: ", res);
             setAuth(res);
             if (res === false) {
                 router.push('/login');
@@ -46,11 +46,12 @@ function Create() {
     }, []);
 
     const canEnter = async () => {
-        let a = await getSession();
+        let a = await getUserId();
         return a !== null
     }
 
     const [formulario, setFormulario] = useState<Formulario>({
+        user_id: null,
         nombre: "",
         descripcion: "",
         telefono: null,
@@ -133,7 +134,7 @@ function Create() {
         }
     }
 
-    const getSession = async () => {
+    const getUserId = async () => {
         const supabaseAca = createClientComponentClient({
             supabaseUrl: url,
             supabaseKey: apiKey
@@ -149,10 +150,12 @@ function Create() {
             );
             jsonData.url = makeUrlForTienda(jsonData.nombre);
             jsonData.redes = [`https://instagram.com/${instagram}`, facebook];
-            jsonData.user_id = await getSession();
+            jsonData.user_id = await getUserId();
             if (jsonData.user_id === null) {
                 console.error('No autorizado')
                 return
+            } else {
+                jsonData.user_id = await getUserId();
             }
             console.log("JSON FINAL ENVIADO: ", jsonData);
             const { data, error } = await supabase
@@ -501,9 +504,10 @@ function Create() {
                             <button
                                 onClick={saveImagenes}
                                 type="button"
+                                disabled={procesandoCreacion}
                                 className={`
                                 box-border w-full text-white shadow-blackA7 
-                                hover:bg-gray-700
+                                hover:bg-green-700
                                 inline-flex h-[35px] items-center 
                                 justify-center rounded-[4px] ${procesandoCreacion ? 'bg-green-500' : 'bg-black'} px-[15px] font-medium 
                                 leading-none mt-[10px]
