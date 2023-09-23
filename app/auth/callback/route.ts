@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
         const { data: tienda, error } = await supabase.rpc("get_store_by_user_id", {
             user_id: activeSession.session?.user.id
         });
+        console.log("Usuario acá: ", activeSession.session?.user);
         console.log("Data tienda acá: ", tienda);
         if (error) {
             console.log("Error acá: ", error);
