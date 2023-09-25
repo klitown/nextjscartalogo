@@ -13,6 +13,10 @@ function Dashboard() {
         getInitialData();
     }, []);
 
+    useEffect(() => {
+        getTienda();
+    }, []);
+
     const getInitialData = async () => {
         const supabase = createClientComponentClient();
         const { data } = await supabase.auth.getUser();
