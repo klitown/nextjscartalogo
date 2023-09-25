@@ -29,7 +29,7 @@ function Dashboard() {
         setTienda(data);
     }
 
-    if (!user) return <h1>Loading...</h1>
+    if (!user || !tienda) return <h1>Loading...</h1>
 
     return (
         <>
