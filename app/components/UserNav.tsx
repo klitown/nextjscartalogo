@@ -17,17 +17,21 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { redirect } from "next/navigation";
+import { useRouter } from "next/router";
+
 
 export function UserNav({ user }: any) {
 
     const supabase = createClientComponentClient();
+    const router = useRouter()
 
     const handleSignout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) {
             throw error
         }
-        redirect('/')
+        router.push('/')
+        //redirect('/')
     }
 
     return (
