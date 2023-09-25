@@ -132,6 +132,7 @@ function SubirProducto({ tienda }: any) {
             startTransition(() => {
                 router.refresh();
             });
+            router.refresh();
         }
     };
 
