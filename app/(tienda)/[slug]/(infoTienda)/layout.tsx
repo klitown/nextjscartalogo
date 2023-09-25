@@ -20,6 +20,9 @@ const getTiendaInfo = cache(async (urlTienda: string) => {
         .select()
         .eq("url", urlTienda)
         .single();
+    if (error) {
+        console.log("Error getTiendaInfo: ", error);
+    }
     return tienda
 });
 
@@ -28,6 +31,9 @@ const getCategoriasInfo = cache(async (idTienda: number) => {
     const { data, error } = await supabase.rpc('obtener_categorias_de_tienda', {
         tienda_id: idTienda
     });
+    if (error) {
+        console.log("Error getCategoras: ", error)
+    }
     return data
 });
 

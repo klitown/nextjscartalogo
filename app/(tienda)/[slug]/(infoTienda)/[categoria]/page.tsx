@@ -1,6 +1,5 @@
 import { createServerClient, getCategoriasInfo, getTiendaInfo } from '../layout';
 import ProductCard from "@/app/components/ProductCard";
-import Link from 'next/link'
 import { Metadata } from "next";
 
 type Props = {
@@ -32,6 +31,8 @@ async function Page({ params }: { params: { categoria: string, slug: string } })
 
             const categoriaId = categorias![0].id;
 
+            console.log("categoriaId", categoriaId)
+
             // Obtén los productos según el ID de la tienda y el ID de la categoría
             const { data: productos, error: productosError } = await supabase
                 .from('productos')
@@ -54,9 +55,8 @@ async function Page({ params }: { params: { categoria: string, slug: string } })
     const categorias = await getCategoriasInfo(tienda.id);
     const productos = await obtenerProductosPorCodigoCategoria();
 
-    const navigateToDetails = (idProducto: number) => {
-        console.log('Navegando a...', idProducto)
-    }
+    console.log("Productos acá: ", productos);
+
 
     return (
 

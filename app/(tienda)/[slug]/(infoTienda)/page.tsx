@@ -23,6 +23,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
         const { data, error } = await supabase.rpc('obtener_productos_con_imagenes', {
             tienda_url: params.slug
         });
+        if (error) {
+            console.log("Error en getProductosData: ", error);
+        }
         return data
     }
     const tienda = await getTiendaInfo(params.slug);
@@ -44,7 +47,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 tiendaDescripcion={tienda.descripcion}
                 urlPortada={tienda.imagen_portada}
                 redes={tienda.redes}
-                data-superjson
             />
             <MasBuscados tiendaUrl={tienda.url} productos={productos} categorias={categorias} />
         </div>

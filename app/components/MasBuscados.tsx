@@ -55,13 +55,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
         //asd
     }
 
-    const navigateToDetails = (idProducto: number) => {
-        router.push(`${tiendaUrl}/producto/${idProducto}`)
-    }
-
-
     if (loading) return <h1>Loading...</h1>
-
 
     return (
         <div className="lg:container lg:mx-auto mx-3">
@@ -173,11 +167,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                                     className="my-10"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    {
-                                        !producto.mas_buscado ?
-                                            <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
-                                            : null
-                                    }
+                                    <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
                                 </SwiperSlide>
                             ))}
 

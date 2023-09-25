@@ -24,9 +24,10 @@ export function UserNav({ user }: any) {
 
     const handleSignout = async () => {
         const { error } = await supabase.auth.signOut();
-        if (!error) {
-            return redirect('/')
+        if (error) {
+            throw error
         }
+        redirect('/')
     }
 
     return (
