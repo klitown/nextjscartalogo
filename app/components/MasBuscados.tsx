@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import { useRouter } from 'next/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import required modules
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -22,7 +21,6 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
 
     const [loading, setLoading] = useState(true);
     const [categoriasMap, setCategoriasMap] = useState<any>();
-    const router = useRouter()
 
     useEffect(() => {
         getInfo();
@@ -71,7 +69,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                         productos.length > 0 ?
                             <Swiper
                                 slidesPerView={1}
-                                centerInsufficientSlides={true}
+                                centerInsufficientSlides={false}
                                 spaceBetween={30}
                                 autoplay={{
                                     delay: 3500,

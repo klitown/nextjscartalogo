@@ -1,6 +1,6 @@
 "use client"
 
-import { LucideCheck } from "lucide-react";
+import { LucideBadgeDollarSign } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -67,14 +67,12 @@ function ListadoProductos({ productos }: any) {
 
                                     <div className="mt-2 sm:flex sm:items-center sm:gap-2">
                                         <div className="flex items-center gap-1 text-gray-500">
-                                            <LucideCheck />
+                                            <LucideBadgeDollarSign />
 
-                                            <p className="text-xs">
+                                            <p className="text-md">
                                                 Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}
                                             </p>
                                         </div>
-
-                                        <span className="hidden sm:block" aria-hidden="true">&middot;</span>
 
                                         {producto.mas_buscado ?
                                             <span className="bg-green-500 text-white rounded-full px-3 py-2 text-[12px]"> Más buscado </span>

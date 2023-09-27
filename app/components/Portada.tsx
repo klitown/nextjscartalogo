@@ -16,13 +16,13 @@ function Portada({ urlPortada, tiendaNombre, tiendaDescripcion, redes }: Portada
                 backgroundImage: `url(${urlPortada})`
             }}>
             <div className="flex justify-center items-center px-8 
-            py-12 mx-auto max-w-7xl lg:px-16 md:px-12 lg:py-24 backdrop-blur-sm bg-white/50 rounded-xl">
+            py-12 mx-auto min-w-[40vw] max-w-7xl max-h-[60vh] lg:px-16 md:px-12 lg:py-24 backdrop-blur-sm bg-white/80 rounded-xl">
                 <div className="justify-center w-full text-center lg:p-10 max-auto">
                     <div className="justify-center w-full mx-auto">
-                        <p className={`mt-8 text-5xl font-medium tracking-tighter text-black inter`}>
+                        <p className={`mt-8 text-5xl font-medium tracking-tighter text-black font-inter`}>
                             {tiendaNombre.toUpperCase()}
                         </p>
-                        <p className="max-w-xl mx-auto mt-4 text-lg tracking-tight">
+                        <p className="max-w-xl mx-auto mt-4 text-lg tracking-tight overflow-clip">
                             {tiendaDescripcion}
                         </p>
                     </div>

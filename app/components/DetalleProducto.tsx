@@ -7,8 +7,9 @@ import { useCart } from "react-use-cart";
 import ImageGallery from "react-image-gallery";
 import './cards.css'
 import Image from "next/image";
+import Link from "next/link";
 
-function DetalleProducto({ producto }: any) {
+function DetalleProducto({ producto, tiendaUrl }: { producto: IProducto; tiendaUrl: string }) {
 
     const [alreadyAdded, setAlreadyAdded] = useState(false);
     const [images, setImages] = useState<Array<{ original: string, thumbnail?: string }>>([]);
@@ -22,7 +23,7 @@ function DetalleProducto({ producto }: any) {
     } = useCart();
 
     useEffect(() => {
-        const productInCart = inCart(producto.id);
+        const productInCart = inCart(`${producto.id}`);
         setAlreadyAdded(productInCart);
     }, [cartTotal]);
 
@@ -32,7 +33,7 @@ function DetalleProducto({ producto }: any) {
 
     const setImagenes = () => {
         let imagenes: Array<{ original: string, thumbnail?: string }> = [];
-        if (producto.imagenes.length >= 1) {
+        if (producto.imagenes && producto.imagenes.length >= 1) {
             producto.imagenes.forEach((imagen: string) => {
                 imagenes.push({
                     original: imagen,
@@ -44,84 +45,99 @@ function DetalleProducto({ producto }: any) {
     }
 
     return (
-        <div className="container mx-auto flex flex-col lg:flex-row min-h-screen my-20">
-
-            <div className="basis-full flex justify-start items-start md:basis-1/2 lg:basis-1/2">
-                <ImageGallery
-                    additionalClass=""
-                    items={images}
-                    showFullscreenButton={false}
-                    showPlayButton={false}
-                    showBullets={true}
-                    autoPlay={true}
-                />
+        <>
+            <div className="flex justify-start items-center mx-auto ml-0 md:ml-10 my-10">
+                <Link href={`/${tiendaUrl}`}
+                    className="mt-3 flex rounded p-2 items-center text-gray-500 transition-all duration-200 ease-in-out 
+                            focus:shadow bg-black hover:bg-red-500">
+                    <svg className="h-5 w-5"
+                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 12L17 12M7 12L11 8M7 12L11 16" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+                    <span className="text-white font-bold">
+                        Volver a la tienda
+                    </span>
+                </Link>
             </div>
 
-            <div className="basis-full lg:basis-1/2 flex flex-col justify-start p-5 gap-10">
-                <div className="flex flex-row justify-between">
-                    <h1 className="text-3xl font-bold">
-                        {producto.nombre}
-                    </h1>
-                    <p className="text-md tracking-tight mt-1 mb-3 text-gray-500">
-                        Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}
-                    </p>
+
+            <div className="container mx-auto flex flex-col lg:flex-row min-h-screen my-20 border border-gray-200 rounded-xl p-10">
+                <hr />
+                <div className="basis-full flex justify-start items-start md:basis-1/2 lg:basis-1/2">
+                    <ImageGallery
+                        additionalClass=""
+                        items={images}
+                        showFullscreenButton={false}
+                        showPlayButton={false}
+                        showBullets={true}
+                        autoPlay={true}
+                    />
                 </div>
-                <div>
-                    {producto.descripcion &&
-                        <p className="font-light">
-                            {producto.descripcion}
+
+                <div className="basis-full lg:basis-1/2 flex flex-col justify-start p-5 gap-10">
+                    <div className="flex flex-row justify-between">
+                        <h1 className="text-3xl font-bold">
+                            {producto.nombre}
+                        </h1>
+                        <p className="text-md tracking-tight mt-1 mb-3 text-gray-500">
+                            Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}
                         </p>
+                    </div>
+                    <div>
+                        {producto.descripcion &&
+                            <p className="font-light">
+                                {producto.descripcion}
+                            </p>
+                        }
+                    </div>
+
+
+                    {
+                        alreadyAdded ? <>
+                            {items.map((item) => (
+                                <div key={item.id} onClick={($event) => {
+                                    $event.stopPropagation();
+                                }}>
+                                    {
+                                        +item.id === +producto.id! &&
+                                        <div className="flex justify-around items-center gap-1">
+                                            <button
+                                                onClick={() => updateItemQuantity(item.id, item.quantity! - 1)
+                                                }
+                                                type="button"
+                                                className="bg-red-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
+                                            >
+                                                &minus;
+                                            </button>
+                                            <p className='text-xl font-sans text-black font-bold'>{item.quantity}</p>
+                                            <button
+                                                onClick={() => updateItemQuantity(item.id, item.quantity! + 1)
+                                                }
+                                                type="button"
+                                                className="bg-green-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
+                                            >
+                                                &#43;
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            ))}
+                        </>
+                            :
+                            <Button className="py-6 hover:scale-105 transition-all ease-in" onClick={($event) => {
+                                $event.stopPropagation();
+                                {/* @ts-ignore */ }
+                                addItem(producto);
+                                //handleClick();
+                            }}>
+                                <ShoppingCart className="mr-2 h-6 w-6" />
+                                Agregar al carrito
+                            </Button>
                     }
+
+
                 </div>
 
-
-                {
-                    alreadyAdded ? <>
-                        {items.map((item) => (
-                            <div key={item.id} onClick={($event) => {
-                                $event.stopPropagation();
-                            }}>
-                                {
-                                    item.id === producto.id &&
-                                    <div className="flex justify-around items-center gap-1">
-                                        <button
-                                            onClick={() => updateItemQuantity(item.id, item.quantity! - 1)
-                                            }
-                                            type="button"
-                                            className="bg-red-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
-                                        >
-                                            &minus;
-                                        </button>
-                                        <p className='text-xl font-sans text-black font-bold'>{item.quantity}</p>
-                                        <button
-                                            onClick={() => updateItemQuantity(item.id, item.quantity! + 1)
-                                            }
-                                            type="button"
-                                            className="bg-green-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
-                                        >
-                                            &#43;
-                                        </button>
-                                    </div>
-                                }
-                            </div>
-                        ))}
-                    </>
-                        :
-                        <Button className="py-6 hover:scale-105 transition-all ease-in" onClick={($event) => {
-                            $event.stopPropagation();
-                            {/* @ts-ignore */ }
-                            addItem(producto);
-                            //handleClick();
-                        }}>
-                            <ShoppingCart className="mr-2 h-6 w-6" />
-                            Agregar al carrito
-                        </Button>
-                }
-
-
             </div>
-
-        </div>
+        </>
     );
 }
 

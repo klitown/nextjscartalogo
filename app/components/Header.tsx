@@ -40,9 +40,11 @@ function Header({ tienda, categorias }: {
                     </div>
                     <div className="flex justify-start items-center basis-full">
                         <Image
+                            onClick={() => router.push(`/${tienda.url}`)}
                             src={tienda.url_logo ? tienda.url_logo
                                 : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/white.png'}
                             alt="Logo de la tienda" width={100} height={100} priority={true}
+                            style={{ cursor: 'pointer' }}
                         />
                     </div>
                     <span className="block md:hidden">
