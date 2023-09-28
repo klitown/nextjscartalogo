@@ -27,8 +27,7 @@ function Dashboard({ params }: { params: { slug: string } }) {
                     <div className="container mx-auto p-4">
                         <div className="flex flex-col md:flex-row md:justify-between items-center mb-4 -mt-5">
                             <p className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                                {/* ¡Bienvenido, {user.user_metadata.name}! */}
-                                asd
+                                ¡Bienvenido, {user.user_metadata.name}!
                             </p>
                             <a href={`https://cartalogo.digital/${params.slug}`} target="_blank"
                                 className="bg-blue-500 rounded-xl px-3 py-2 text-white hover:bg-blue-700">
@@ -48,7 +47,7 @@ function Dashboard({ params }: { params: { slug: string } }) {
                                     </h3>
                                 </div>
                                 <h4 className="text-3xl font-bold text-black">
-                                    1.340
+                                    0
                                 </h4>
                                 <h5 className="text-sm font-light">
                                     en las últimas 2 semanas
@@ -64,7 +63,7 @@ function Dashboard({ params }: { params: { slug: string } }) {
                                     </h3>
                                 </div>
                                 <h4 className="text-3xl font-bold text-black">
-                                    3.453.000 gs
+                                    0
                                 </h4>
                                 <h5 className="text-sm font-light">
                                     +20% desde el último mes
@@ -80,7 +79,7 @@ function Dashboard({ params }: { params: { slug: string } }) {
                                     </h3>
                                 </div>
                                 <h4 className="text-3xl font-bold text-black">
-                                    39
+                                    0
                                 </h4>
                                 <h5 className="text-sm font-light">
                                     ¡Sigue así!
