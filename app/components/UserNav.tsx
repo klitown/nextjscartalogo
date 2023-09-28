@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 
 export function UserNav({ user }: any) {
@@ -31,7 +31,7 @@ export function UserNav({ user }: any) {
             throw error
         }
         router.push('/')
-        //redirect('/')
+        redirect('/')
     }
 
     return (
