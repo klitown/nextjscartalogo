@@ -21,6 +21,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
 
     const [loading, setLoading] = useState(true);
     const [categoriasMap, setCategoriasMap] = useState<any>();
+    const [productosMasBuscados, setProductosMasBuscados] = useState<any>();
 
     useEffect(() => {
         getInfo();
@@ -45,6 +46,8 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                 map.set(producto.categoria_id, categoria);
             }
         });
+        const masBuscados = productos.filter((producto: any) => producto.mas_buscado);
+        setProductosMasBuscados(masBuscados);
         setCategoriasMap(map);
         setLoading(false);
     }
@@ -70,7 +73,6 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                             <Swiper
                                 slidesPerView={1}
                                 centerInsufficientSlides={false}
-                                spaceBetween={30}
                                 autoplay={{
                                     delay: 3500,
                                     disableOnInteraction: false,
@@ -92,7 +94,7 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
                                 }}
                             >
                                 {
-                                    productos.map((producto: any, index: number) => {
+                                    productosMasBuscados.map((producto: any, index: number) => {
                                         return <SwiperSlide
                                             key={`${producto.nombre} + ${index}`}
                                             className="my-10"

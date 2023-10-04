@@ -11,7 +11,7 @@ interface Portada {
 
 function Portada({ urlPortada, tiendaNombre, tiendaDescripcion, redes }: Portada) {
     return (
-        <section className="bg-contain bg-no-repeat bg-center h-[85vh]  flex justify-center items-center w-full"
+        <section className="bg-cover md:bg-contain bg-no-repeat bg-center h-[85vh]  flex justify-center items-center w-full"
             style={{
                 backgroundImage: `url(${urlPortada})`
             }}>
