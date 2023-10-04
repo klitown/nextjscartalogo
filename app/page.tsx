@@ -169,7 +169,8 @@ function Home() {
                                     </span>
                                 </p>
 
-                                <a href="#"
+                                <a href="https://cartalogo.digital/mas"
+                                    target='_blank'
                                     className="mt-8 inline-block rounded border border-indigo-600 bg-black px-12 py-3 text-lg font-medium 
                                     transition-opacity ease-in
                                     text-white focus:outline-none focus:ring active:text-indigo-500 hover:bg-white hover:text-black">
