@@ -63,12 +63,16 @@ export default async function Page({ params }: { params: { slug: string } }) {
                         productos.map((producto: any) => (
                             <div key={producto.id} className="rounded-xl border-2 border-gray-100 bg-white flex justify-between flex-col">
                                 <div className="flex flex-col md:flex-row justify-center items-center md:justify-start md:items-start gap-4 p-4 sm:p-6 lg:p-8">
-                                    <Image src={producto.imagenes.length >= 1 ? producto.imagenes[0]
-                                        : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/646051.png'}
-                                        alt="Imagen del producto"
-                                        width={100} height={100}
-                                        style={{ borderRadius: '1rem' }}
-                                    />
+                                    {
+                                        producto.imagenes && <>
+                                            <Image src={producto.imagenes.length >= 1 ? producto.imagenes[0]
+                                                : 'https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/cartalogo_imagenes/cartalogo/646051.png'}
+                                                alt="Imagen del producto"
+                                                width={100} height={100}
+                                                style={{ borderRadius: '1rem' }}
+                                            />
+                                        </>
+                                    }
 
                                     <div>
                                         <p className="font-bold text-lg md:text-2xl">
