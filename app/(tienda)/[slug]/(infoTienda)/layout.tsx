@@ -5,6 +5,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import CarritoProvider from '../../../components/Test';
 import Image from 'next/image'
+import { Toaster } from '@/components/ui/toaster';
 
 const createServerClient = cache(() => {
     const cookieStore = cookies()
@@ -51,6 +52,7 @@ export default async function Layout({ children, params }:
             <Header tienda={tienda} categorias={categorias} />
             <CarritoProvider>
                 {children}
+                <Toaster />
             </CarritoProvider>
             <hr className='my-10' />
 

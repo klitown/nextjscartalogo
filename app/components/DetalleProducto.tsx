@@ -1,13 +1,13 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useCart } from "react-use-cart";
+import { Item, useCart } from "react-use-cart";
 import ImageGallery from "react-image-gallery";
-import './cards.css'
-import Image from "next/image";
 import Link from "next/link";
+import './cards.css'
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@radix-ui/react-toast";
+
 
 function DetalleProducto({ producto, tiendaUrl }: { producto: IProducto; tiendaUrl: string }) {
 
@@ -19,17 +19,42 @@ function DetalleProducto({ producto, tiendaUrl }: { producto: IProducto; tiendaU
         cartTotal,
         items,
         addItem,
-        updateItemQuantity
+        updateItemQuantity,
     } = useCart();
 
+    const { toast } = useToast()
+
     useEffect(() => {
-        const productInCart = inCart(`${producto.id}`);
-        setAlreadyAdded(productInCart);
+        //@ts-ignore
+        const productInCart = inCart(producto.id);
+        if (productInCart !== alreadyAdded) {
+            setAlreadyAdded(productInCart);
+        }
     }, [cartTotal]);
 
     useEffect(() => {
-        setImagenes()
+        setImagenes();
     }, []);
+
+    const handleClick = (producto: IProducto) => {
+        let prod = producto as unknown as Item;
+        //@ts-ignore
+        addItem(prod);
+        toast({
+            title: "Producto agregado",
+            description: <div>
+                <p className="font-extrabold tracking-wide">
+                    Se agregó {producto.nombre} al carrito
+                </p>
+            </div>,
+            action: <ToastAction
+                className="text-sm border border-white bg-white text-black px-3 py-1 font-bold rounded-xl"
+                altText="Entiendo">
+                Entendido
+            </ToastAction>,
+            variant: "success"
+        })
+    }
 
     const setImagenes = () => {
         let imagenes: Array<{ original: string, thumbnail?: string }> = [];
@@ -77,7 +102,7 @@ function DetalleProducto({ producto, tiendaUrl }: { producto: IProducto; tiendaU
                         <h1 className="text-3xl font-bold">
                             {producto.nombre}
                         </h1>
-                        <p className="text-md tracking-tight mt-1 mb-3 text-gray-500">
+                        <p className="text-md font-bold tracking-tight mt-1 mb-3 text-gray-700">
                             Gs. {parseInt(`${producto.price}`, 10).toLocaleString("es-ES")}
                         </p>
                     </div>
@@ -89,13 +114,14 @@ function DetalleProducto({ producto, tiendaUrl }: { producto: IProducto; tiendaU
                         }
                     </div>
 
-
                     {
-                        alreadyAdded ? <>
+                        //@ts-ignore
+                        inCart(producto.id) ? <>
                             {items.map((item) => (
-                                <div key={item.id} onClick={($event) => {
-                                    $event.stopPropagation();
-                                }}>
+                                <div key={item.id}
+                                    onClick={($event) => {
+                                        $event.stopPropagation();
+                                    }}>
                                     {
                                         +item.id === +producto.id! &&
                                         <div className="flex justify-around items-center gap-1">
@@ -122,18 +148,20 @@ function DetalleProducto({ producto, tiendaUrl }: { producto: IProducto; tiendaU
                             ))}
                         </>
                             :
-                            <Button className="py-6 hover:scale-105 transition-all ease-in" onClick={($event) => {
-                                $event.stopPropagation();
-                                {/* @ts-ignore */ }
-                                addItem(producto);
-                                //handleClick();
-                            }}>
-                                <ShoppingCart className="mr-2 h-6 w-6" />
+                            <button className="flex items-center justify-center bg-slate-900 px-5 py-2.5 text-center text-sm 
+                font-medium text-white w-full hover:bg-green-500"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleClick(producto);
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
                                 Agregar al carrito
-                            </Button>
+                            </button>
                     }
-
-
                 </div>
 
             </div>

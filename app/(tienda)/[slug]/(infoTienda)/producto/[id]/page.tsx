@@ -28,9 +28,7 @@ export default async function Page({ params }: { params: { slug: string, id: str
     const producto = res[0];
 
     return (
-        <>
-            <DetalleProducto producto={producto} tiendaUrl={params.slug} />
-        </>
+        <DetalleProducto producto={producto} tiendaUrl={params.slug} />
     );
 }
 
