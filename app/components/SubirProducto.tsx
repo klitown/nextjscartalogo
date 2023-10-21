@@ -111,8 +111,10 @@ function SubirProducto({ tienda }: Props) {
                 setProcesandoCreacion(false);
             } else {
                 console.log('Producto registrado con éxito:', data);
-                let id_producto = data[0].id;
-                await saveToImagenesTable(id_producto);
+                let idProducto = data[0].id;
+                productoImagenes.forEach(async (item: any) => {
+                    await saveToImagenesTable(item.file, idProducto);
+                })
             }
         } catch (error: any) {
             console.error('Error en la inserción:', error.message);
@@ -141,11 +143,11 @@ function SubirProducto({ tienda }: Props) {
         }
     };
 
-    const saveToImagenesTable = async (idProducto: number) => {
+    const saveToImagenesTable = async (file: any, idProducto: number) => {
         const { data, error } = await supabase.storage
             .from('cartalogo_imagenes')
             //@ts-ignore
-            .upload(`${tienda.url}/${Math.floor(Math.random() * 1000000) + 1}.png`, productoImagenes.file);
+            .upload(`${tienda.url}/${Math.floor(Math.random() * 1000000) + 1}.png`, file);
         if (error) {
             console.error('Error acá: ', error)
         } else {
