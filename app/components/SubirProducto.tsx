@@ -46,6 +46,7 @@ function SubirProducto({ tienda }: Props) {
         tienda_id: tienda.id,
     });
     const [productoImagenes, setProductoImagenes] = useState<any>([]);
+    const [imagenesSubidas, setImagenesSubidas] = useState<any>([]);
     const [procesandoCreacion, setProcesandoCreacion] = useState<boolean>(false);
 
     const [categorias, setCategorias] = useState<any>([]);
@@ -151,11 +152,11 @@ function SubirProducto({ tienda }: Props) {
         if (error) {
             console.error('Error acá: ', error)
         } else {
-            const { data: url } = supabase.storage
-                .from('cartalogo_imagenes').getPublicUrl(data.path);
+            const { data: url } = supabase.storage.from('cartalogo_imagenes').getPublicUrl(data.path);
+            setImagenesSubidas((prev: any) => [...prev, url.publicUrl]);
             const { data: testing, error: errorAca } = await supabase
                 .from('productos')
-                .update({ imagenes: [url.publicUrl] })
+                .update({ imagenes: imagenesSubidas })
                 .eq('id', +idProducto)
                 .select()
             if (error) {
