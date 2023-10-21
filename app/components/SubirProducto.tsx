@@ -113,7 +113,7 @@ function SubirProducto({ tienda }: Props) {
                 console.log('Producto registrado con éxito:', data);
                 let idProducto = data[0].id;
                 productoImagenes.forEach(async (item: any) => {
-                    await saveToImagenesTable(item.file, idProducto);
+                    await saveToImagenesTable(item, idProducto);
                 })
             }
         } catch (error: any) {
