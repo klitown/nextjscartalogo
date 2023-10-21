@@ -46,7 +46,6 @@ function SubirProducto({ tienda }: Props) {
         tienda_id: tienda.id,
     });
     const [productoImagenes, setProductoImagenes] = useState<any>([]);
-    const [imagenesSubidas, setImagenesSubidas] = useState<any>([]);
     const [procesandoCreacion, setProcesandoCreacion] = useState<boolean>(false);
 
     const [categorias, setCategorias] = useState<any>([]);
@@ -113,9 +112,13 @@ function SubirProducto({ tienda }: Props) {
             } else {
                 console.log('Producto registrado con éxito:', data);
                 let idProducto = data[0].id;
-                productoImagenes.forEach(async (item: any) => {
-                    await saveToImagenesTable(item, idProducto);
-                })
+                if (productoImagenes.length >= 1) {
+                    const promesas = [saveToImagenesTable].map(async (funcionAsync) => {
+                        return funcionAsync(productoImagenes, idProducto);
+                    });
+                    // Espera a que todas las promesas se resuelvan
+                    await Promise.all(promesas);
+                }
             }
         } catch (error: any) {
             console.error('Error en la inserción:', error.message);
@@ -144,27 +147,41 @@ function SubirProducto({ tienda }: Props) {
         }
     };
 
-    const saveToImagenesTable = async (file: any, idProducto: number) => {
-        const { data, error } = await supabase.storage
-            .from('cartalogo_imagenes')
-            //@ts-ignore
-            .upload(`${tienda.url}/${Math.floor(Math.random() * 1000000) + 1}.png`, file);
-        if (error) {
-            console.error('Error acá: ', error)
-        } else {
-            const { data: url } = supabase.storage.from('cartalogo_imagenes').getPublicUrl(data.path);
-            setImagenesSubidas((prev: any) => [...prev, url.publicUrl]);
-            const { data: testing, error: errorAca } = await supabase
-                .from('productos')
-                .update({ imagenes: imagenesSubidas })
-                .eq('id', +idProducto)
-                .select()
+    const saveToImagenesTable = async (files: any[], idProducto: number) => {
+        let imagenesSubidas: string[] = [];
+
+        // Convertir las operaciones de subida en una lista de promesas
+        const uploadPromises = files.map(async (file) => {
+            const { data, error } = await supabase.storage
+                .from('cartalogo_imagenes')
+                //@ts-ignore
+                .upload(`${tienda.url}/${Math.floor(Math.random() * 1000000) + 1}.png`, file);
+
             if (error) {
-                console.error("Aca: ", errorAca)
+                console.error('Error acá: ', error);
+                return;
             }
-            console.log('Imagen subida correctamente. Devolviendo esto: ', testing);
+
+            const { data: url } = supabase.storage.from('cartalogo_imagenes').getPublicUrl(data.path);
+            imagenesSubidas.push(url.publicUrl);
+        });
+
+        // Esperar a que todas las imágenes se suban
+        await Promise.all(uploadPromises);
+
+        // Actualizar la tabla de productos una vez que todas las imágenes se han subido
+        const { data, error } = await supabase
+            .from('productos')
+            .update({ imagenes: imagenesSubidas })
+            .eq('id', +idProducto)
+            .select();
+
+        if (error) {
+            console.error("Aca: ", error);
+        } else {
+            console.log('Imágenes subidas y producto actualizado correctamente. Devolviendo esto: ', data);
         }
-    }
+    };
 
     if (!tienda) return <h1>No te apures, cargando tu tienda...😎</h1>
 
