@@ -119,14 +119,17 @@ export default function AuthForm() {
                                 <hr />
                                 {
                                     view === 'sign_in' ?
-                                        <p>
-                                            ¿No tienes cuenta? <span
-                                                className='text-blue-500 cursor-pointer border-b border-indigo-700 hover:text-blue-300'
-                                                onClick={() => setView("sign_up")}
-                                            >
-                                                Regístrate con Google
-                                            </span>
-                                        </p>
+                                        <div className='p-5 bg-green-300 text-black rounded-xl'>
+                                            <p className='text-gray-500 font-bold'>
+                                                ¿No tienes cuenta?
+                                                <span
+                                                    className='text-blue-700 mx-2 cursor-pointer border-b border-indigo-700 hover:text-blue-300'
+                                                    onClick={() => setView("sign_up")}
+                                                >
+                                                    Regístrate con Google
+                                                </span>
+                                            </p>
+                                        </div>
                                         :
                                         <p>
                                             ¿Ya tienes una cuenta? <span

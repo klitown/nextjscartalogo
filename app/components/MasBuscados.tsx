@@ -61,59 +61,62 @@ const MasBuscados = ({ tiendaUrl, productos, categorias }: Props) => {
     return (
         <div className="lg:container lg:mx-auto mx-3">
 
-            <div className="lg:container lg:mx-auto">
-                <div className='flex justify-start items-center px-3 mt-10'>
-                    <h1 className="font-bold text-5xl md:text-5xl mt-5 mb-0 font-worksans text-black">
-                        Los productos más buscados
-                    </h1>
+            {
+                productosMasBuscados.length >= 1 &&
+                <div className="lg:container lg:mx-auto">
+                    <div className='flex justify-start items-center px-3 mt-10'>
+                        <h1 className="font-bold text-5xl md:text-5xl mt-5 mb-0 font-worksans text-black">
+                            Los productos más buscados
+                        </h1>
+                    </div>
+                    <div className="my-16 lg:my-4 border-2 border-yellow-500 rounded-xl p-5">
+                        {
+                            productos.length > 0 ?
+                                <Swiper
+                                    slidesPerView={1}
+                                    centerInsufficientSlides={false}
+                                    autoplay={{
+                                        delay: 3500,
+                                        disableOnInteraction: false,
+                                    }}
+                                    loop={false}
+                                    navigation={true}
+                                    modules={[Autoplay, Navigation]}
+                                    breakpoints={{
+                                        // when window width is >= 640px
+                                        640: {
+                                            slidesPerView: 1,
+                                        },
+                                        1024: {
+                                            slidesPerView: 2,
+                                        },
+                                        1280: {
+                                            slidesPerView: 3,
+                                        },
+                                    }}
+                                >
+                                    {
+                                        productosMasBuscados.map((producto: any, index: number) => {
+                                            return <SwiperSlide
+                                                key={`${producto.nombre} + ${index}`}
+                                                className="my-10"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                {
+                                                    producto.mas_buscado ?
+                                                        <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
+                                                        : null
+                                                }
+                                            </SwiperSlide>
+                                        })
+                                    }
+                                </Swiper>
+                                :
+                                <h1>Error!</h1>
+                        }
+                    </div>
                 </div>
-                <div className="my-16 lg:my-4 border-2 border-yellow-500 rounded-xl p-5">
-                    {
-                        productos.length > 0 ?
-                            <Swiper
-                                slidesPerView={1}
-                                centerInsufficientSlides={false}
-                                autoplay={{
-                                    delay: 3500,
-                                    disableOnInteraction: false,
-                                }}
-                                loop={false}
-                                navigation={true}
-                                modules={[Autoplay, Navigation]}
-                                breakpoints={{
-                                    // when window width is >= 640px
-                                    640: {
-                                        slidesPerView: 1,
-                                    },
-                                    1024: {
-                                        slidesPerView: 2,
-                                    },
-                                    1280: {
-                                        slidesPerView: 3,
-                                    },
-                                }}
-                            >
-                                {
-                                    productosMasBuscados.map((producto: any, index: number) => {
-                                        return <SwiperSlide
-                                            key={`${producto.nombre} + ${index}`}
-                                            className="my-10"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            {
-                                                producto.mas_buscado ?
-                                                    <ProductCard tiendaUrl={tiendaUrl} toggleToast={toggleToast} producto={producto} />
-                                                    : null
-                                            }
-                                        </SwiperSlide>
-                                    })
-                                }
-                            </Swiper>
-                            :
-                            <h1>Error!</h1>
-                    }
-                </div>
-            </div>
+            }
 
 
             {/* PRODUCTOS AGRUPADOS POR CATEGORIA */}

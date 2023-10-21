@@ -57,11 +57,12 @@ function SubirProducto({ tienda }: Props) {
     };
 
     function changeProductoImagen(event: any) {
-        const file = event.target.files[0]
-        setProductoImagenes({
-            ...productoImagenes,
-            file: file
-        });
+        const selectedFiles = event.target.files; // Obtiene todos los archivos seleccionados
+        // Itera a través de los archivos seleccionados y agrégalos al arreglo productoImagenes
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            setProductoImagenes((prev: any) => [...prev, file]);
+        }
     }
 
     useEffect(() => {
@@ -315,17 +316,21 @@ function SubirProducto({ tienda }: Props) {
                     <div className="flex items-baseline justify-between">
                         <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
                             <span className="text-red-500 mr-2">*</span>
-                            Imagen del producto
+                            Imagenes del producto
                         </Form.Label>
                     </div>
                     <Form.Control asChild>
                         <>
-                            <Input id="picture" type="file" onChange={changeProductoImagen}
+                            <Input accept=".png, .jpg, .jpeg" multiple id="picture" type="file" onChange={changeProductoImagen}
                                 required />
+                            <span className="mt-2 text-gray-400">
+                                * Las imagenes subidas reemplazaran <span className="text-red-500">completamente</span> las actuales
+                            </span>
                         </>
 
                     </Form.Control>
                 </Form.Field>
+
                 {/* DESCRIPCION FIELD */}
                 <Form.Field
                     className="grid mb-[10px]"
