@@ -127,7 +127,7 @@ function Dashboard({ params }: DashboardProps) {
                     </motion.p>
                 </div>
                 <motion.a
-                    href={`https://bspy.com.py/${params.slug}`}
+                    href={`https://cartalogo.vercel.app/${params.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     initial={{ opacity: 0 }}

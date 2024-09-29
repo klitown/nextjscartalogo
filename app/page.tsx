@@ -244,7 +244,7 @@ function Home() {
                                     </p>
 
                                     <Link
-                                        href={`https://bspy.com.py/icases`}
+                                        href={`https://cartalogo.vercel.app/icases`}
                                         target="__blank"
                                         className="my-6 group relative inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium 
                                 text-black"
