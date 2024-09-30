@@ -1,45 +1,29 @@
-"use client"
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/Avatar"
-import { Button } from "@/components/ui/button"
+"use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { redirect } from "next/navigation";
-import { useRouter } from "next/navigation";
-
+} from "@/components/ui/dropdown-menu";
+import { SignOutButton } from "./signout-button";
 
 export function UserNav({ user }: any) {
-
-    const supabase = createClientComponentClient();
-    const router = useRouter()
-
-    const handleSignout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            throw error
-        }
-        router.push('/')
-        redirect('/')
-    }
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                >
                     <Avatar className="h-12 w-12">
-                        <AvatarImage src={user.user_metadata.picture} alt="Avatar del usuario" />
+                        <AvatarImage
+                            src={user.user_metadata.picture}
+                            alt="Avatar del usuario"
+                        />
                         <AvatarFallback>SC</AvatarFallback>
                     </Avatar>
                 </Button>
@@ -67,10 +51,10 @@ export function UserNav({ user }: any) {
                     </DropdownMenuItem>
                 </DropdownMenuGroup> */}
                 {/* <DropdownMenuSeparator /> */}
-                <DropdownMenuItem className="cursor-pointer" onClick={handleSignout}>
-                    Cerrar sesión
+                <DropdownMenuItem className="cursor-pointer">
+                    <SignOutButton />
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 }

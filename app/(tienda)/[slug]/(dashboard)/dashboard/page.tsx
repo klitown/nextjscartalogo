@@ -1,24 +1,11 @@
-"use client"
+"use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useEffect, useState } from "react";
+import { useUser } from "@/app/hooks/user-user";
 
 function Dashboard({ params }: { params: { slug: string } }) {
+    const { loading, error, user, role } = useUser();
 
-    const [user, setUser] = useState<any>();
-
-
-    useEffect(() => {
-        getInitialData();
-    }, []);
-
-    const getInitialData = async () => {
-        const supabase = createClientComponentClient();
-        const { data } = await supabase.auth.getUser();
-        setUser(data.user);
-    }
-
-    if (!user) return <h1>Loading...</h1>
+    if (!user) return <h1>Loading...</h1>;
 
     return (
         <>
@@ -29,14 +16,15 @@ function Dashboard({ params }: { params: { slug: string } }) {
                             <p className="text-2xl font-bold text-gray-900 sm:text-3xl">
                                 ¡Bienvenido, {user.user_metadata.name}!
                             </p>
-                            <a href={`https://cartalogo.digital/${params.slug}`} target="_blank"
-                                className="bg-blue-500 rounded-xl px-3 py-2 text-white hover:bg-blue-700">
+                            <a
+                                href={`https://bspy.com.py/${params.slug}`}
+                                target="_blank"
+                                className="bg-blue-500 rounded-xl px-3 py-2 text-white hover:bg-blue-700"
+                            >
                                 Ver mi tienda
                             </a>
                         </div>
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mt-10">
-
-
                             <div className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly">
                                 <div className="flex flex-row justify-between">
                                     <h3 className="text-xl text-gray-500">
@@ -87,11 +75,9 @@ function Dashboard({ params }: { params: { slug: string } }) {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </>
-
     );
 }
 

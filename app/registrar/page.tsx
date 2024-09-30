@@ -2,13 +2,13 @@
 import { useEffect, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import Image from "next/image";
-import * as Toast from '@radix-ui/react-toast';
-import { useRouter } from "next/navigation";
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { createClient } from "@supabase/supabase-js";
+import * as Toast from "@radix-ui/react-toast";
+import { redirect, useRouter } from "next/navigation";
+import { createClient } from "@/supabase/client";
+import { useUser } from "../hooks/user-user";
 
 interface Formulario {
-    user_id: number | null,
+    user_id: number | null;
     nombre: string;
     telefono: number | null;
     ubicacion: string;
@@ -22,33 +22,19 @@ interface Formulario {
 }
 
 function Create() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
     const [showToastError, setShowToastError] = useState(false);
     const [showToastSuccess, setShowToastSuccess] = useState(false);
-    const [auth, setAuth] = useState(false);
     const [imagenLogo, setImagenLogo] = useState();
-    const [instagram, setInstagram] = useState<string>('');
-    const [facebook, setFacebook] = useState<string>('');
+    const [instagram, setInstagram] = useState<string>("");
+    const [facebook, setFacebook] = useState<string>("");
     const [imagenPortada, setImagenPortada] = useState();
-    const router = useRouter()
-    const supabase = createClient(url!, apiKey!);
 
-    useEffect(() => {
-        canEnter().then((res) => {
-            setAuth(res);
-            if (res === false) {
-                router.push('/login');
-            }
-        });
-    }, []);
+    const router = useRouter();
 
-    const canEnter = async () => {
-        let a = await getUserId();
-        return a !== null
-    }
+    const supabase = createClient();
+
+    const { user } = useUser();
 
     const [formulario, setFormulario] = useState<Formulario>({
         user_id: null,
@@ -74,74 +60,85 @@ function Create() {
         // Convertir el texto a minúsculas
         const textoEnMinusculas = texto.toLowerCase();
         // Reemplazar espacios en blanco con guiones ("-")
-        const textoFormateado = textoEnMinusculas.replace(/\s+/g, '-');
+        const textoFormateado = textoEnMinusculas.replace(/\s+/g, "-");
         return textoFormateado;
     };
 
     function changeImagenLogo(event: any) {
-        const logoFile = event.target.files[0]
+        const logoFile = event.target.files[0];
         setImagenLogo(logoFile);
     }
 
     function changeImagenPortada(event: any) {
-        const portadaFile = event.target.files[0]
+        const portadaFile = event.target.files[0];
         setImagenPortada(portadaFile);
     }
 
     const saveImagenes = async () => {
         if (imagenLogo === undefined || imagenPortada === undefined) {
             setShowToastError(true);
-            return
+            return;
         }
         setProcesandoCreacion(true);
         try {
             let folderName = makeUrlForTienda(formulario.nombre!);
-            const { data: logoImagenData, error: errorLogoImagenData } = await supabase.storage
-                .from('cartalogo_imagenes')
-                //@ts-ignore
-                .upload(`${folderName}/logo_${Math.floor(Math.random() * 1000000) + 1}.png`, imagenLogo);
+            const { data: logoImagenData, error: errorLogoImagenData } =
+                await supabase.storage
+                    .from("cartalogo_imagenes")
+                    //@ts-ignore
+                    .upload(
+                        `${folderName}/logo_${
+                            Math.floor(Math.random() * 1000000) + 1
+                        }.png`,
+                        imagenLogo
+                    );
 
-            const { data: portadaImagenData, error: errorPortadaImagenData } = await supabase.storage
-                .from('cartalogo_imagenes')
-                //@ts-ignore
-                .upload(`${folderName}/portada_${Math.floor(Math.random() * 1000000) + 1}.png`, imagenPortada);
+            const { data: portadaImagenData, error: errorPortadaImagenData } =
+                await supabase.storage
+                    .from("cartalogo_imagenes")
+                    //@ts-ignore
+                    .upload(
+                        `${folderName}/portada_${
+                            Math.floor(Math.random() * 1000000) + 1
+                        }.png`,
+                        imagenPortada
+                    );
             if (errorLogoImagenData || errorPortadaImagenData) {
-                console.error('Error acá: ', {
+                console.error("Error acá: ", {
                     errorLogoImagenData,
-                    errorPortadaImagenData
+                    errorPortadaImagenData,
                 });
             } else {
-                const [logoUrlResponse, portadaUrlResponse] = await Promise.all([
-                    supabase.storage.from('cartalogo_imagenes').getPublicUrl(logoImagenData.path),
-                    supabase.storage.from('cartalogo_imagenes').getPublicUrl(portadaImagenData.path),
-                ]);
-                console.log('Imagenes subidas correctamente. Ver imagenes:',
+                const [logoUrlResponse, portadaUrlResponse] = await Promise.all(
+                    [
+                        supabase.storage
+                            .from("cartalogo_imagenes")
+                            .getPublicUrl(logoImagenData.path),
+                        supabase.storage
+                            .from("cartalogo_imagenes")
+                            .getPublicUrl(portadaImagenData.path),
+                    ]
+                );
+                console.log(
+                    "Imagenes subidas correctamente. Ver imagenes:",
                     logoUrlResponse.data.publicUrl,
-                    portadaUrlResponse.data.publicUrl);
+                    portadaUrlResponse.data.publicUrl
+                );
                 setFormulario({
                     ...formulario,
                     url_logo: logoUrlResponse.data.publicUrl,
-                    imagen_portada: portadaUrlResponse.data.publicUrl
+                    imagen_portada: portadaUrlResponse.data.publicUrl,
                 });
                 setFormulario((formValue) => {
-                    console.log('El nuevo valor de form:', formValue);
+                    console.log("El nuevo valor de form:", formValue);
                     handleSubmit(formValue);
                     return formValue;
                 });
             }
         } catch (error) {
-            console.log('Error en subida: ', error)
+            console.log("Error en subida: ", error);
         }
-    }
-
-    const getUserId = async () => {
-        const supabaseAca = createClientComponentClient({
-            supabaseUrl: url,
-            supabaseKey: apiKey
-        })
-        const { data: activeSession, error } = await supabaseAca.auth.getSession();
-        return activeSession?.session?.user.id ? activeSession.session.user.id : null
-    }
+    };
 
     const handleSubmit = async (formValue: Formulario) => {
         try {
@@ -150,12 +147,12 @@ function Create() {
             );
             jsonData.url = makeUrlForTienda(jsonData.nombre);
             jsonData.redes = [`https://instagram.com/${instagram}`, facebook];
-            jsonData.user_id = await getUserId();
+            jsonData.user_id = user?.id;
             if (jsonData.user_id === null) {
-                console.error('No autorizado')
-                return
+                console.error("No autorizado");
+                return;
             } else {
-                jsonData.user_id = await getUserId();
+                jsonData.user_id = user?.id;
             }
             console.log("JSON FINAL ENVIADO: ", jsonData);
             const { data, error } = await supabase
@@ -178,64 +175,80 @@ function Create() {
         setProcesandoCreacion(false);
     };
 
-    if (auth === null) return <h1>Error.</h1>
+    // if (!user) return redirect("/");
 
     return (
         <section className="bg-white">
-
-            {showToastError && <>
-                <Toast.Provider swipeDirection="right" duration={5000}>
-                    <Toast.Root
-                        className="bg-red-500 text-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] 
+            {showToastError && (
+                <>
+                    <Toast.Provider swipeDirection="right" duration={5000}>
+                        <Toast.Root
+                            className="bg-red-500 text-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] 
                         p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] 
                         grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide 
                         data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 
                         data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
-                        open={showToastError}
-                        onOpenChange={setShowToastError}
-                    >
-                        <Toast.Title className="[grid-area:_title] mb-[5px] font-bold text-slate12 text-lg text-white">
-                            Error al registrar la tienda
-                        </Toast.Title>
-                        <Toast.Description className="text-white">
-                            Por favor, complete todos los campos necesarios para registrar tu tienda
-                        </Toast.Description>
-                        <Toast.Action className="[grid-area:_action]" asChild altText="Goto schedule to undo">
-                            <button className="inline-flex bg-black text-white px-3 py-2 rounded-lg items-center justify-center font-medium text-md 
+                            open={showToastError}
+                            onOpenChange={setShowToastError}
+                        >
+                            <Toast.Title className="[grid-area:_title] mb-[5px] font-bold text-slate12 text-lg text-white">
+                                Error al registrar la tienda
+                            </Toast.Title>
+                            <Toast.Description className="text-white">
+                                Por favor, complete todos los campos necesarios
+                                para registrar tu tienda
+                            </Toast.Description>
+                            <Toast.Action
+                                className="[grid-area:_action]"
+                                asChild
+                                altText="Goto schedule to undo"
+                            >
+                                <button
+                                    className="inline-flex bg-black text-white px-3 py-2 rounded-lg items-center justify-center font-medium text-md 
                             leading-[25px] h-[25px] bg-green2 text-green11 shadow-[inset_0_0_0_1px]
-                            shadow-green7 hover:shadow-[inset_0_0_0_1px] hover:shadow-green8 focus:shadow-[0_0_0_2px] focus:shadow-green8">
-                                Entiendo
-                            </button>
-                        </Toast.Action>
-                    </Toast.Root>
-                    <Toast.Viewport className="[--viewport-padding:_25px] fixed top-0 right-0 flex flex-col 
-            p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
-                </Toast.Provider>
-            </>
-            }
+                            shadow-green7 hover:shadow-[inset_0_0_0_1px] hover:shadow-green8 focus:shadow-[0_0_0_2px] focus:shadow-green8"
+                                >
+                                    Entiendo
+                                </button>
+                            </Toast.Action>
+                        </Toast.Root>
+                        <Toast.Viewport
+                            className="[--viewport-padding:_25px] fixed top-0 right-0 flex flex-col 
+            p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none"
+                        />
+                    </Toast.Provider>
+                </>
+            )}
 
-            {showToastSuccess && <>
-                <Toast.Provider swipeDirection="right" duration={5000}>
-                    <Toast.Root
-                        className="bg-green-500 text-white flex flex-col rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] 
+            {showToastSuccess && (
+                <>
+                    <Toast.Provider swipeDirection="right" duration={5000}>
+                        <Toast.Root
+                            className="bg-green-500 text-white flex flex-col rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] 
                         p-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide 
                         data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 
                         data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
-                        open={showToastSuccess}
-                        onOpenChange={setShowToastSuccess}
-                    >
-                        <Toast.Title className="[grid-area:_title] mb-[5px] font-bold text-slate12 text-xl text-white">
-                            ¡Tu nueva tienda fue registrada!
-                        </Toast.Title>
-                        <Toast.Description>
-                            Gracias por utilizar Cartalogo, te redirecionaremos para que continues tu aventura...
-                        </Toast.Description>
-                    </Toast.Root>
-                    <Toast.Viewport className="[--viewport-padding:_25px] fixed top-0 right-0 flex flex-col 
-            p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
-                </Toast.Provider>
-            </>
-            }
+                            open={showToastSuccess}
+                            onOpenChange={setShowToastSuccess}
+                        >
+                            <Toast.Title className="[grid-area:_title] mb-[5px] font-bold text-slate12 text-xl text-white">
+                                ¡Tu nueva tienda fue registrada!
+                            </Toast.Title>
+                            <Toast.Description>
+                                Gracias por utilizar Cartalogo, te
+                                redirecionaremos para que continues tu
+                                aventura...
+                            </Toast.Description>
+                        </Toast.Root>
+                        <Toast.Viewport
+                            className="[--viewport-padding:_25px] fixed top-0 right-0 flex flex-col 
+            p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none"
+                        />
+                    </Toast.Provider>
+                </>
+            )}
+
+            {user?.email}
 
             <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
                 <aside className="relative bg-[#2b42ff] h-16 flex justify-center items-center lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
@@ -298,8 +311,13 @@ function Create() {
                         </div>
 
                         <p className="line-clamp-2 sm:line-clamp-none mt-4 text-gray-500">
-                            <span className="font-bold">Fotografía de alta calidad:</span> Asegúrate de que las imágenes de tus productos sean de alta resolución y calidad. <br />
-                            Esto ayuda a los clientes a ver los detalles y la calidad de los productos.
+                            <span className="font-bold">
+                                Fotografía de alta calidad:
+                            </span>{" "}
+                            Asegúrate de que las imágenes de tus productos sean
+                            de alta resolución y calidad. <br />
+                            Esto ayuda a los clientes a ver los detalles y la
+                            calidad de los productos.
                         </p>
                     </blockquote>
                 </aside>
@@ -310,19 +328,22 @@ function Create() {
                     </h1>
 
                     <p className="mt-4 leading-relaxed text-gray-500">
-                        Te pedimos que completes estos datos iniciales para saber más sobre
-                        tu tienda
+                        Te pedimos que completes estos datos iniciales para
+                        saber más sobre tu tienda
                     </p>
 
                     <div className="flex flex-col bg-white p-5 rounded-xl border border-gray-200 mt-10">
-
                         <Form.Root className="w-[300px] lg:w-[400px]">
-
                             {/* NOMBRE FIELD */}
-                            <Form.Field className="grid mb-[10px]" name="nombre" id="nombre">
+                            <Form.Field
+                                className="grid mb-[10px]"
+                                name="nombre"
+                                id="nombre"
+                            >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        <span className="text-red-500">*</span> Nombre de la tienda
+                                        <span className="text-red-500">*</span>{" "}
+                                        Nombre de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -347,7 +368,8 @@ function Create() {
                             >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        <span className="text-red-500">*</span> Teléfono de la tienda
+                                        <span className="text-red-500">*</span>{" "}
+                                        Teléfono de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -358,7 +380,11 @@ function Create() {
                                             outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
                                         type="text"
                                         name="telefono"
-                                        value={formulario.telefono === null ? "" : formulario.telefono}
+                                        value={
+                                            formulario.telefono === null
+                                                ? ""
+                                                : formulario.telefono
+                                        }
                                         onChange={handleChange}
                                         required
                                     />
@@ -372,7 +398,8 @@ function Create() {
                             >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        <span className="text-red-500">*</span> Ubicación de la tienda
+                                        <span className="text-red-500">*</span>{" "}
+                                        Ubicación de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -391,10 +418,15 @@ function Create() {
                             </Form.Field>
 
                             {/* LOGO DE LA TIENDA */}
-                            <Form.Field className="grid mb-[10px]" name="logo" id="logo">
+                            <Form.Field
+                                className="grid mb-[10px]"
+                                name="logo"
+                                id="logo"
+                            >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        <span className="text-red-500">*</span> Logo de la tienda
+                                        <span className="text-red-500">*</span>{" "}
+                                        Logo de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -413,10 +445,15 @@ function Create() {
                             </Form.Field>
 
                             {/* PORTADA */}
-                            <Form.Field className="grid mb-[10px]" name="logo" id="portada">
+                            <Form.Field
+                                className="grid mb-[10px]"
+                                name="logo"
+                                id="portada"
+                            >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        <span className="text-red-500">*</span> Portada de la tienda
+                                        <span className="text-red-500">*</span>{" "}
+                                        Portada de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -442,7 +479,8 @@ function Create() {
                             >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
-                                        <span className="text-red-500">*</span> Descripción de la tienda
+                                        <span className="text-red-500">*</span>{" "}
+                                        Descripción de la tienda
                                     </Form.Label>
                                 </div>
                                 <Form.Control asChild>
@@ -459,7 +497,11 @@ function Create() {
                                     />
                                 </Form.Control>
                             </Form.Field>
-                            <Form.Field className="grid mb-[10px]" name="instagram" id="instagram">
+                            <Form.Field
+                                className="grid mb-[10px]"
+                                name="instagram"
+                                id="instagram"
+                            >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
                                         Instagram
@@ -474,13 +516,19 @@ function Create() {
                                         type="text"
                                         name="instagram"
                                         value={instagram}
-                                        onChange={(e) => setInstagram(e.target.value)}
+                                        onChange={(e) =>
+                                            setInstagram(e.target.value)
+                                        }
                                     />
                                 </Form.Control>
                             </Form.Field>
 
                             {/* Campo para Facebook */}
-                            <Form.Field className="grid mb-[10px]" name="facebook" id="facebook">
+                            <Form.Field
+                                className="grid mb-[10px]"
+                                name="facebook"
+                                id="facebook"
+                            >
                                 <div className="flex items-baseline justify-between">
                                     <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
                                         Facebook
@@ -495,7 +543,9 @@ function Create() {
                                         type="text"
                                         name="facebook"
                                         value={facebook}
-                                        onChange={(e) => setFacebook(e.target.value)}
+                                        onChange={(e) =>
+                                            setFacebook(e.target.value)
+                                        }
                                     />
                                 </Form.Control>
                             </Form.Field>
@@ -509,11 +559,17 @@ function Create() {
                                 box-border w-full text-white shadow-blackA7 
                                 hover:bg-green-700
                                 inline-flex h-[35px] items-center 
-                                justify-center rounded-[4px] ${procesandoCreacion ? 'bg-green-500' : 'bg-black'} px-[15px] font-medium 
+                                justify-center rounded-[4px] ${
+                                    procesandoCreacion
+                                        ? "bg-green-500"
+                                        : "bg-black"
+                                } px-[15px] font-medium 
                                 leading-none mt-[10px]
                                 `}
                             >
-                                {procesandoCreacion ? 'Registrando tienda...' : 'Registrar tienda'}
+                                {procesandoCreacion
+                                    ? "Registrando tienda..."
+                                    : "Registrar tienda"}
                             </button>
                         </Form.Submit>
                     </div>
