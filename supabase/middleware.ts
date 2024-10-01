@@ -69,6 +69,10 @@ export async function updateSession(request: NextRequest) {
             // Redirect to the tienda's dashboard
             const url = new URL(`/${tienda.nombre}/dashboard`, request.url);
             return NextResponse.redirect(url);
+        } else {
+            // Redirect to the regustrar dashboard
+            const url = new URL(`/registrar`, request.url);
+            return NextResponse.redirect(url);
         }
         return NextResponse.next();
     }
