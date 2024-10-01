@@ -30,9 +30,8 @@ export async function GET(request: Request) {
                     `${origin}/${tienda.nombre}/dashboard`
                 );
             } else {
-                console.error("Error fetching tienda:", tiendaError);
                 // If no tienda found, redirect to a default page
-                return NextResponse.redirect(`${origin}/`);
+                return NextResponse.redirect(`${origin}/registrar`);
             }
         }
     }
