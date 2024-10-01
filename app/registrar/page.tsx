@@ -145,7 +145,7 @@ function Create() {
             let jsonData = Object.fromEntries(
                 Object.entries(formValue).filter(([_, valor]) => valor !== "")
             );
-            jsonData.url = makeUrlForTienda(jsonData.nombre);
+            jsonData.url = jsonData.url;
             jsonData.redes = [`https://instagram.com/${instagram}`, facebook];
             jsonData.user_id = user?.id;
             if (jsonData.user_id === null) {
@@ -247,8 +247,6 @@ function Create() {
                     </Toast.Provider>
                 </>
             )}
-
-            {user?.email}
 
             <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
                 <aside className="relative bg-[#2b42ff] h-16 flex justify-center items-center lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
@@ -359,6 +357,44 @@ function Create() {
                                         required
                                     />
                                 </Form.Control>
+                            </Form.Field>
+                            <Form.Field
+                                className="grid mb-[10px]"
+                                name="url"
+                                id="url"
+                            >
+                                <div className="flex items-baseline justify-between">
+                                    <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
+                                        <span className="text-red-500">*</span>{" "}
+                                        Link de la tienda para compartir
+                                    </Form.Label>
+                                </div>
+                                <Form.Control asChild>
+                                    <input
+                                        id="url"
+                                        className="box-border w-full bg-white shadow-blackA9 inline-flex h-[35px] appearance-none items-center justify-center 
+                                            rounded-[4px] px-[10px] text-[15px] leading-none text-black shadow-[0_0_0_1px] 
+                                            outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
+                                        type="text"
+                                        name="url"
+                                        value={formulario.url}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </Form.Control>
+                                <Form.Message className="text-gray-700 mt-2 mb-2">
+                                    Ingrese como le gustaria que se comparta el
+                                    link a la tienda. Agregaremos el link al
+                                    final de nuestra página. <br />
+                                    <span className="text-black font-bold">
+                                        Ejemplo:
+                                    </span>{" "}
+                                    bspy.com.py/tatoartesania <br />
+                                    <span className="text-black font-bold">
+                                        Actual:
+                                    </span>{" "}
+                                    bspy.com.py/{formulario.url}
+                                </Form.Message>
                             </Form.Field>
                             {/* telefono field */}
                             <Form.Field

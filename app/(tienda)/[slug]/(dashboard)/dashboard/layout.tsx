@@ -149,8 +149,8 @@ export default async function ProductDetailLayout({
                 </h2>
                 <div className="px-4 py-12 mx-auto bg-gray-50 max-w-7xl sm:px-6 lg:px-16 flex justify-center items-center">
                     <span className="mt-2 text-sm font-light text-gray-500 text-center">
-                        Copyright © 2023 <br />
-                        <span className="font-bold text-md">CARTALOGO</span>
+                        Copyright © 2024 <br />
+                        <span className="font-bold text-md">BSPY</span>
                     </span>
                 </div>
             </footer>

@@ -1,6 +1,6 @@
-import Portada from '../../../components/Portada';
-import MasBuscados from '../../../components/MasBuscados';
-import { createServerClient, getCategoriasInfo, getTiendaInfo } from './layout';
+import Portada from "../../../components/Portada";
+import MasBuscados from "../../../components/MasBuscados";
+import { createServerClient, getCategoriasInfo, getTiendaInfo } from "./layout";
 
 import { Metadata } from "next";
 
@@ -10,23 +10,24 @@ type Props = {
 
 export const generateMetadata = ({ params }: Props): Metadata => {
     return {
-        title: `${params.slug} - Cartalogo`,
-        description: `Vista la tienda ${params.slug} - Cartalogo`
+        title: `${params.slug} - BSPY`,
+        description: `Vista la tienda ${params.slug} - BSPY`,
     };
 };
 
-
 export default async function Page({ params }: { params: { slug: string } }) {
-
     async function getProductosData() {
         const supabase = createServerClient();
-        const { data, error } = await supabase.rpc('obtener_productos_con_imagenes', {
-            tienda_url: params.slug
-        });
+        const { data, error } = await supabase.rpc(
+            "obtener_productos_con_imagenes",
+            {
+                tienda_url: params.slug,
+            }
+        );
         if (error) {
             console.log("Error en getProductosData: ", error);
         }
-        return data
+        return data;
     }
     const tienda = await getTiendaInfo(params.slug);
     const productos = await getProductosData();
@@ -38,9 +39,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     UI SECTION 
     ***********/
 
-
     return (
-
         <div className="w-full">
             <Portada
                 tiendaNombre={tienda.nombre}
@@ -48,9 +47,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 urlPortada={tienda.imagen_portada}
                 redes={tienda.redes}
             />
-            <MasBuscados tiendaUrl={tienda.url} productos={productos} categorias={categorias} />
+            <MasBuscados
+                tiendaUrl={tienda.url}
+                productos={productos}
+                categorias={categorias}
+            />
         </div>
-
-
-    )
+    );
 }

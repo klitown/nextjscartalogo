@@ -1,23 +1,24 @@
-"use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { createClient } from "@supabase/supabase-js"
-import { useRouter } from "next/navigation"
-import { useState, useTransition } from 'react';
-import { useToast } from "@/components/ui/use-toast"
-import { Check, Circle, RefreshCcwDotIcon } from "lucide-react"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Check, Circle, RefreshCcwDotIcon } from "lucide-react";
 
 const FormSchema = z.object({
     nombre: z.string().min(2, {
@@ -31,12 +32,11 @@ const FormSchema = z.object({
     url_logo: z.string(),
     instagram: z.string(),
     facebook: z.string().optional(),
-    logoFile: z.any()
+    logoFile: z.any(),
     // colores: z.string().array().nonempty().min(1)
-})
+});
 
 export default function EditarTienda({ tienda }: any) {
-
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabase = createClient(url!, apiKey!);
@@ -52,10 +52,14 @@ export default function EditarTienda({ tienda }: any) {
             // imagen_portada: "",
             descripcion: tienda.descripcion,
             instagram: obtenerNombreUsuarioInstagram(tienda.redes),
-            facebook: `${tienda.redes.find((red: any) => red && red.includes("facebook")) ?? ''}`,
+            facebook: `${
+                tienda.redes.find(
+                    (red: any) => red && red.includes("facebook")
+                ) ?? ""
+            }`,
             // colores: []
         },
-    })
+    });
     const [isPending, startTransition] = useTransition();
     const [isFetching, setIsFetching] = useState(false);
     const [imagenLogo, setImagenLogo] = useState();
@@ -63,17 +67,19 @@ export default function EditarTienda({ tienda }: any) {
 
     // Función para extraer el nombre de usuario de Instagram
     function obtenerNombreUsuarioInstagram(redes: string[]) {
-        const instagramUrl = redes.find(red => red && red.includes("instagram"));
+        const instagramUrl = redes.find(
+            (red) => red && red.includes("instagram")
+        );
         if (instagramUrl) {
-            const partesUrl = instagramUrl.split('/');
+            const partesUrl = instagramUrl.split("/");
             return partesUrl[partesUrl.length - 1];
         } else {
-            return ''; // Si no se encuentra Instagram, retorna un string vacío
+            return ""; // Si no se encuentra Instagram, retorna un string vacío
         }
     }
 
     function changeImagenLogo(event: any) {
-        const logoFile = event.target.files[0]
+        const logoFile = event.target.files[0];
         setImagenLogo(logoFile);
     }
 
@@ -86,25 +92,39 @@ export default function EditarTienda({ tienda }: any) {
                 console.log("Borrando: ", lastPart);
                 // Borrado
                 const { data, error } = await supabase.storage
-                    .from('cartalogo_imagenes')
+                    .from("cartalogo_imagenes")
                     .remove([`${tienda.url}/${lastPart}`]);
                 if (error) {
-                    console.error('Error removing storage object:', error.message);
+                    console.error(
+                        "Error removing storage object:",
+                        error.message
+                    );
                 } else {
-                    console.log('Storage object removed successfully:', data);
+                    console.log("Storage object removed successfully:", data);
                     ///// subida
-                    const { data: logoImagenData, error: errorLogoImagenData } = await supabase.storage
-                        .from('cartalogo_imagenes')
-                        .upload(`${tienda.url}/logo_${Math.floor(Math.random() * 1000000) + 1}.png`, imagenLogo);
+                    const { data: logoImagenData, error: errorLogoImagenData } =
+                        await supabase.storage
+                            .from("cartalogo_imagenes")
+                            .upload(
+                                `${tienda.url}/logo_${
+                                    Math.floor(Math.random() * 1000000) + 1
+                                }.png`,
+                                imagenLogo
+                            );
                     if (errorLogoImagenData) {
                         throw errorLogoImagenData;
                     }
-                    const logoUrlResponse = supabase.storage.from('cartalogo_imagenes').getPublicUrl(logoImagenData.path);
-                    console.log('Imagen subida correctamente. Ver imagen:', logoUrlResponse.data.publicUrl);
+                    const logoUrlResponse = supabase.storage
+                        .from("cartalogo_imagenes")
+                        .getPublicUrl(logoImagenData.path);
+                    console.log(
+                        "Imagen subida correctamente. Ver imagen:",
+                        logoUrlResponse.data.publicUrl
+                    );
                     formData = {
                         ...formData,
-                        url_logo: logoUrlResponse.data.publicUrl
-                    }
+                        url_logo: logoUrlResponse.data.publicUrl,
+                    };
                 }
             }
             const { instagram, facebook } = formData;
@@ -113,26 +133,27 @@ export default function EditarTienda({ tienda }: any) {
             //@ts-ignore
             delete formData.facebook;
             const { data: res, error } = await supabase
-                .from('tiendas')
+                .from("tiendas")
                 .update({
                     ...formData,
-                    redes: [`https://instagram.com/${instagram}`, facebook]
+                    redes: [`https://instagram.com/${instagram}`, facebook],
                 })
-                .eq('id', tienda.id)
-                .select()
+                .eq("id", tienda.id)
+                .select();
             if (error) throw error;
             toast({
                 variant: "success",
                 title: "¡Los datos han sidos actualizados correctamente!",
-                description: "El cambio se reflejará en tu tienda en un instante",
-            })
+                description:
+                    "El cambio se reflejará en tu tienda en un instante",
+            });
         } catch (error) {
             console.error("Error updating data: ", error);
             setIsFetching(false);
             return;
         }
         setIsFetching(false);
-        const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+        const escapeEvent = new KeyboardEvent("keydown", { key: "Escape" });
         document.dispatchEvent(escapeEvent);
         startTransition(() => {
             router.refresh();
@@ -142,18 +163,21 @@ export default function EditarTienda({ tienda }: any) {
     return (
         <div className="p-5">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="w-full space-y-6"
+                >
                     <FormField
                         control={form.control}
                         name="nombre"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Nombre de la tienda
-                                </FormLabel>
+                                <FormLabel>Nombre de la tienda</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Ingrese el nombre de la tienda" {...field} />
+                                    <Input
+                                        placeholder="Ingrese el nombre de la tienda"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -164,12 +188,13 @@ export default function EditarTienda({ tienda }: any) {
                         name="telefono"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Teléfono de la tienda
-                                </FormLabel>
+                                <FormLabel>Teléfono de la tienda</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="Ingrese el número"
-                                        {...field} />
+                                    <Input
+                                        type="number"
+                                        placeholder="Ingrese el número"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -180,11 +205,12 @@ export default function EditarTienda({ tienda }: any) {
                         name="ubicacion"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Ubicación
-                                </FormLabel>
+                                <FormLabel>Ubicación</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Ingrese la ubicación" {...field} />
+                                    <Input
+                                        placeholder="Ingrese la ubicación"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -197,11 +223,13 @@ export default function EditarTienda({ tienda }: any) {
                         name="logoFile"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Logo de la tienda
-                                </FormLabel>
+                                <FormLabel>Logo de la tienda</FormLabel>
                                 <FormControl>
-                                    <Input type="file" accept="image/*" onChange={changeImagenLogo} />
+                                    <Input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={changeImagenLogo}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -212,9 +240,7 @@ export default function EditarTienda({ tienda }: any) {
                         name="descripcion"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Descripción
-                                </FormLabel>
+                                <FormLabel>Descripción</FormLabel>
                                 <FormControl>
                                     <Textarea
                                         placeholder="Ingrese la descripción de la tienda"
@@ -232,12 +258,16 @@ export default function EditarTienda({ tienda }: any) {
                         name="instagram"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Instagram
-                                </FormLabel>
+                                <FormLabel>Instagram</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Ingresa tu usuario de instagram" {...field} />
+                                    <Input
+                                        placeholder="Ingresa tu usuario de instagram"
+                                        {...field}
+                                    />
                                 </FormControl>
+                                <FormDescription>
+                                    Ingrese solo usuario, sin @
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -247,25 +277,30 @@ export default function EditarTienda({ tienda }: any) {
                         name="facebook"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>
-                                    Facebook
-                                </FormLabel>
+                                <FormLabel>Facebook</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Ingrese el link tu facebook" {...field} />
+                                    <Input
+                                        placeholder="Ingrese el link tu Facebook"
+                                        {...field}
+                                    />
                                 </FormControl>
+                                <FormDescription>
+                                    Copie y pegue el link completo
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <Button type="submit" disabled={isFetching}>
-                        {isFetching
-                            ? <RefreshCcwDotIcon className="mr-2 h-4 w-4 animate-spin" />
-                            : <Check className="mr-2 h-4 w-4" />
-                        }
+                        {isFetching ? (
+                            <RefreshCcwDotIcon className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Check className="mr-2 h-4 w-4" />
+                        )}
                         Actualizar información
                     </Button>
                 </form>
             </Form>
         </div>
-    )
+    );
 }

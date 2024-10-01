@@ -2,34 +2,43 @@ import Image from "next/image";
 import { getTiendaInfo } from "../../../(infoTienda)/layout";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import EditarTienda from "@/app/components/EditarTienda";
 import { ITienda } from "@/lib/interfaces/ITienda";
 
-
 export default async function Page({ params }: { params: { slug: string } }) {
-
     const tienda: ITienda = await getTiendaInfo(params.slug);
 
     // Función para extraer el nombre de usuario de Instagram
     function obtenerNombreUsuarioInstagram(redes: string[]) {
-        const instagramUrl = redes.find(red => red && red.includes("instagram"));
+        const instagramUrl = redes.find(
+            (red) => red && red.includes("instagram")
+        );
         if (instagramUrl) {
-            const partesUrl = instagramUrl.split('/');
+            const partesUrl = instagramUrl.split("/");
             return partesUrl[partesUrl.length - 1];
         } else {
-            return ''; // Si no se encuentra Instagram, retorna un string vacío
+            return ""; // Si no se encuentra Instagram, retorna un string vacío
         }
     }
 
     return (
         <div className="container mx-auto flex flex-col relative">
-
             <h2 className="text-3xl font-bold mb-5 text-left">
                 Información de la tienda
             </h2>
             <hr className="my-3" />
-            {/* <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-4 my-5">
+            <div
+                role="alert"
+                className="rounded border-s-4 border-green-500 bg-green-50 p-4 my-5"
+            >
                 <div className="flex items-center gap-2 text-green-800">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -48,9 +57,10 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 </div>
 
                 <p className="mt-2 text-md text-green-700">
-                    La información mostrada acá son los datos públicos para tus clientes y visitantes de tu tienda
+                    La información mostrada acá son los datos públicos para tus
+                    clientes y visitantes de tu tienda
                 </p>
-            </div> */}
+            </div>
 
             <Dialog>
                 <DialogTrigger asChild>
@@ -69,11 +79,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
             </Dialog>
 
             <div className="flex flex-col justify-center items-center mt-5">
-                <Image src={tienda.url_logo} alt="Logo de la tienda"
-                    width={300} height={300}
+                <Image
+                    src={tienda.url_logo}
+                    alt="Logo de la tienda"
+                    width={300}
+                    height={300}
                     sizes="(max-width: 1300px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     style={{
-                        borderRadius: '1rem',
+                        borderRadius: "1rem",
                     }}
                 />
                 <h2 className="text-4xl font-bold my-10 text-center">
@@ -121,16 +134,16 @@ export default async function Page({ params }: { params: { slug: string } }) {
                             <dd className="text-gray-700 sm:col-span-2">
                                 {tienda.redes?.includes("facebook") && (
                                     <>
-                                        {tienda.redes.find(red => red === "facebook")}
+                                        {tienda.redes.find(
+                                            (red) => red === "facebook"
+                                        )}
                                     </>
                                 )}
                             </dd>
                         </div>
                     </dl>
                 </div>
-
             </div>
-
         </div>
     );
 }
