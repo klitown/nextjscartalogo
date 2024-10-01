@@ -131,7 +131,6 @@ export default async function ProductDetailLayout({
                                 </div>
                             </SheetContent>
                         </Sheet>
-                        USER AVATAR SETTINGS
                         <UserNav user={session.user} session={session} />
                     </div>
                     <hr className="my-3" />
