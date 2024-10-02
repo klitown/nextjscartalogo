@@ -75,7 +75,7 @@ function Dashboard({ params }: { params: { slug: string } }) {
                         </div>
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mt-10">
                             <Link
-                                href={`http://localhost:3001/${params.slug}/dashboard/misproductos`}
+                                href={`http://bspy.com.py/${params.slug}/dashboard/misproductos`}
                                 className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly"
                             >
                                 <div className="flex flex-row justify-between text-xl font-bold hover:text-blue-500">
