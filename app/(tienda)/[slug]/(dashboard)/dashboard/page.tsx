@@ -1,15 +1,64 @@
 "use client";
 
 import { useUser } from "@/app/hooks/user-user";
+import Link from "next/link";
+import { createClient } from "@/supabase/client";
+import { useEffect, useState } from "react";
 
 function Dashboard({ params }: { params: { slug: string } }) {
     const { loading, error, user, role } = useUser();
+    const [totalProducts, setTotalProducts] = useState<number | undefined>(
+        undefined
+    );
 
-    if (!user) return <h1>Loading...</h1>;
+    const supabase = createClient();
+
+    useEffect(() => {
+        if (user) {
+            getTotalProducts();
+        }
+    }, [user]);
+
+    const getTotalProducts = async () => {
+        if (!user?.id) return;
+
+        // First, get the tienda_id for the user
+        const { data: tiendaData, error: tiendaError } = await supabase
+            .from("tiendas")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+        if (tiendaError) {
+            console.error("Error fetching tienda:", tiendaError);
+            return;
+        }
+
+        if (!tiendaData) {
+            console.log("No tienda found for this user");
+            setTotalProducts(0);
+            return;
+        }
+
+        // Now, count the products for this tienda
+        const { count, error: productError } = await supabase
+            .from("productos")
+            .select("*", { count: "exact", head: true })
+            .eq("tienda_id", tiendaData.id);
+
+        if (productError) {
+            console.error("Error fetching product count:", productError);
+            return;
+        }
+
+        setTotalProducts(count || 0);
+    };
+
+    if (!user) return <div>Loading..</div>;
 
     return (
         <>
-            <div className="flex min-h-screen bg-gray-50">
+            <div className="flex min-h-screen">
                 <div className="basis-full">
                     <div className="container mx-auto p-4">
                         <div className="flex flex-col md:flex-row md:justify-between items-center mb-4 -mt-5">
@@ -25,54 +74,20 @@ function Dashboard({ params }: { params: { slug: string } }) {
                             </a>
                         </div>
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mt-10">
-                            <div className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly">
-                                <div className="flex flex-row justify-between">
-                                    <h3 className="text-xl text-gray-500">
-                                        Cantidad de visitas
-                                    </h3>
-                                    <h3 className="text-3xl text-gray-500">
-                                        #️⃣
-                                    </h3>
+                            <Link
+                                href={`http://localhost:3001/${params.slug}/dashboard/misproductos`}
+                                className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly"
+                            >
+                                <div className="flex flex-row justify-between text-xl font-bold hover:text-blue-500">
+                                    Ver mis productos
                                 </div>
                                 <h4 className="text-3xl font-bold text-black">
-                                    0
+                                    {totalProducts}
                                 </h4>
                                 <h5 className="text-sm font-light">
-                                    en las últimas 2 semanas
+                                    productos cargados
                                 </h5>
-                            </div>
-                            <div className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly">
-                                <div className="flex flex-row justify-between">
-                                    <h3 className="text-xl text-gray-500">
-                                        Total de ventas
-                                    </h3>
-                                    <h3 className="text-3xl text-gray-500">
-                                        💰
-                                    </h3>
-                                </div>
-                                <h4 className="text-3xl font-bold text-black">
-                                    0
-                                </h4>
-                                <h5 className="text-sm font-light">
-                                    +20% desde el último mes
-                                </h5>
-                            </div>
-                            <div className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly">
-                                <div className="flex flex-row justify-between">
-                                    <h3 className="text-xl text-gray-500">
-                                        Ventas concretadas
-                                    </h3>
-                                    <h3 className="text-3xl text-gray-500">
-                                        📲
-                                    </h3>
-                                </div>
-                                <h4 className="text-3xl font-bold text-black">
-                                    0
-                                </h4>
-                                <h5 className="text-sm font-light">
-                                    ¡Sigue así!
-                                </h5>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </div>

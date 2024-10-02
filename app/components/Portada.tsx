@@ -19,7 +19,7 @@ function Portada({
         <section
             className="h-[85vh]  flex justify-center items-center w-full"
             style={{
-                backgroundImage: `url('/grid.svg')`,
+                backgroundImage: `url('${urlPortada}')`,
             }}
         >
             <div

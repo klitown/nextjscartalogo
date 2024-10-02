@@ -63,7 +63,7 @@ export default async function Layout({
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <div className="flex justify-center text-teal-600 sm:justify-start">
                             <Image
-                                src={"/cartalogoBlack.png"}
+                                src={"/bspy.png"}
                                 alt="Logo de cartalogo"
                                 width={200}
                                 height={200}

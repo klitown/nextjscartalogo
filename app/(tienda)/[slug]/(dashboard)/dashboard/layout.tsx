@@ -117,17 +117,6 @@ export default async function ProductDetailLayout({
                                             Mis productos
                                         </Link>
                                     </SheetClose>
-                                    <div
-                                        className=" cursor-pointer  w-full flex flex-row text-xl font-bold tracking-wide p-2
-                                    hover:bg-indigo-500 hover:text-white hover:rounded-xl"
-                                    >
-                                        <RocketIcon
-                                            height={30}
-                                            width={30}
-                                            className="mr-3"
-                                        />
-                                        Facturación
-                                    </div>
                                 </div>
                             </SheetContent>
                         </Sheet>
@@ -140,19 +129,6 @@ export default async function ProductDetailLayout({
             {/* CONTENIDO PRINCIPAL */}
             <div className="grow">{children}</div>
             {/* END CONTENIDO PRINCIPAL */}
-
-            <footer className="bg-white" aria-labelledby="footer-heading">
-                <hr className="mt-20" />
-                <h2 id="footer-heading" className="sr-only">
-                    Footer
-                </h2>
-                <div className="px-4 py-12 mx-auto bg-gray-50 max-w-7xl sm:px-6 lg:px-16 flex justify-center items-center">
-                    <span className="mt-2 text-sm font-light text-gray-500 text-center">
-                        Copyright © 2024 <br />
-                        <span className="font-bold text-md">BSPY</span>
-                    </span>
-                </div>
-            </footer>
         </div>
     );
 }

@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Check, Circle, RefreshCcwDotIcon } from "lucide-react";
 
 const FormSchema = z.object({
@@ -92,7 +92,7 @@ export default function EditarTienda({ tienda }: any) {
                 console.log("Borrando: ", lastPart);
                 // Borrado
                 const { data, error } = await supabase.storage
-                    .from("cartalogo_imagenes")
+                    .from("bspy")
                     .remove([`${tienda.url}/${lastPart}`]);
                 if (error) {
                     console.error(
@@ -104,7 +104,7 @@ export default function EditarTienda({ tienda }: any) {
                     ///// subida
                     const { data: logoImagenData, error: errorLogoImagenData } =
                         await supabase.storage
-                            .from("cartalogo_imagenes")
+                            .from("bspy")
                             .upload(
                                 `${tienda.url}/logo_${
                                     Math.floor(Math.random() * 1000000) + 1
@@ -115,7 +115,7 @@ export default function EditarTienda({ tienda }: any) {
                         throw errorLogoImagenData;
                     }
                     const logoUrlResponse = supabase.storage
-                        .from("cartalogo_imagenes")
+                        .from("bspy")
                         .getPublicUrl(logoImagenData.path);
                     console.log(
                         "Imagen subida correctamente. Ver imagen:",
@@ -142,7 +142,6 @@ export default function EditarTienda({ tienda }: any) {
                 .select();
             if (error) throw error;
             toast({
-                variant: "success",
                 title: "¡Los datos han sidos actualizados correctamente!",
                 description:
                     "El cambio se reflejará en tu tienda en un instante",

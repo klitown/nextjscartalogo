@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import { createClient } from "@/supabase/client";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SignInPage() {
     const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
@@ -14,6 +14,7 @@ export default function SignInPage() {
     const searchParams = useSearchParams();
 
     const next = searchParams.get("next");
+    const { toast } = useToast();
 
     async function signInWithGoogle() {
         setIsGoogleLoading(true);

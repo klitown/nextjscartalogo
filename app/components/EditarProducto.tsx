@@ -1,9 +1,9 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { createClient } from "@supabase/supabase-js"
-import { useEffect, useState, useTransition } from 'react';
+"use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState, useTransition } from "react";
 import * as Form from "@radix-ui/react-form";
 import {
     Select,
@@ -11,19 +11,18 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast";
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { Check, LucideShieldClose } from "lucide-react";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import { ITienda } from "@/lib/interfaces/ITienda";
 
 type Props = {
-    producto: IProducto
-    tienda: ITienda
-}
+    producto: IProducto;
+    tienda: ITienda;
+};
 
 export default function EditarProducto({ producto, tienda }: Props) {
-
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabase = createClient(url!, apiKey!);
@@ -34,7 +33,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
         mas_buscado: producto.mas_buscado,
         price: producto.price,
         categoria_id: producto.categoria_id,
-        imagenes: producto.imagenes
+        imagenes: producto.imagenes,
     });
     const [productoImagenes, setProductoImagenes] = useState<any[]>([]);
     const { toast } = useToast();
@@ -43,15 +42,15 @@ export default function EditarProducto({ producto, tienda }: Props) {
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
 
     useEffect(() => {
-        getCategorias()
+        getCategorias();
     }, []);
 
     const getCategorias = async () => {
         let { data: categorias, error } = await supabase
-            .from('categorias')
-            .select('*')
+            .from("categorias")
+            .select("*");
         setCategorias(categorias);
-    }
+    };
 
     function changeProductoImagen(event: any) {
         const selectedFiles = event.target.files; // Obtiene todos los archivos seleccionados
@@ -70,39 +69,43 @@ export default function EditarProducto({ producto, tienda }: Props) {
 
     const handleCategoria = ($event: string) => {
         setFormulario({ ...formulario, categoria_id: +$event });
-    }
+    };
 
     async function handleSubmit() {
         console.log("Formulario data:", formulario);
-        if (formulario.nombre === '' || String(formulario.price) === '') {
+        if (formulario.nombre === "" || String(formulario.price) === "") {
             toast({
                 variant: "destructive",
                 title: "Por favor, verifique que todos los campos tengan datos cargados",
             });
-            return
+            return;
         }
 
         try {
             const { data, error } = await supabase
-                .from('productos')
+                .from("productos")
                 .update({ ...formulario })
-                .eq('id', producto.id);
+                .eq("id", producto.id);
             if (error) {
-                console.log("Error aca: ", error)
+                console.log("Error aca: ", error);
             } else {
                 if (productoImagenes.length >= 1) {
-                    const promesas = [manageImagenes].map(async (funcionAsync) => {
-                        return funcionAsync();
-                    });
+                    const promesas = [manageImagenes].map(
+                        async (funcionAsync) => {
+                            return funcionAsync();
+                        }
+                    );
                     // Espera a que todas las promesas se resuelvan
                     await Promise.all(promesas);
                 }
                 toast({
-                    variant: "success",
                     title: "¡Los datos han sidos actualizados correctamente!",
-                    description: "El cambio se reflejará en tu tienda en un instante",
+                    description:
+                        "El cambio se reflejará en tu tienda en un instante",
                 });
-                const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+                const escapeEvent = new KeyboardEvent("keydown", {
+                    key: "Escape",
+                });
                 document.dispatchEvent(escapeEvent);
                 startTransition(() => {
                     router.refresh();
@@ -119,34 +122,44 @@ export default function EditarProducto({ producto, tienda }: Props) {
         let imagenesSubidas: string[] = [];
         const promesas = productoImagenes.map(async (imagen: any) => {
             const { data, error } = await supabase.storage
-                .from('cartalogo_imagenes')
+                .from("bspy")
                 //@ts-ignore
-                .upload(`${tienda.url}/${Math.floor(Math.random() * 1000000) + 1}.png`, imagen);
+                .upload(
+                    `${tienda.url}/${
+                        Math.floor(Math.random() * 1000000) + 1
+                    }.png`,
+                    imagen
+                );
             if (error) {
-                console.error('Error acá: ', error);
+                console.error("Error acá: ", error);
             } else {
-                const { data: url } = supabase.storage.from('cartalogo_imagenes').getPublicUrl(data.path);
+                const { data: url } = supabase.storage
+                    .from("bspy")
+                    .getPublicUrl(data.path);
                 imagenesSubidas.push(url.publicUrl);
             }
         });
         await Promise.all(promesas);
         // Esperar a que todas las promesas se resuelvan antes de continuar
         const { data: testing, error: errorAca } = await supabase
-            .from('productos')
+            .from("productos")
             .update({ imagenes: imagenesSubidas })
-            .eq('id', producto.id)
+            .eq("id", producto.id)
             .select();
         if (errorAca) {
             console.error("Aca: ", errorAca);
         }
     };
 
-
     return (
         <div className="p-5">
             <Form.Root className="w-full">
                 {/* NOMBRE FIELD */}
-                <Form.Field className="grid mb-[10px]" name="nombre" id="nombre">
+                <Form.Field
+                    className="grid mb-[10px]"
+                    name="nombre"
+                    id="nombre"
+                >
                     <div className="flex items-baseline justify-between">
                         <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
                             <span className="text-red-500 mr-2">*</span>
@@ -168,11 +181,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     </Form.Control>
                 </Form.Field>
                 {/* price field */}
-                <Form.Field
-                    className="grid mb-[10px]"
-                    name="price"
-                    id="price"
-                >
+                <Form.Field className="grid mb-[10px]" name="price" id="price">
                     <div className="flex items-baseline justify-between">
                         <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
                             <span className="text-red-500 mr-2">*</span>
@@ -187,7 +196,9 @@ export default function EditarProducto({ producto, tienda }: Props) {
                                             outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
                             type="number"
                             name="price"
-                            value={formulario.price === null ? 0 : formulario.price}
+                            value={
+                                formulario.price === null ? 0 : formulario.price
+                            }
                             onChange={handleChange}
                             required
                         />
@@ -206,8 +217,6 @@ export default function EditarProducto({ producto, tienda }: Props) {
                         </Form.Label>
                     </div>
                     <Form.Control asChild>
-
-
                         <fieldset className="space-y-4">
                             <legend className="sr-only">Mas buscado</legend>
 
@@ -215,7 +224,12 @@ export default function EditarProducto({ producto, tienda }: Props) {
                                 <input
                                     type="radio"
                                     name="DeliveryOption"
-                                    onChange={() => setFormulario({ ...formulario, mas_buscado: true })}
+                                    onChange={() =>
+                                        setFormulario({
+                                            ...formulario,
+                                            mas_buscado: true,
+                                        })
+                                    }
                                     id="DeliveryStandard"
                                     className="peer hidden"
                                     checked={formulario.mas_buscado}
@@ -237,7 +251,12 @@ export default function EditarProducto({ producto, tienda }: Props) {
                                 <input
                                     type="radio"
                                     name="DeliveryOption"
-                                    onChange={() => setFormulario({ ...formulario, mas_buscado: false })}
+                                    onChange={() =>
+                                        setFormulario({
+                                            ...formulario,
+                                            mas_buscado: false,
+                                        })
+                                    }
                                     checked={formulario.mas_buscado === false}
                                     id="DeliveryPriority"
                                     className="peer hidden"
@@ -255,16 +274,11 @@ export default function EditarProducto({ producto, tienda }: Props) {
                                 </label>
                             </div>
                         </fieldset>
-
                     </Form.Control>
                 </Form.Field>
 
                 {/* CATEGORIAS */}
-                <Form.Field
-                    className="grid mb-[10px]"
-                    name="price"
-                    id="price"
-                >
+                <Form.Field className="grid mb-[10px]" name="price" id="price">
                     <div className="flex items-baseline justify-between">
                         <Form.Label className="text-[15px] font-medium leading-[35px] text-black">
                             <span className="text-red-500 mr-2">*</span>
@@ -273,16 +287,27 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     </div>
                     <Form.Control asChild>
                         {/* @ts-ignore */}
-                        <Select onValueChange={(e) => handleCategoria(e)} value={formulario.categoria_id}>
+                        <Select
+                            onValueChange={(e) => handleCategoria(e)}
+                            value={formulario.categoria_id}
+                        >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Seleccionar una categoría" />
                             </SelectTrigger>
-                            <SelectContent position="item-aligned" side="bottom" align="end" className="overflow-y-scroll h-[500px] min-h-screen">
+                            <SelectContent
+                                position="item-aligned"
+                                side="bottom"
+                                align="end"
+                                className="overflow-y-scroll h-[500px] min-h-screen"
+                            >
                                 {/* <SelectGroup>
                                 <SelectLabel>Fruits</SelectLabel>
                             </SelectGroup> */}
                                 {categorias.map((categoria: any) => (
-                                    <SelectItem key={categoria.id} value={categoria.id}>
+                                    <SelectItem
+                                        key={categoria.id}
+                                        value={categoria.id}
+                                    >
                                         {categoria.nombre}
                                     </SelectItem>
                                 ))}
@@ -301,13 +326,22 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     </div>
                     <Form.Control asChild>
                         <>
-                            <Input accept=".png, .jpg, .jpeg" multiple id="picture" type="file" onChange={changeProductoImagen}
-                                required />
+                            <Input
+                                accept=".png, .jpg, .jpeg"
+                                multiple
+                                id="picture"
+                                type="file"
+                                onChange={changeProductoImagen}
+                                required
+                            />
                             <span className="mt-2 text-gray-400">
-                                * Las imagenes subidas reemplazaran <span className="text-red-500">completamente</span> las actuales
+                                * Las imagenes subidas reemplazaran{" "}
+                                <span className="text-red-500">
+                                    completamente
+                                </span>{" "}
+                                las actuales
                             </span>
                         </>
-
                     </Form.Control>
                 </Form.Field>
                 {/* DESCRIPCION FIELD */}
@@ -329,7 +363,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
                                                 hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9 resize-none"
                             name="descripcion"
                             rows={5}
-                            value={formulario.descripcion ?? ''}
+                            value={formulario.descripcion ?? ""}
                             onChange={handleChange}
                             required
                         />
@@ -344,15 +378,20 @@ export default function EditarProducto({ producto, tienda }: Props) {
                                 box-border w-full text-white shadow-blackA7 
                                 hover:bg-gray-700
                                 inline-flex h-[35px] items-center 
-                                justify-center rounded-[4px] ${procesandoCreacion ? 'bg-green-500' : 'bg-black'} px-[15px] font-medium leading-none shadow-[0_2px_10px]
+                                justify-center rounded-[4px] ${
+                                    procesandoCreacion
+                                        ? "bg-green-500"
+                                        : "bg-black"
+                                } px-[15px] font-medium leading-none shadow-[0_2px_10px]
                                 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]
                                 `}
                     >
-                        {procesandoCreacion ? 'Editando producto...' : 'Finalizar edición'}
+                        {procesandoCreacion
+                            ? "Editando producto..."
+                            : "Finalizar edición"}
                     </button>
                 </Form.Submit>
-
             </Form.Root>
         </div>
-    )
+    );
 }

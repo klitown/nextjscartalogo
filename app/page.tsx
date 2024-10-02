@@ -16,6 +16,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { BackgroundGradientAnimation } from "./components/background-gradient-animation";
+import Link from "next/link";
 
 // Font files can be colocated inside of `app`
 const agrandir = localFont({
@@ -59,20 +60,20 @@ const pricingTiers = [
         ],
         highlight: false,
     },
-    {
-        name: "PRO",
-        price: "85.000gs",
-        description: "Especial para fidelizar tu tienda",
-        features: [
-            "Página de ecommerce con opciones extras de interfaz",
-            "Acceso completo al panel de administración",
-            "Métricas de productos, vistas e interacciones mensuales",
-            "Soporte técnico prioritario",
-            "Hasta 3 fotos por producto",
-            "Diseño de flyers básicos para complemento de la tienda",
-        ],
-        highlight: true,
-    },
+    // {
+    //     name: "PRO",
+    //     price: "85.000gs",
+    //     description: "Especial para fidelizar tu tienda",
+    //     features: [
+    //         "Página de ecommerce con opciones extras de interfaz",
+    //         "Acceso completo al panel de administración",
+    //         "Métricas de productos, vistas e interacciones mensuales",
+    //         "Soporte técnico prioritario",
+    //         "Hasta 3 fotos por producto",
+    //         "Diseño de flyers básicos para complemento de la tienda",
+    //     ],
+    //     highlight: true,
+    // },
 ];
 
 function Home() {
@@ -88,11 +89,11 @@ function Home() {
                         <div className="flex flex-col md:flex-row h-32 gap-4 md:gap-0 md:h-16 items-center justify-center md:justify-between">
                             <div className="items-center flex justify-center md:flex md:items-center md:gap-12 ">
                                 <Image
-                                    src="/cartalogoWhite.png"
+                                    src="/bspy.png"
                                     priority={true}
-                                    width={200}
-                                    height={200}
-                                    alt="Logo de Cartalogo"
+                                    width={100}
+                                    height={100}
+                                    alt="Logo de BSPY"
                                 />
                             </div>
 
@@ -140,7 +141,10 @@ function Home() {
                             </div>
 
                             <div className="">
-                                <button className="group relative inline-flex h-[calc(38px+10px)] items-center justify-center rounded-full bg-orange-600 py-1 pl-6 pr-14 font-medium text-neutral-50">
+                                <Link
+                                    href={"/login"}
+                                    className="group relative inline-flex h-[calc(38px+10px)] items-center justify-center rounded-full bg-orange-600 py-1 pl-6 pr-14 font-medium text-neutral-50"
+                                >
                                     <span className="z-10 pr-2 font-bold">
                                         Crear mi tienda
                                     </span>
@@ -163,7 +167,7 @@ function Home() {
                                             </svg>
                                         </div>
                                     </div>
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -198,7 +202,7 @@ function Home() {
                         <div className="relative z-10 lg:py-16">
                             <div className="relative h-64 sm:h-80 lg:h-full">
                                 <Image
-                                    src="/portada_1.jpg"
+                                    src="/stock_image.jpeg"
                                     fill
                                     alt="Imagen de portada"
                                     className="absolute inset-2 h-full w-full object-cover ml-0 md:ml-5 rounded-xl"
@@ -419,7 +423,7 @@ function Home() {
                 ref={preciosRef}
                 aria-labelledby="pricing-one"
                 id="pricing-one"
-                className="container mx-auto bg-[url(/grid.svg)]"
+                className="container mx-auto"
             >
                 <div className="relative items-center w-full px-8 py-24 mx-auto md:px-12 lg:px-16 max-w-7xl">
                     <p
@@ -498,6 +502,12 @@ function Home() {
                                 </CardContent>
                                 <CardFooter className="relative z-10">
                                     <Button
+                                        onClick={() => {
+                                            window.open(
+                                                "https://wa.me/+595984659792?text=Hola%20BSPY%20estoy%20interesado%20en%20abrir%20una%20tienda%20con%20ustedes",
+                                                "_blank"
+                                            );
+                                        }}
                                         className={`w-full ${
                                             index === 0
                                                 ? "bg-orange-600 hover:bg-orange-700 text-white"
@@ -533,7 +543,7 @@ function Home() {
                             <button
                                 onClick={() => {
                                     window.open(
-                                        "https://wa.me/+595982989819?text=Hola%20Cartalogo%20estoy%20interesado%20en%20abrir%20una%20tienda%20con%20Cartalogo",
+                                        "https://wa.me/+595984659792?text=Hola%20BSPY%20estoy%20interesado%20en%20abrir%20una%20tienda%20con%20ustedes",
                                         "_blank"
                                     );
                                 }}
@@ -557,23 +567,20 @@ function Home() {
                     </div>
                 </div>
             </section>
-
+            <hr />
             <footer className="mt-12">
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="sm:flex sm:items-center sm:justify-between">
-                        <div className="flex justify-center text-teal-600 sm:justify-start">
+                    <div className="flex justify-center items-center">
+                        <div className="flex justify-center text-teal-600">
                             <Image
-                                src={"/cartalogoBlack.png"}
+                                src={"/bspy.png"}
                                 alt="Logo de cartalogo"
                                 width={200}
                                 height={200}
+                                className="rounded-md"
                                 priority
                             />
                         </div>
-
-                        <p className="mt-4 text-center text-sm text-gray-500 lg:mt-0 lg:text-right">
-                            Made with ❤️
-                        </p>
                     </div>
                 </div>
             </footer>
