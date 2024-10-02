@@ -289,7 +289,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
                         {/* @ts-ignore */}
                         <Select
                             onValueChange={(e) => handleCategoria(e)}
-                            value={formulario.categoria_id}
+                            value={`${formulario.categoria_id}`}
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Seleccionar una categoría" />
