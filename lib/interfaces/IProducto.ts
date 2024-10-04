@@ -5,8 +5,9 @@ interface IProducto {
     mas_buscado: boolean;
     categoria_id: number;
     imagenes: string[] | null;
-    id?: number;
-    inserted_at?: string;
-    updated_at?: string;
-    tienda_id?: number;
+    id: number;
+    inserted_at: string;
+    updated_at: string;
+    tienda_id: number;
+    attributes: any;
 }

@@ -3,9 +3,10 @@ import Header from "../../../components/Header";
 import { cache } from "react";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import CarritoProvider from "../../../components/Test";
+import CarritoProvider from "../../../components/CarritoProvider";
 import Image from "next/image";
 import { Toaster } from "@/components/ui/toaster";
+import { ITienda } from "@/lib/interfaces/ITienda";
 
 const createServerClient = cache(() => {
     const cookieStore = cookies();
@@ -21,7 +22,7 @@ const getTiendaInfo = cache(async (urlTienda: string) => {
         .select()
         .eq("url", urlTienda)
         .single();
-    return tienda;
+    return tienda as ITienda;
 });
 
 const getCategoriasInfo = cache(async (idTienda: number) => {

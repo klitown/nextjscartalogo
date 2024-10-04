@@ -1,8 +1,9 @@
-import Portada from "../../../components/Portada";
-import MasBuscados from "../../../components/MasBuscados";
 import { createServerClient, getCategoriasInfo, getTiendaInfo } from "./layout";
 
 import { Metadata } from "next";
+import PremiumTiendaLayout from "@/app/components/layouts/PremiumTiendaLayout";
+import FreeTiendaLayout from "@/app/components/layouts/FreeTiendaLayout";
+import { ITienda } from "@/lib/interfaces/ITienda";
 
 type Props = {
     params: { slug: string };
@@ -29,29 +30,32 @@ export default async function Page({ params }: { params: { slug: string } }) {
         }
         return data;
     }
-    const tienda = await getTiendaInfo(params.slug);
+    const tienda: ITienda = await getTiendaInfo(params.slug);
     const productos = await getProductosData();
     const categorias = await getCategoriasInfo(tienda.id);
 
-    /*********
-    UI SECTION
-    UI SECTION
-    UI SECTION 
-    ***********/
+    const width = tienda.plan_id === 1 ? "w-full" : "max-w-6xl";
+    const tiendaBasica = tienda.plan_id === 1;
 
     return (
-        <div className="w-full">
-            <Portada
-                tiendaNombre={tienda.nombre}
-                tiendaDescripcion={tienda.descripcion}
-                urlPortada={tienda.imagen_portada}
-                redes={tienda.redes}
-            />
-            <MasBuscados
-                tiendaUrl={tienda.url}
-                productos={productos}
-                categorias={categorias}
-            />
+        <div className="flex justify-center gap-4 min-h-screen">
+            <div className={width}>
+                <main className="px-4 sm:px-6 lg:px-0">
+                    {tiendaBasica ? (
+                        <FreeTiendaLayout
+                            tienda={tienda}
+                            productos={productos}
+                            categorias={categorias}
+                        />
+                    ) : (
+                        <PremiumTiendaLayout
+                            tienda={tienda}
+                            productos={productos}
+                            categorias={categorias}
+                        />
+                    )}
+                </main>
+            </div>
         </div>
     );
 }

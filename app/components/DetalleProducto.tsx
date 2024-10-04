@@ -7,6 +7,7 @@ import Link from "next/link";
 import "./cards.css";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
+import { motion } from "framer-motion";
 
 function DetalleProducto({
     producto,
@@ -19,9 +20,11 @@ function DetalleProducto({
     const [images, setImages] = useState<
         Array<{ original: string; thumbnail?: string }>
     >([]);
+    const [selectedAttributes, setSelectedAttributes] = useState<{
+        [key: string]: string;
+    }>({});
 
     const { inCart, cartTotal, items, addItem, updateItemQuantity } = useCart();
-
     const { toast } = useToast();
 
     useEffect(() => {
@@ -37,7 +40,10 @@ function DetalleProducto({
     }, []);
 
     const handleClick = (producto: IProducto) => {
-        let prod = producto as unknown as Item;
+        let prod = {
+            ...producto,
+            attributes: selectedAttributes,
+        } as unknown as Item;
         //@ts-ignore
         addItem(prod);
         toast({
@@ -73,8 +79,51 @@ function DetalleProducto({
         setImages(imagenes);
     };
 
+    const handleAttributeChange = (attribute: string, value: string) => {
+        setSelectedAttributes((prev) => ({ ...prev, [attribute]: value }));
+    };
+
+    const renderAttributes = () => {
+        if (!producto.attributes) return null;
+
+        return Object.entries(producto.attributes).map(([key, value]) => (
+            <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="mb-4"
+            >
+                <h3 className="text-lg font-semibold mb-2">{key}</h3>
+                <div className="flex flex-wrap gap-2">
+                    {Array.isArray(value) ? (
+                        value.map((item) => (
+                            <button
+                                key={item}
+                                onClick={() => handleAttributeChange(key, item)}
+                                className={`px-3 py-1 rounded-full text-sm ${
+                                    selectedAttributes[key] === item
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-gray-200 text-gray-800"
+                                }`}
+                            >
+                                {item}
+                            </button>
+                        ))
+                    ) : (
+                        <span>{value ? "asd" : "asd2"}</span>
+                    )}
+                </div>
+            </motion.div>
+        ));
+    };
+
     return (
-        <>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <div className="flex justify-start items-center mx-auto ml-0 md:ml-10 my-10">
                 <Link
                     href={`/${tiendaUrl}`}
@@ -110,7 +159,12 @@ function DetalleProducto({
                 </Link>
             </div>
 
-            <div className="container mx-auto flex flex-col lg:flex-row min-h-screen my-20 border border-gray-200 rounded-xl p-10">
+            <motion.div
+                className="container mx-auto flex flex-col lg:flex-row min-h-screen my-20 border border-gray-200 rounded-xl p-10"
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
                 <hr />
                 <div className="basis-full flex justify-start items-start md:basis-1/2 lg:basis-1/2">
                     <ImageGallery
@@ -124,7 +178,12 @@ function DetalleProducto({
                 </div>
 
                 <div className="basis-full lg:basis-1/2 flex flex-col justify-start p-5 gap-10">
-                    <div className="flex flex-row justify-between">
+                    <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="flex flex-row justify-between"
+                    >
                         <h1 className="text-3xl font-bold">
                             {producto.nombre}
                         </h1>
@@ -134,12 +193,18 @@ function DetalleProducto({
                                 "es-ES"
                             )}
                         </p>
-                    </div>
-                    <div>
+                    </motion.div>
+                    <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                    >
                         {producto.descripcion && (
                             <p className="font-light">{producto.descripcion}</p>
                         )}
-                    </div>
+                    </motion.div>
+
+                    {renderAttributes()}
 
                     {
                         //@ts-ignore
@@ -153,7 +218,18 @@ function DetalleProducto({
                                         }}
                                     >
                                         {+item.id === +producto.id! && (
-                                            <div className="flex justify-around items-center gap-1">
+                                            <motion.div
+                                                className="flex justify-around items-center gap-1"
+                                                initial={{
+                                                    scale: 0.8,
+                                                    opacity: 0,
+                                                }}
+                                                animate={{
+                                                    scale: 1,
+                                                    opacity: 1,
+                                                }}
+                                                transition={{ duration: 0.3 }}
+                                            >
                                                 <button
                                                     onClick={() =>
                                                         updateItemQuantity(
@@ -181,19 +257,21 @@ function DetalleProducto({
                                                 >
                                                     &#43;
                                                 </button>
-                                            </div>
+                                            </motion.div>
                                         )}
                                     </div>
                                 ))}
                             </>
                         ) : (
-                            <button
+                            <motion.button
                                 className="flex items-center justify-center bg-slate-900 px-5 py-2.5 text-center text-sm 
-                font-medium text-white w-full hover:bg-green-500"
+                                font-medium text-white w-full hover:bg-green-500"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleClick(producto);
                                 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -210,12 +288,12 @@ function DetalleProducto({
                                     />
                                 </svg>
                                 Agregar al carrito
-                            </button>
+                            </motion.button>
                         )
                     }
                 </div>
-            </div>
-        </>
+            </motion.div>
+        </motion.div>
     );
 }
 

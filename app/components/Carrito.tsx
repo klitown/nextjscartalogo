@@ -2,6 +2,7 @@
 import { useCart } from "react-use-cart";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export const Carrito = ({ tienda }: any) => {
     const { removeItem, items, cartTotal } = useCart();
@@ -49,7 +50,7 @@ export const Carrito = ({ tienda }: any) => {
         return final;
     };
 
-    if (!items && !tienda) return <h1>loading..</h1>;
+    if (items.length === 0 && !tienda) return <div>Loading...</div>;
 
     return (
         <>
@@ -178,7 +179,7 @@ export const Carrito = ({ tienda }: any) => {
                             proceder a la compra
                         </p>
                         <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-                            {items.length >= 1 ? (
+                            {items && items.length >= 1 ? (
                                 <>
                                     {items.map((prod) => {
                                         const priceFormatted = parseInt(
@@ -186,15 +187,19 @@ export const Carrito = ({ tienda }: any) => {
                                             10
                                         );
                                         return (
-                                            <div
+                                            <motion.div
                                                 className="flex flex-col rounded-lg bg-white sm:flex-row border border-gray-200 p-4"
                                                 key={prod.id}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.3 }}
                                             >
                                                 <div className="w-full p-2">
                                                     <Image
                                                         src={
                                                             prod.imagenes
-                                                                .length >= 1
+                                                                ?.length >= 1
                                                                 ? prod
                                                                       .imagenes[0]
                                                                 : "https://wubpmygcxfkkllmvhixb.supabase.co/storage/v1/object/public/bspy/cartalogo/white.png"
@@ -211,7 +216,7 @@ export const Carrito = ({ tienda }: any) => {
                                                         {prod.quantity}{" "}
                                                         {prod.quantity === 1
                                                             ? "unidad"
-                                                            : "unidades"}{" "}
+                                                            : "unidades"}
                                                         )
                                                     </span>
                                                     <p className="text-lg font-bold">
@@ -220,13 +225,64 @@ export const Carrito = ({ tienda }: any) => {
                                                             "es-ES"
                                                         )}
                                                     </p>
-                                                    <button
+
+                                                    {prod.attributes &&
+                                                        Object.keys(
+                                                            prod.attributes
+                                                        ).length > 0 && (
+                                                            <div className="mt-2">
+                                                                <p className="font-semibold text-sm text-gray-700">
+                                                                    Detalles:
+                                                                </p>
+                                                                <ul className="list-disc list-inside">
+                                                                    {Object.entries(
+                                                                        prod.attributes
+                                                                    ).map(
+                                                                        ([
+                                                                            key,
+                                                                            value,
+                                                                        ]) => (
+                                                                            <li
+                                                                                key={
+                                                                                    key
+                                                                                }
+                                                                                className="text-sm text-gray-600"
+                                                                            >
+                                                                                <span className="font-medium">
+                                                                                    {
+                                                                                        key
+                                                                                    }
+
+                                                                                    :
+                                                                                </span>{" "}
+                                                                                {typeof value ===
+                                                                                    "string" ||
+                                                                                typeof value ===
+                                                                                    "number"
+                                                                                    ? value
+                                                                                    : JSON.stringify(
+                                                                                          value
+                                                                                      )}
+                                                                            </li>
+                                                                        )
+                                                                    )}
+                                                                </ul>
+                                                            </div>
+                                                        )}
+
+                                                    <motion.button
                                                         type="button"
                                                         onClick={() =>
                                                             removeItem(prod.id)
                                                         }
                                                         className="mt-3 w-32 flex rounded-xl p-2 justify-center items-center text-gray-500 transition-all duration-200 ease-in-out 
-                                                            focus:shadow bg-red-500 hover:bg-red-800"
+                                                        focus:shadow bg-red-500 hover:bg-red-800"
+                                                        whileHover={{
+                                                            scale: 1.05,
+                                                        }}
+                                                        whileTap={{
+                                                            scale: 0.95,
+                                                        }}
                                                     >
                                                         <svg
                                                             className="h-5 w-5 text-white"
@@ -246,9 +302,9 @@ export const Carrito = ({ tienda }: any) => {
                                                         <span className="text-white font-bold">
                                                             Eliminar
                                                         </span>
-                                                    </button>
+                                                    </motion.button>
                                                 </div>
-                                            </div>
+                                            </motion.div>
                                         );
                                     })}
                                     <hr />

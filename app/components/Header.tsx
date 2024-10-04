@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "./SidebarTienda";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { NavigationMenuDemo } from "./Asd";
+import { NavigationMenuDemo } from "./CategoriasDropdown";
 
 function Header({
     tienda,

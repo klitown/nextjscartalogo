@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 import {
     NavigationMenu,
@@ -12,17 +12,27 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 
-
-export function NavigationMenuDemo({ categorias, tiendaUrl }:
-    { categorias: Array<{ codigo: string, descripcion: string, id: number, nombre: string }>, tiendaUrl: string }) {
-
+export function NavigationMenuDemo({
+    categorias,
+    tiendaUrl,
+}: {
+    categorias: Array<{
+        codigo: string;
+        descripcion: string;
+        id: number;
+        nombre: string;
+    }>;
+    tiendaUrl: string;
+}) {
     return (
         <NavigationMenu orientation="vertical">
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-lg">Categorías</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className="text-lg">
+                        Categorías
+                    </NavigationMenuTrigger>
                     <NavigationMenuContent>
                         <ul className="grid w-[300px] gap-3 p-4 md:grid-cols-1">
                             {categorias.map((categoria) => (
@@ -37,7 +47,7 @@ export function NavigationMenuDemo({ categorias, tiendaUrl }:
                 </NavigationMenuItem>
             </NavigationMenuList>
         </NavigationMenu>
-    )
+    );
 }
 
 const ListItem = ({ href, title, children }: any) => {
@@ -48,13 +58,15 @@ const ListItem = ({ href, title, children }: any) => {
                     href={href}
                     className={`block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground`}
                 >
-                    <div className="text-md font-medium leading-none">{title}</div>
+                    <div className="text-md font-medium leading-none">
+                        {title}
+                    </div>
                     {/* <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                         {children}
                     </p> */}
                 </Link>
             </NavigationMenuLink>
         </li>
-    )
-}
-ListItem.displayName = "ListItem"
+    );
+};
+ListItem.displayName = "ListItem";

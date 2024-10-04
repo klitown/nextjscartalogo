@@ -24,7 +24,7 @@ function Portada({
         >
             <div
                 className="flex justify-center items-center px-8 
-            py-12 mx-auto min-w-[40vw] max-w-7xl max-h-[60vh] lg:px-16 md:px-12 lg:py-24 rounded-xl"
+            py-12 mx-auto min-w-[40vw] max-w-7xl max-h-[60vh] lg:px-16 md:px-12 lg:py-24 rounded-xl "
             >
                 <div className="justify-center w-full text-center lg:p-10 max-auto bg-white rounded-lg backdrop-blur-md bg-opacity-20">
                     <div className="justify-center w-full mx-auto">

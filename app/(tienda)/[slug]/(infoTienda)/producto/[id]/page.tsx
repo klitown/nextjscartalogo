@@ -21,12 +21,15 @@ export default async function Page({
     async function getProductoData() {
         const supabase = createServerClient();
         const { data, error } = await supabase.rpc(
-            "obtener_producto_por_id_y_url",
+            "obtener_producto_por_id_o_url",
             {
                 tienda_url_param: params.slug,
                 producto_id_param: params.id,
             }
         );
+        if (error) {
+            console.error(error);
+        }
         return data;
     }
 
