@@ -20,7 +20,7 @@ export async function GET(request: Request) {
             // Query the tiendas table to get the tienda for this user
             const { data: tienda, error: tiendaError } = await supabase
                 .from("tiendas")
-                .select("nombre")
+                .select("url")
                 .eq("user_id", userId)
                 .single();
 

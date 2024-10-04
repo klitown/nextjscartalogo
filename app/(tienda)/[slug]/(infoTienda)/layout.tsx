@@ -6,8 +6,6 @@ import { cookies } from "next/headers";
 import CarritoProvider from "../../../components/Test";
 import Image from "next/image";
 import { Toaster } from "@/components/ui/toaster";
-import { useUser } from "@/app/hooks/user-user";
-import { redirect } from "next/navigation";
 
 const createServerClient = cache(() => {
     const cookieStore = cookies();

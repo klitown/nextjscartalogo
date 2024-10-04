@@ -47,9 +47,24 @@ export default async function ProductDetailLayout({
                     <h2 className="text-2xl font-semibold">Menú principal</h2>
                 </div>
                 <nav className="flex-1 px-4 space-y-2">
-                    <DesktopSidebarLink href={`/${params.slug}/dashboard`} icon={<HomeIcon />}>Inicio</DesktopSidebarLink>
-                    <DesktopSidebarLink href={`/${params.slug}/dashboard/mitienda`} icon={<HeartIcon />}>Mi tienda</DesktopSidebarLink>
-                    <DesktopSidebarLink href={`/${params.slug}/dashboard/misproductos`} icon={<ArchiveIcon />}>Mis productos</DesktopSidebarLink>
+                    <DesktopSidebarLink
+                        href={`/${params.slug}/dashboard`}
+                        icon={<HomeIcon />}
+                    >
+                        Inicio
+                    </DesktopSidebarLink>
+                    <DesktopSidebarLink
+                        href={`/${params.slug}/dashboard/mitienda`}
+                        icon={<HeartIcon />}
+                    >
+                        Mi tienda
+                    </DesktopSidebarLink>
+                    <DesktopSidebarLink
+                        href={`/${params.slug}/dashboard/misproductos`}
+                        icon={<ArchiveIcon />}
+                    >
+                        Mis productos
+                    </DesktopSidebarLink>
                 </nav>
             </aside>
 
@@ -60,7 +75,10 @@ export default async function ProductDetailLayout({
                         <div className="flex items-center">
                             {/* Mobile Sidebar Trigger */}
                             <Sheet>
-                                <SheetTrigger asChild className="lg:hidden mr-4">
+                                <SheetTrigger
+                                    asChild
+                                    className="lg:hidden mr-4"
+                                >
                                     <button className="p-2">
                                         <MenuIcon className="h-6 w-6" />
                                     </button>
@@ -70,9 +88,24 @@ export default async function ProductDetailLayout({
                                         <SheetTitle>Menú principal</SheetTitle>
                                     </SheetHeader>
                                     <nav className="flex-1 px-4 space-y-2">
-                                        <MobileSidebarLink href={`/${params.slug}/dashboard`} icon={<HomeIcon />}>Inicio</MobileSidebarLink>
-                                        <MobileSidebarLink href={`/${params.slug}/dashboard/mitienda`} icon={<HeartIcon />}>Mi tienda</MobileSidebarLink>
-                                        <MobileSidebarLink href={`/${params.slug}/dashboard/misproductos`} icon={<ArchiveIcon />}>Mis productos</MobileSidebarLink>
+                                        <MobileSidebarLink
+                                            href={`/${params.slug}/dashboard`}
+                                            icon={<HomeIcon />}
+                                        >
+                                            Inicio
+                                        </MobileSidebarLink>
+                                        <MobileSidebarLink
+                                            href={`/${params.slug}/dashboard/mitienda`}
+                                            icon={<HeartIcon />}
+                                        >
+                                            Mi tienda
+                                        </MobileSidebarLink>
+                                        <MobileSidebarLink
+                                            href={`/${params.slug}/dashboard/misproductos`}
+                                            icon={<ArchiveIcon />}
+                                        >
+                                            Mis productos
+                                        </MobileSidebarLink>
                                     </nav>
                                 </SheetContent>
                             </Sheet>
@@ -80,16 +113,22 @@ export default async function ProductDetailLayout({
                         <UserNav user={session.user} session={session} />
                     </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-6">
-                    {children}
-                </main>
+                <main className="flex-1 overflow-y-auto p-6">{children}</main>
             </div>
         </div>
     );
 }
 
 // Desktop SidebarLink component
-function DesktopSidebarLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
+function DesktopSidebarLink({
+    href,
+    icon,
+    children,
+}: {
+    href: string;
+    icon: React.ReactNode;
+    children: React.ReactNode;
+}) {
     return (
         <Link
             href={href}
@@ -102,7 +141,15 @@ function DesktopSidebarLink({ href, icon, children }: { href: string; icon: Reac
 }
 
 // Mobile SidebarLink component
-function MobileSidebarLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
+function MobileSidebarLink({
+    href,
+    icon,
+    children,
+}: {
+    href: string;
+    icon: React.ReactNode;
+    children: React.ReactNode;
+}) {
     return (
         <SheetClose asChild>
             <Link
