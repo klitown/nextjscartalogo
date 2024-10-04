@@ -9,5 +9,5 @@ interface IProducto {
     inserted_at: string;
     updated_at: string;
     tienda_id: number;
-    attributes: any;
+    attributes?: any;
 }

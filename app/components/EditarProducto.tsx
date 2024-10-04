@@ -1,8 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState, useTransition } from "react";
 import * as Form from "@radix-ui/react-form";
 import {
@@ -19,18 +16,23 @@ import { ITienda } from "@/lib/interfaces/ITienda";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { ToastAction } from "@/components/ui/toast";
+import { createClient } from "@/supabase/client";
 
 type Props = {
     producto: IProducto;
     tienda: ITienda;
 };
 
+type FormularioProducto = Omit<
+    IProducto,
+    "id" | "inserted_at" | "updated_at" | "tienda_id" | "attributes"
+>;
+
 export default function EditarProducto({ producto, tienda }: Props) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const supabase = createClient(url!, apiKey!);
+    const supabase = createClient();
+
     const router = useRouter();
-    const [formulario, setFormulario] = useState<IProducto>({
+    const [formulario, setFormulario] = useState<FormularioProducto>({
         nombre: producto.nombre,
         descripcion: producto.descripcion,
         mas_buscado: producto.mas_buscado,
@@ -43,14 +45,18 @@ export default function EditarProducto({ producto, tienda }: Props) {
     const [isPending, startTransition] = useTransition();
     const [categorias, setCategorias] = useState<any>([]);
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
-    const [galleryImages, setGalleryImages] = useState<{ original: string; thumbnail: string }[]>([]);
+    const [galleryImages, setGalleryImages] = useState<
+        { original: string; thumbnail: string }[]
+    >([]);
 
     useEffect(() => {
         if (producto.imagenes) {
-            setGalleryImages(producto.imagenes.map(img => ({
-                original: img,
-                thumbnail: img
-            })));
+            setGalleryImages(
+                producto.imagenes.map((img) => ({
+                    original: img,
+                    thumbnail: img,
+                }))
+            );
         }
     }, [producto.imagenes]);
 
@@ -117,14 +123,14 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     title: "¡Los datos han sidos actualizados correctamente!",
                     description:
                         "El cambio se reflejará en tu tienda en un instante",
-                        action: (
-                            <ToastAction
-                                className="text-sm border border-white bg-green-500 text-white px-3 py-1 font-bold rounded-xl"
-                                altText="Entiendo"
-                            >
-                                Entendido
-                            </ToastAction>
-                        ),
+                    action: (
+                        <ToastAction
+                            className="text-sm border border-white bg-green-500 text-white px-3 py-1 font-bold rounded-xl"
+                            altText="Entiendo"
+                        >
+                            Entendido
+                        </ToastAction>
+                    ),
                 });
                 const escapeEvent = new KeyboardEvent("keydown", {
                     key: "Escape",
@@ -136,7 +142,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
             }
         } catch (error) {
             console.error("Error updating data: ", error);
-        } finally { 
+        } finally {
             setProcesandoCreacion(false);
         }
     }
@@ -368,9 +374,10 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     </Form.Control>
                 </Form.Field>
 
-
                 <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">Imágenes actuales del producto</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                        Imágenes actuales del producto
+                    </h3>
                     {galleryImages.length > 0 ? (
                         <ImageGallery
                             items={galleryImages}
