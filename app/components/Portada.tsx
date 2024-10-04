@@ -17,7 +17,7 @@ function Portada({
 }: Portada) {
     return (
         <section
-            className="h-[85vh]  flex justify-center items-center w-full"
+            className="h-[85vh] flex justify-center items-center w-full bg-cover bg-center bg-no-repeat"
             style={{
                 backgroundImage: `url('${urlPortada}')`,
             }}
@@ -26,14 +26,14 @@ function Portada({
                 className="flex justify-center items-center px-8 
             py-12 mx-auto min-w-[40vw] max-w-7xl max-h-[60vh] lg:px-16 md:px-12 lg:py-24 rounded-xl"
             >
-                <div className="justify-center w-full text-center lg:p-10 max-auto">
+                <div className="justify-center w-full text-center lg:p-10 max-auto bg-white rounded-lg backdrop-blur-md bg-opacity-20">
                     <div className="justify-center w-full mx-auto">
                         <p
-                            className={`mt-8 text-5xl font-medium tracking-tighter text-black font-inter`}
+                            className={`mt-8 text-5xl font-medium tracking-tighter text-shadow-lg font-inter text-white`}
                         >
                             {tiendaNombre.toUpperCase()}
                         </p>
-                        <p className="max-w-xl mx-auto mt-4 text-lg tracking-tight overflow-clip">
+                        <p className="max-w-xl mx-auto mt-4 text-lg tracking-tight overflow-clip text-white">
                             {tiendaDescripcion}
                         </p>
                     </div>

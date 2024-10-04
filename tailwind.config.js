@@ -88,8 +88,19 @@ module.exports = {
         fourth: "moveHorizontal 40s ease infinite",
         fifth: "moveInCircle 20s ease infinite",
       },
-
+      textShadow: {
+        'lg': '0 0 5px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.3)',
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.text-shadow-lg': {
+          textShadow: '0 0 5px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.3)',
+        },
+      }
+      addUtilities(newUtilities)
+    },
+  ],
 }
