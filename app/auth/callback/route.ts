@@ -27,7 +27,8 @@ export async function GET(request: Request) {
             if (!tiendaError && tienda) {
                 // Redirect to the tienda's dashboard
                 return NextResponse.redirect(
-                    `${origin}/${tienda.nombre}/dashboard`
+                    //@ts-ignore
+                    `${origin}/${tienda.url}/dashboard`
                 );
             } else {
                 // If no tienda found, redirect to a default page

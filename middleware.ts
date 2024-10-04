@@ -24,11 +24,10 @@ export async function middleware(req: NextRequest) {
                 .single();
 
             if (tienda) {
-                //@ts-ignore
-                console.log("Redirecting to:", `/${tienda.url}/dashboard`);
                 // If the user already has a tienda, redirect them to their dashboard
                 return NextResponse.redirect(
-                    new URL(`/${tienda.nombre}/dashboard`, req.url)
+                    //@ts-ignore
+                    new URL(`/${tienda.url}/dashboard`, req.url)
                 );
             }
         } else {
