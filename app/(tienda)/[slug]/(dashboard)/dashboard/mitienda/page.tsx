@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { getTiendaInfo } from "../../../(infoTienda)/layout";
 import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
+import { Edit, Phone, MapPin, Instagram, Facebook, Info } from "lucide-react";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -30,120 +29,84 @@ export default async function Page({ params }: { params: { slug: string } }) {
     }
 
     return (
-        <div className="container mx-auto flex flex-col relative">
-            <h2 className="text-3xl font-bold mb-5 text-left">
-                Información de la tienda
-            </h2>
-            <hr className="my-3" />
-            <div
-                role="alert"
-                className="rounded border-s-4 border-green-500 bg-green-50 p-4 my-5"
-            >
-                <div className="flex items-center gap-2 text-green-800">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="h-5 w-5"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                            clipRule="evenodd"
+        <div className="container mx-auto py-10 px-4">
+            <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg shadow-lg p-8 mb-10">
+                <div className="flex flex-col md:flex-row items-center justify-between">
+                    <div className="mb-6 md:mb-0 md:mr-8">
+                        <Image
+                            src={tienda.url_logo}
+                            alt="Logo de la tienda"
+                            width={150}
+                            height={150}
+                            className="rounded-full border-4 border-white shadow-md"
                         />
-                    </svg>
-
-                    <strong className="block font-bold"> Atención </strong>
+                    </div>
+                    <div className="text-center md:text-left text-white flex-grow">
+                        <h1 className="text-4xl font-bold mb-2">{tienda.nombre.toUpperCase()}</h1>
+                        <p className="text-xl opacity-90">{tienda.descripcion}</p>
+                    </div>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="bg-white text-black hover:bg-indigo-100 mt-4 md:mt-0">
+                                <Edit className="mr-2 h-4 w-4" /> Editar información
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-neutral-50">
+                            <DialogHeader>
+                                <DialogTitle className="text-3xl">
+                                    Editar información de la tienda
+                                </DialogTitle>
+                            </DialogHeader>
+                            <EditarTienda tienda={tienda} />
+                        </DialogContent>
+                    </Dialog>
                 </div>
-
-                <p className="mt-2 text-md text-green-700">
-                    La información mostrada acá son los datos públicos para tus
-                    clientes y visitantes de tu tienda
-                </p>
             </div>
 
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button className="bg-indigo-500 hover:bg-indigo-700 w-60">
-                        <Edit className="mr-2 h-4 w-4" /> Editar información
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-neutral-50">
-                    <DialogHeader>
-                        <DialogTitle className="text-3xl">
-                            Editar información de la tienda
-                        </DialogTitle>
-                    </DialogHeader>
-                    <EditarTienda tienda={tienda} />
-                </DialogContent>
-            </Dialog>
-
-            <div className="flex flex-col justify-center items-center mt-5">
-                <Image
-                    src={tienda.url_logo}
-                    alt="Logo de la tienda"
-                    width={300}
-                    height={300}
-                    sizes="(max-width: 1300px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    style={{
-                        borderRadius: "1rem",
-                    }}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <InfoCard icon={<Phone />} title="Teléfono" content={tienda.telefono?.toString() || ''} />
+                <InfoCard icon={<MapPin />} title="Ubicación" content={tienda.ubicacion?.toUpperCase()} />
+                <InfoCard
+                    icon={<Instagram />}
+                    title="Instagram"
+                    content={obtenerNombreUsuarioInstagram(tienda.redes!)}
+                    link={`https://instagram.com/${obtenerNombreUsuarioInstagram(tienda.redes!)}`}
                 />
-                <h2 className="text-4xl font-bold my-10 text-center">
-                    {tienda.nombre.toUpperCase()}
-                </h2>
-
-                <div className="flow-root">
-                    <dl className="-my-3 divide-y divide-gray-100 text-lg">
-                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                            <dt className="font-semibold text-xl text-gray-900">
-                                Teléfono
-                            </dt>
-                            <dd className="text-gray-700 sm:col-span-2">
-                                {tienda.telefono}
-                            </dd>
-                        </div>
-                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                            <dt className="font-semibold text-xl text-gray-900">
-                                Ubicación
-                            </dt>
-                            <dd className="text-gray-700 sm:col-span-2">
-                                {tienda.ubicacion?.toUpperCase()}
-                            </dd>
-                        </div>
-                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                            <dt className="font-semibold text-xl text-gray-900">
-                                Descripción
-                            </dt>
-                            <dd className="text-gray-700 sm:col-span-2">
-                                {tienda.descripcion}
-                            </dd>
-                        </div>
-                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                            <dt className="font-semibold text-xl text-gray-900">
-                                Instagram
-                            </dt>
-                            <dd className="text-gray-700 sm:col-span-2">
-                                {obtenerNombreUsuarioInstagram(tienda.redes!)}
-                            </dd>
-                        </div>
-                        <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                            <dt className="font-semibold text-xl text-gray-900">
-                                Facebook
-                            </dt>
-                            <dd className="text-gray-700 sm:col-span-2">
-                                {tienda.redes?.includes("facebook") && (
-                                    <>
-                                        {tienda.redes.find(
-                                            (red) => red === "facebook"
-                                        )}
-                                    </>
-                                )}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
+                <InfoCard
+                    icon={<Facebook />}
+                    title="Facebook"
+                    content={tienda.redes?.find((red) => red.includes("facebook"))}
+                    link={tienda.redes?.find((red) => red.includes("facebook"))}
+                />
             </div>
+        </div>
+    );
+}
+
+interface InfoCardProps {
+    icon: React.ReactNode;
+    title: string;
+    content: string | undefined;
+    link?: string;
+    fullWidth?: boolean;
+}
+
+function InfoCard({ icon, title, content, link, fullWidth }: InfoCardProps) {
+    return (
+        <div className={`bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg ${fullWidth ? 'md:col-span-2 lg:col-span-3' : ''}`}>
+            <div className="flex items-center mb-4">
+                <div className="bg-indigo-100 p-3 rounded-full mr-4">
+                    {icon}
+                </div>
+                <h3 className="text-xl font-semibold">{title}</h3>
+            </div>
+            {link ? (
+                <a href={link} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                    {content}
+                </a>
+            ) : (
+                <p className="text-gray-700">{content}</p>
+            )}
         </div>
     );
 }

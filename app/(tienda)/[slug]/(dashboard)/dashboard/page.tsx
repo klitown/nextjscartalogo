@@ -3,14 +3,53 @@
 import { useUser } from "@/app/hooks/user-user";
 import Link from "next/link";
 import { createClient } from "@/supabase/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, Package, Store, TrendingUp } from "lucide-react";
 
-function Dashboard({ params }: { params: { slug: string } }) {
-    const { loading, error, user, role } = useUser();
-    const [totalProducts, setTotalProducts] = useState<number | undefined>(
-        undefined
+interface DashboardCardProps {
+    title: string;
+    value: string;
+    icon: ReactNode;
+    link: string;
+    external?: boolean;
+}
+
+function DashboardCard({ title, value, icon, link, external = false }: DashboardCardProps) {
+    return (
+        <Link
+            href={link}
+            target={external ? "_blank" : "_self"}
+            className="block w-full h-full"
+        >
+            <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white p-6 rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl h-full"
+            >
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">{title}</h3>
+                    <div className="p-2 bg-gray-100 rounded-full">{icon}</div>
+                </div>
+                <p className="text-3xl font-bold mb-4">{value}</p>
+                <div className="flex items-center text-sm font-medium text-gray-600 hover:text-black transition-colors duration-150">
+                    Ver detalles
+                    <ArrowRight className="ml-1 w-4 h-4" />
+                </div>
+            </motion.div>
+        </Link>
     );
+}
 
+interface DashboardProps {
+    params: {
+        slug: string;
+    };
+}
+
+function Dashboard({ params }: DashboardProps) {
+    const { loading, error, user, role } = useUser();
+    const [totalProducts, setTotalProducts] = useState<number | undefined>(undefined);
     const supabase = createClient();
 
     useEffect(() => {
@@ -54,45 +93,45 @@ function Dashboard({ params }: { params: { slug: string } }) {
         setTotalProducts(count || 0);
     };
 
-    if (!user) return <div>Loading..</div>;
+
+    if (!user) return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-center h-screen">Loading...</motion.div>;
 
     return (
-        <>
-            <div className="flex min-h-screen">
-                <div className="basis-full">
-                    <div className="container mx-auto p-4">
-                        <div className="flex flex-col md:flex-row md:justify-between items-center mb-4 -mt-5">
-                            <p className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                                ¡Bienvenido, {user.user_metadata.name}!
-                            </p>
-                            <a
-                                href={`https://bspy.com.py/${params.slug}`}
-                                target="_blank"
-                                className="bg-blue-500 rounded-xl px-3 py-2 text-white hover:bg-blue-700"
-                            >
-                                Ver mi tienda
-                            </a>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mt-10">
-                            <Link
-                                href={`http://bspy.com.py/${params.slug}/dashboard/misproductos`}
-                                className="h-32 bg-white shadow-md rounded-lg border border-gray-200 p-3 flex flex-col justify-evenly"
-                            >
-                                <div className="flex flex-row justify-between text-xl font-bold hover:text-blue-500">
-                                    Ver mis productos
-                                </div>
-                                <h4 className="text-3xl font-bold text-black">
-                                    {totalProducts}
-                                </h4>
-                                <h5 className="text-sm font-light">
-                                    productos cargados
-                                </h5>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="container mx-auto p-8 border border-gray-200 rounded-lg bg-white"
+        >
+            <header className="mb-12">
+                <motion.h1 
+                    initial={{ x: -20 }}
+                    animate={{ x: 0 }}
+                    className="text-4xl font-bold text-black mb-2"
+                >
+                    ¡Bienvenido, {user.user_metadata.name}!
+                </motion.h1>
+                <motion.p 
+                    initial={{ x: -20 }}
+                    animate={{ x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-gray-600"
+                >
+                    Aquí tienes un resumen de tu tienda.
+                </motion.p>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <DashboardCard
+                    title="Total de Productos"
+                    value={totalProducts !== undefined ? totalProducts.toString() : "..."}
+                    icon={<Package />}
+                    link={`/${params.slug}/dashboard/misproductos`}
+                />
             </div>
-        </>
+
+
+        </motion.div>
     );
 }
 

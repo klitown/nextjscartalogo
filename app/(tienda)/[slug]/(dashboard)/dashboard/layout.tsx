@@ -7,12 +7,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-    ArchiveIcon,
-    HeartIcon,
-    HomeIcon,
-    RocketIcon,
-} from "@radix-ui/react-icons";
+import { ArchiveIcon, HeartIcon, HomeIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTiendaInfo } from "../../(infoTienda)/layout";
@@ -45,90 +40,78 @@ export default async function ProductDetailLayout({
     }
 
     return (
-        <div className="flex flex-col h-screen">
-            <header className="bg-white">
-                <div className="mx-auto px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between sm:justify-between sm:gap-4">
-                        <Sheet>
-                            <SheetTrigger asChild className="cursor-pointer">
-                                <svg
-                                    width="30"
-                                    height="30"
-                                    viewBox="0 0 15 15"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M1.5 3C1.22386 3 1 3.22386 1 3.5C1 3.77614 1.22386 4 1.5 4H13.5C13.7761 4 14 3.77614 14 3.5C14 3.22386 13.7761 3 13.5 3H1.5ZM1 7.5C1 7.22386 1.22386 7 1.5 7H13.5C13.7761 7 14 7.22386 14 7.5C14 7.77614 13.7761 8 13.5 8H1.5C1.22386 8 1 7.77614 1 7.5ZM1 11.5C1 11.2239 1.22386 11 1.5 11H13.5C13.7761 11 14 11.2239 14 11.5C14 11.7761 13.7761 12 13.5 12H1.5C1.22386 12 1 11.7761 1 11.5Z"
-                                        fill="currentColor"
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                    ></path>
-                                </svg>
-                            </SheetTrigger>
-                            <SheetContent
-                                side="left"
-                                className="w-[100vw] lg:w-1/4"
-                            >
-                                <SheetHeader>
-                                    <SheetTitle>Menú principal</SheetTitle>
-                                </SheetHeader>
-                                <hr className="my-3" />
-                                <div className="flex flex-col justify-center items-center gap-3 w-full text-lg text-black mt-5">
-                                    <SheetClose asChild>
-                                        <Link
-                                            href={`/${params.slug}/dashboard`}
-                                            className=" cursor-pointer  w-full flex flex-row text-xl font-bold tracking-wide p-2
-                                    hover:bg-indigo-500 hover:text-white hover:rounded-xl"
-                                        >
-                                            <HomeIcon
-                                                height={30}
-                                                width={30}
-                                                className="mr-3"
-                                            />
-                                            Inicio
-                                        </Link>
-                                    </SheetClose>
-                                    <SheetClose asChild>
-                                        <Link
-                                            href={`/${params.slug}/dashboard/mitienda`}
-                                            className=" cursor-pointer  w-full flex flex-row text-xl font-bold tracking-wide p-2
-                                    hover:bg-indigo-500 hover:text-white hover:rounded-xl"
-                                        >
-                                            <HeartIcon
-                                                height={30}
-                                                width={30}
-                                                className="mr-3"
-                                            />
-                                            Mi tienda
-                                        </Link>
-                                    </SheetClose>
-                                    <SheetClose asChild>
-                                        <Link
-                                            href={`/${params.slug}/dashboard/misproductos`}
-                                            className=" cursor-pointer  w-full flex flex-row text-xl font-bold tracking-wide p-2
-                                    hover:bg-indigo-500 hover:text-white hover:rounded-xl"
-                                        >
-                                            <ArchiveIcon
-                                                height={30}
-                                                width={30}
-                                                className="mr-3"
-                                            />
-                                            Mis productos
-                                        </Link>
-                                    </SheetClose>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+        <div className="flex h-screen bg-gray-50">
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:flex flex-col w-64 bg-white border-r">
+                <div className="p-6">
+                    <h2 className="text-2xl font-semibold">Menú principal</h2>
+                </div>
+                <nav className="flex-1 px-4 space-y-2">
+                    <DesktopSidebarLink href={`/${params.slug}/dashboard`} icon={<HomeIcon />}>Inicio</DesktopSidebarLink>
+                    <DesktopSidebarLink href={`/${params.slug}/dashboard/mitienda`} icon={<HeartIcon />}>Mi tienda</DesktopSidebarLink>
+                    <DesktopSidebarLink href={`/${params.slug}/dashboard/misproductos`} icon={<ArchiveIcon />}>Mis productos</DesktopSidebarLink>
+                </nav>
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                <header className="bg-white border-b p-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            {/* Mobile Sidebar Trigger */}
+                            <Sheet>
+                                <SheetTrigger asChild className="lg:hidden mr-4">
+                                    <button className="p-2">
+                                        <MenuIcon className="h-6 w-6" />
+                                    </button>
+                                </SheetTrigger>
+                                <SheetContent side="left" className="w-64 p-0">
+                                    <SheetHeader className="p-6">
+                                        <SheetTitle>Menú principal</SheetTitle>
+                                    </SheetHeader>
+                                    <nav className="flex-1 px-4 space-y-2">
+                                        <MobileSidebarLink href={`/${params.slug}/dashboard`} icon={<HomeIcon />}>Inicio</MobileSidebarLink>
+                                        <MobileSidebarLink href={`/${params.slug}/dashboard/mitienda`} icon={<HeartIcon />}>Mi tienda</MobileSidebarLink>
+                                        <MobileSidebarLink href={`/${params.slug}/dashboard/misproductos`} icon={<ArchiveIcon />}>Mis productos</MobileSidebarLink>
+                                    </nav>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
                         <UserNav user={session.user} session={session} />
                     </div>
-                    <hr className="my-3" />
-                </div>
-            </header>
-
-            {/* CONTENIDO PRINCIPAL */}
-            <div className="grow">{children}</div>
-            {/* END CONTENIDO PRINCIPAL */}
+                </header>
+                <main className="flex-1 overflow-y-auto p-6">
+                    {children}
+                </main>
+            </div>
         </div>
+    );
+}
+
+// Desktop SidebarLink component
+function DesktopSidebarLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
+    return (
+        <Link
+            href={href}
+            className="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg p-2 transition-colors duration-200"
+        >
+            {icon}
+            <span>{children}</span>
+        </Link>
+    );
+}
+
+// Mobile SidebarLink component
+function MobileSidebarLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
+    return (
+        <SheetClose asChild>
+            <Link
+                href={href}
+                className="flex items-center space-x-3 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg p-2 transition-colors duration-200"
+            >
+                {icon}
+                <span>{children}</span>
+            </Link>
+        </SheetClose>
     );
 }

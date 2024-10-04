@@ -24,15 +24,14 @@ export async function middleware(req: NextRequest) {
                 .single();
 
             if (tienda) {
-                console.log("User has tienda:", tienda.nombre);
-                console.log("Redirecting to:", `/${tienda.nombre}/dashboard`);
+                //@ts-ignore
+                console.log("Redirecting to:", `/${tienda.url}/dashboard`);
                 // If the user already has a tienda, redirect them to their dashboard
                 return NextResponse.redirect(
                     new URL(`/${tienda.nombre}/dashboard`, req.url)
                 );
             }
         } else {
-            console.log("No session, redirecting to login");
             // If the user is not authenticated, redirect them to the login page
             return NextResponse.redirect(new URL("/login", req.url));
         }

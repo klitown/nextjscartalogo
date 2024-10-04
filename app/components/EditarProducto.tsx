@@ -16,6 +16,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Check, LucideShieldClose } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ITienda } from "@/lib/interfaces/ITienda";
+import ImageGallery from "react-image-gallery";
+import "react-image-gallery/styles/css/image-gallery.css";
+import { ToastAction } from "@/components/ui/toast";
 
 type Props = {
     producto: IProducto;
@@ -40,6 +43,16 @@ export default function EditarProducto({ producto, tienda }: Props) {
     const [isPending, startTransition] = useTransition();
     const [categorias, setCategorias] = useState<any>([]);
     const [procesandoCreacion, setProcesandoCreacion] = useState(false);
+    const [galleryImages, setGalleryImages] = useState<{ original: string; thumbnail: string }[]>([]);
+
+    useEffect(() => {
+        if (producto.imagenes) {
+            setGalleryImages(producto.imagenes.map(img => ({
+                original: img,
+                thumbnail: img
+            })));
+        }
+    }, [producto.imagenes]);
 
     useEffect(() => {
         getCategorias();
@@ -81,6 +94,8 @@ export default function EditarProducto({ producto, tienda }: Props) {
             return;
         }
 
+        setProcesandoCreacion(true);
+
         try {
             const { data, error } = await supabase
                 .from("productos")
@@ -102,6 +117,14 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     title: "¡Los datos han sidos actualizados correctamente!",
                     description:
                         "El cambio se reflejará en tu tienda en un instante",
+                        action: (
+                            <ToastAction
+                                className="text-sm border border-white bg-green-500 text-white px-3 py-1 font-bold rounded-xl"
+                                altText="Entiendo"
+                            >
+                                Entendido
+                            </ToastAction>
+                        ),
                 });
                 const escapeEvent = new KeyboardEvent("keydown", {
                     key: "Escape",
@@ -113,8 +136,8 @@ export default function EditarProducto({ producto, tienda }: Props) {
             }
         } catch (error) {
             console.error("Error updating data: ", error);
-
-            return;
+        } finally { 
+            setProcesandoCreacion(false);
         }
     }
 
@@ -152,7 +175,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
     };
 
     return (
-        <div className="p-5">
+        <div className="p-5 h-full">
             <Form.Root className="w-full">
                 {/* NOMBRE FIELD */}
                 <Form.Field
@@ -344,6 +367,24 @@ export default function EditarProducto({ producto, tienda }: Props) {
                         </>
                     </Form.Control>
                 </Form.Field>
+
+
+                <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-2">Imágenes actuales del producto</h3>
+                    {galleryImages.length > 0 ? (
+                        <ImageGallery
+                            items={galleryImages}
+                            showPlayButton={false}
+                            showFullscreenButton={false}
+                            showNav={true}
+                            showBullets={true}
+                            showThumbnails={true}
+                        />
+                    ) : (
+                        <p>No hay imágenes disponibles para este producto.</p>
+                    )}
+                </div>
+
                 {/* DESCRIPCION FIELD */}
                 <Form.Field
                     className="grid mb-[10px]"
@@ -374,6 +415,7 @@ export default function EditarProducto({ producto, tienda }: Props) {
                     <button
                         onClick={handleSubmit}
                         type="button"
+                        disabled={procesandoCreacion}
                         className={`
                                 box-border w-full text-white shadow-blackA7 
                                 hover:bg-gray-700
