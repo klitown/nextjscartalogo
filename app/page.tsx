@@ -48,32 +48,31 @@ const features = [
 
 const pricingTiers = [
     {
+        name: "GRATIS",
+        price: "0gs",
+        description: "Perfecto para probar",
+        features: [
+            "Límite de 10 productos",
+            "Funcionalidad de carrito con redirección a Whatsapp",
+            "Opción de autogestión de productos",
+            "Soporte limitado",
+        ],
+        highlight: false,
+    },
+    {
         name: "BÁSICO",
         price: "50.000gs",
         description: "Excelente para empezar",
         features: [
-            "Página de ecommerce con template básico",
+            "Límite de 30 productos",
             "Funcionalidad de carrito con redirección a Whatsapp",
             "Opción de autogestión de productos",
-            "Soporte a convenir",
-            "Límite de 30 productos",
+            "Soporte prioritario",
+            "Actualizaciones preferenciales",
+            "Detalles de productos personalizados",
         ],
-        highlight: false,
+        highlight: true,
     },
-    // {
-    //     name: "PRO",
-    //     price: "85.000gs",
-    //     description: "Especial para fidelizar tu tienda",
-    //     features: [
-    //         "Página de ecommerce con opciones extras de interfaz",
-    //         "Acceso completo al panel de administración",
-    //         "Métricas de productos, vistas e interacciones mensuales",
-    //         "Soporte técnico prioritario",
-    //         "Hasta 3 fotos por producto",
-    //         "Diseño de flyers básicos para complemento de la tienda",
-    //     ],
-    //     highlight: true,
-    // },
 ];
 
 function Home() {
