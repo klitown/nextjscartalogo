@@ -22,31 +22,49 @@ export const Carrito = ({ tienda }: any) => {
         productos: any[],
         totalCarrito: number
     ) => {
-        let apiWhatspp = `https://api.whatsapp.com/send/?phone=${telefono}&text=`;
-        let texto = `Hola!%20vi%20${
-            productos.length === 1 ? "este" : "estos"
-        }%20${productos.length === 1 ? "producto" : "productos"}%20en%20la%20web
-    %20y%20quiero%20confirmar%20el%20pedido:%0A`;
-        let nombresProductos = productos.map(
-            (producto) =>
-                producto.nombre +
-                " " +
-                `(Cantidad: ${producto.quantity ? producto.quantity : 1}).` +
-                "%0A"
-        );
-        let replaced = nombresProductos.join("").replace(/ /g, "%20");
-        let final =
-            apiWhatspp +
-            texto +
-            replaced +
-            "%0A" +
-            `${
-                totalCarrito
-                    ? `El%20total%20según%20la%20web%20es%20de%20${formatNumber(
-                          totalCarrito
-                      )}%20.`
-                    : ""
-            }`;
+        let mensaje = `¡Hola! Me interesa${
+            productos.length === 1 ? " este producto" : "n estos productos"
+        } que vi en la web:\n\n`;
+
+        productos.forEach((producto, index) => {
+            mensaje += `*${index + 1}. ${producto.nombre}*\n`;
+            mensaje += ` • Cantidad: ${producto.quantity || 1}\n`;
+
+            if (producto.attributes) {
+                if (
+                    producto.attributes.Tamaños ||
+                    producto.attributes.tamaños
+                ) {
+                    mensaje += ` • Tamaño: ${
+                        producto.attributes.Tamaños ||
+                        producto.attributes.tamaños
+                    }\n`;
+                }
+                if (
+                    producto.attributes.Colores ||
+                    producto.attributes.colores
+                ) {
+                    mensaje += ` • Color: ${
+                        producto.attributes.Colores ||
+                        producto.attributes.colores
+                    }\n`;
+                }
+            }
+
+            mensaje += ` • Subtotal: ${formatNumber(
+                producto.price * (producto.quantity || 1)
+            )}\n\n`;
+        });
+
+        mensaje += `*Resumen del pedido:*\n`;
+        mensaje += `• Número de productos: ${productos.length}\n`;
+        mensaje += `• Total del carrito: ${formatNumber(totalCarrito)}\n\n`;
+
+        mensaje += `Me gustaría confirmar este pedido. ¿Podrían ayudarme con más información sobre la disponibilidad y el proceso de compra? ¡Gracias!`;
+
+        let apiWhatsapp = `https://api.whatsapp.com/send/?phone=${telefono}&text=`;
+        let final = apiWhatsapp + encodeURIComponent(mensaje);
+
         return final;
     };
 
@@ -249,9 +267,12 @@ export const Carrito = ({ tienda }: any) => {
                                                                                 className="text-sm text-gray-600"
                                                                             >
                                                                                 <span className="font-medium">
-                                                                                    {
-                                                                                        key
-                                                                                    }
+                                                                                    {key ===
+                                                                                        "Colores" &&
+                                                                                        "Color"}
+                                                                                    {key ===
+                                                                                        "Tamaños" &&
+                                                                                        "Tamaño"}
 
                                                                                     :
                                                                                 </span>{" "}

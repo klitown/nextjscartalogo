@@ -203,69 +203,73 @@ function DetalleProducto({
                             <p className="font-light">{producto.descripcion}</p>
                         )}
                     </motion.div>
-
-                    {renderAttributes()}
-
+                    {producto.attributes ? renderAttributes() : null}
                     {
                         //@ts-ignore
                         inCart(producto.id) ? (
                             <>
-                                {items.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        onClick={($event) => {
-                                            $event.stopPropagation();
-                                        }}
-                                    >
-                                        {+item.id === +producto.id! && (
-                                            <motion.div
-                                                className="flex justify-around items-center gap-1"
-                                                initial={{
-                                                    scale: 0.8,
-                                                    opacity: 0,
+                                {items.map((item) => {
+                                    if (+item.id === +producto.id!) {
+                                        return (
+                                            <div
+                                                key={item.id}
+                                                onClick={($event) => {
+                                                    $event.stopPropagation();
                                                 }}
-                                                animate={{
-                                                    scale: 1,
-                                                    opacity: 1,
-                                                }}
-                                                transition={{ duration: 0.3 }}
                                             >
-                                                <button
-                                                    onClick={() =>
-                                                        updateItemQuantity(
-                                                            item.id,
-                                                            item.quantity! - 1
-                                                        )
-                                                    }
-                                                    type="button"
-                                                    className="bg-red-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
+                                                <motion.div
+                                                    className="flex justify-between items-center w-full"
+                                                    initial={{
+                                                        scale: 0.8,
+                                                        opacity: 0,
+                                                    }}
+                                                    animate={{
+                                                        scale: 1,
+                                                        opacity: 1,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.3,
+                                                    }}
                                                 >
-                                                    &minus;
-                                                </button>
-                                                <p className="text-xl font-sans text-black font-bold">
-                                                    {item.quantity}
-                                                </p>
-                                                <button
-                                                    onClick={() =>
-                                                        updateItemQuantity(
-                                                            item.id,
-                                                            item.quantity! + 1
-                                                        )
-                                                    }
-                                                    type="button"
-                                                    className="bg-green-500 w-12 h-12 leading-10 text-white transition hover:opacity-75"
-                                                >
-                                                    &#43;
-                                                </button>
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                ))}
+                                                    <button
+                                                        onClick={() =>
+                                                            updateItemQuantity(
+                                                                item.id,
+                                                                item.quantity! -
+                                                                    1
+                                                            )
+                                                        }
+                                                        type="button"
+                                                        className="bg-red-500 w-12 h-12 text-white flex items-center justify-center text-2xl font-bold transition hover:opacity-75"
+                                                    >
+                                                        &minus;
+                                                    </button>
+                                                    <p className="text-xl font-sans text-black font-bold w-12 text-center">
+                                                        {item.quantity}
+                                                    </p>
+                                                    <button
+                                                        onClick={() =>
+                                                            updateItemQuantity(
+                                                                item.id,
+                                                                item.quantity! +
+                                                                    1
+                                                            )
+                                                        }
+                                                        type="button"
+                                                        className="bg-green-500 w-12 h-12 text-white flex items-center justify-center text-2xl font-bold transition hover:opacity-75"
+                                                    >
+                                                        &#43;
+                                                    </button>
+                                                </motion.div>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })}
                             </>
                         ) : (
                             <motion.button
-                                className="flex items-center justify-center bg-slate-900 px-5 py-2.5 text-center text-sm 
-                                font-medium text-white w-full hover:bg-green-500"
+                                className="flex items-center justify-center bg-slate-900 w-full h-12 px-4 text-center text-sm font-medium text-white hover:bg-green-500"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleClick(producto);
