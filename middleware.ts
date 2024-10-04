@@ -19,14 +19,13 @@ export async function middleware(req: NextRequest) {
             // Check if the user already has a tienda
             const { data: tienda } = await supabase
                 .from("tiendas")
-                .select("nombre")
+                .select("url")
                 .eq("user_id", userId)
                 .single();
 
             if (tienda) {
                 // If the user already has a tienda, redirect them to their dashboard
                 return NextResponse.redirect(
-                    //@ts-ignore
                     new URL(`/${tienda.url}/dashboard`, req.url)
                 );
             }
