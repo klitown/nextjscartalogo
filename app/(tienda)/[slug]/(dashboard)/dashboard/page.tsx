@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/supabase/client";
 import { useEffect, useState, ReactNode } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Package, Store, TrendingUp } from "lucide-react";
+import { ArrowRight, Package } from "lucide-react";
 
 interface DashboardCardProps {
     title: string;
@@ -15,7 +15,13 @@ interface DashboardCardProps {
     external?: boolean;
 }
 
-function DashboardCard({ title, value, icon, link, external = false }: DashboardCardProps) {
+function DashboardCard({
+    title,
+    value,
+    icon,
+    link,
+    external = false,
+}: DashboardCardProps) {
     return (
         <Link
             href={link}
@@ -48,8 +54,10 @@ interface DashboardProps {
 }
 
 function Dashboard({ params }: DashboardProps) {
-    const { loading, error, user, role } = useUser();
-    const [totalProducts, setTotalProducts] = useState<number | undefined>(undefined);
+    const { user } = useUser();
+    const [totalProducts, setTotalProducts] = useState<number | undefined>(
+        undefined
+    );
     const supabase = createClient();
 
     useEffect(() => {
@@ -93,9 +101,6 @@ function Dashboard({ params }: DashboardProps) {
         setTotalProducts(count || 0);
     };
 
-
-    if (!user) return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-center h-screen">Loading...</motion.div>;
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -103,34 +108,51 @@ function Dashboard({ params }: DashboardProps) {
             transition={{ duration: 0.5 }}
             className="container mx-auto p-8 border border-gray-200 rounded-lg bg-white"
         >
-            <header className="mb-12">
-                <motion.h1 
-                    initial={{ x: -20 }}
-                    animate={{ x: 0 }}
-                    className="text-4xl font-bold text-black mb-2"
+            <header className="mb-12 flex justify-between items-center">
+                <div>
+                    <motion.h1
+                        initial={{ x: -20 }}
+                        animate={{ x: 0 }}
+                        className="text-4xl font-bold text-black mb-2"
+                    >
+                        ¡Bienvenido, {user?.user_metadata.name}!
+                    </motion.h1>
+                    <motion.p
+                        initial={{ x: -20 }}
+                        animate={{ x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-gray-600"
+                    >
+                        Aquí tienes un resumen de tu tienda.
+                    </motion.p>
+                </div>
+                <motion.a
+                    href={`https://bspy.com.py/${params.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
                 >
-                    ¡Bienvenido, {user.user_metadata.name}!
-                </motion.h1>
-                <motion.p 
-                    initial={{ x: -20 }}
-                    animate={{ x: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-gray-600"
-                >
-                    Aquí tienes un resumen de tu tienda.
-                </motion.p>
+                    Ver mi tienda
+                </motion.a>
             </header>
+
+            <hr className="my-4" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <DashboardCard
                     title="Total de Productos"
-                    value={totalProducts !== undefined ? totalProducts.toString() : "..."}
+                    value={
+                        totalProducts !== undefined
+                            ? totalProducts.toString()
+                            : "..."
+                    }
                     icon={<Package />}
                     link={`/${params.slug}/dashboard/misproductos`}
                 />
             </div>
-
-
         </motion.div>
     );
 }

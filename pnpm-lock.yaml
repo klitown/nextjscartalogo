@@ -1441,8 +1441,8 @@ packages:
       '@babel/runtime': 7.22.15
     dev: false
 
-  /@rollup/rollup-linux-x64-gnu@4.21.0:
-    resolution: {integrity: sha512-e2hrvElFIh6kW/UNBQK/kzqMNY5mO+67YtEh9OA65RM5IJXYTWiXjX6fjIiPaqOkBthYF1EqgiZ6OXKcQsM0hg==}
+  /@rollup/rollup-linux-x64-gnu@4.24.0:
+    resolution: {integrity: sha512-ZXFk7M72R0YYFN5q13niV0B7G8/5dcQ9JDp8keJSfr3GoZeXEoMHP/HlvqROA3OMbMdfr19IjCeNAnPUG93b6A==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
@@ -1540,7 +1540,7 @@ packages:
       '@supabase/supabase-js': 2.31.0(encoding@0.1.13)
       cookie: 0.6.0
     optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.21.0
+      '@rollup/rollup-linux-x64-gnu': 4.24.0
     dev: false
 
   /@supabase/storage-js@2.5.4:
@@ -1876,7 +1876,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.10
-      caniuse-lite: 1.0.30001538
+      caniuse-lite: 1.0.30001667
       fraction.js: 4.3.6
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -1943,7 +1943,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001538
+      caniuse-lite: 1.0.30001667
       electron-to-chromium: 1.4.525
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
@@ -1985,12 +1985,8 @@ packages:
     engines: {node: '>= 6'}
     dev: false
 
-  /caniuse-lite@1.0.30001538:
-    resolution: {integrity: sha512-HWJnhnID+0YMtGlzcp3T9drmBJUVDchPJ08tpUGFLs9CYlwWPH2uLgpHn8fND5pCgXVtnGS3H4QR9XLMHVNkHw==}
-    dev: false
-
-  /caniuse-lite@1.0.30001649:
-    resolution: {integrity: sha512-fJegqZZ0ZX8HOWr6rcafGr72+xcgJKI9oWfDW5DrD7ExUtgZC7a7R7ZYmZqplh7XDocFdGeIFn7roAxhOeYrPQ==}
+  /caniuse-lite@1.0.30001667:
+    resolution: {integrity: sha512-7LTwJjcRkzKFmtqGsibMeuXmvFDfZq/nzIjnmgCGzKKRVzjD72selLDK1oPF/Oxzmt4fNcPvTDvGqSDG4tCALw==}
     dev: false
 
   /chalk@4.1.2:
@@ -3591,7 +3587,7 @@ packages:
       '@next/env': 14.2.5
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001649
+      caniuse-lite: 1.0.30001667
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1

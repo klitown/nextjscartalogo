@@ -9,9 +9,8 @@ import {
 } from "@/components/ui/sheet";
 import { ArchiveIcon, HeartIcon, HomeIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getTiendaInfo } from "../../(infoTienda)/layout";
 import { createClient } from "@/supabase/server";
+import { Suspense } from "react";
 
 export default async function ProductDetailLayout({
     children,
@@ -27,95 +26,94 @@ export default async function ProductDetailLayout({
         data: { session },
     } = await supabase.auth.getSession();
 
-    if (!session?.user) {
-        return redirect("/login");
-    }
-
-    const tienda = await getTiendaInfo(params.slug);
-
-    const { data: activeSession } = await supabase.auth.getSession();
-
-    if (tienda.user_id !== activeSession?.session?.user.id) {
-        return redirect("/login");
-    }
-
     return (
-        <div className="flex h-screen bg-gray-50">
-            {/* Desktop Sidebar */}
-            <aside className="hidden lg:flex flex-col w-64 bg-white border-r">
-                <div className="p-6">
-                    <h2 className="text-2xl font-semibold">Menú principal</h2>
-                </div>
-                <nav className="flex-1 px-4 space-y-2">
-                    <DesktopSidebarLink
-                        href={`/${params.slug}/dashboard`}
-                        icon={<HomeIcon />}
-                    >
-                        Inicio
-                    </DesktopSidebarLink>
-                    <DesktopSidebarLink
-                        href={`/${params.slug}/dashboard/mitienda`}
-                        icon={<HeartIcon />}
-                    >
-                        Mi tienda
-                    </DesktopSidebarLink>
-                    <DesktopSidebarLink
-                        href={`/${params.slug}/dashboard/misproductos`}
-                        icon={<ArchiveIcon />}
-                    >
-                        Mis productos
-                    </DesktopSidebarLink>
-                </nav>
-            </aside>
-
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col">
-                <header className="bg-white border-b p-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            {/* Mobile Sidebar Trigger */}
-                            <Sheet>
-                                <SheetTrigger
-                                    asChild
-                                    className="lg:hidden mr-4"
-                                >
-                                    <button className="p-2">
-                                        <MenuIcon className="h-6 w-6" />
-                                    </button>
-                                </SheetTrigger>
-                                <SheetContent side="left" className="w-64 p-0">
-                                    <SheetHeader className="p-6">
-                                        <SheetTitle>Menú principal</SheetTitle>
-                                    </SheetHeader>
-                                    <nav className="flex-1 px-4 space-y-2">
-                                        <MobileSidebarLink
-                                            href={`/${params.slug}/dashboard`}
-                                            icon={<HomeIcon />}
-                                        >
-                                            Inicio
-                                        </MobileSidebarLink>
-                                        <MobileSidebarLink
-                                            href={`/${params.slug}/dashboard/mitienda`}
-                                            icon={<HeartIcon />}
-                                        >
-                                            Mi tienda
-                                        </MobileSidebarLink>
-                                        <MobileSidebarLink
-                                            href={`/${params.slug}/dashboard/misproductos`}
-                                            icon={<ArchiveIcon />}
-                                        >
-                                            Mis productos
-                                        </MobileSidebarLink>
-                                    </nav>
-                                </SheetContent>
-                            </Sheet>
-                        </div>
-                        <UserNav user={session.user} session={session} />
+        <Suspense fallback={<p>Loading aca</p>}>
+            <div className="flex h-screen bg-gray-50">
+                {/* Desktop Sidebar */}
+                <aside className="hidden lg:flex flex-col w-64 bg-white border-r">
+                    <div className="p-6">
+                        <h2 className="text-2xl font-semibold">
+                            Menú principal
+                        </h2>
                     </div>
-                </header>
-                <main className="flex-1 overflow-y-auto p-6">{children}</main>
+                    <nav className="flex-1 px-4 space-y-2">
+                        <DesktopSidebarLink
+                            href={`/${params.slug}/dashboard`}
+                            icon={<HomeIcon />}
+                        >
+                            Inicio
+                        </DesktopSidebarLink>
+                        <DesktopSidebarLink
+                            href={`/${params.slug}/dashboard/mitienda`}
+                            icon={<HeartIcon />}
+                        >
+                            Mi tienda
+                        </DesktopSidebarLink>
+                        <DesktopSidebarLink
+                            href={`/${params.slug}/dashboard/misproductos`}
+                            icon={<ArchiveIcon />}
+                        >
+                            Mis productos
+                        </DesktopSidebarLink>
+                    </nav>
+                </aside>
+
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col">
+                    <header className="bg-white border-b p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                {/* Mobile Sidebar Trigger */}
+                                <Sheet>
+                                    <SheetTrigger
+                                        asChild
+                                        className="lg:hidden mr-4"
+                                    >
+                                        <button className="p-2">
+                                            <MenuIcon className="h-6 w-6" />
+                                        </button>
+                                    </SheetTrigger>
+                                    <SheetContent
+                                        side="left"
+                                        className="w-64 p-0"
+                                    >
+                                        <SheetHeader className="p-6">
+                                            <SheetTitle>
+                                                Menú principal
+                                            </SheetTitle>
+                                        </SheetHeader>
+                                        <nav className="flex-1 px-4 space-y-2">
+                                            <MobileSidebarLink
+                                                href={`/${params.slug}/dashboard`}
+                                                icon={<HomeIcon />}
+                                            >
+                                                Inicio
+                                            </MobileSidebarLink>
+                                            <MobileSidebarLink
+                                                href={`/${params.slug}/dashboard/mitienda`}
+                                                icon={<HeartIcon />}
+                                            >
+                                                Mi tienda
+                                            </MobileSidebarLink>
+                                            <MobileSidebarLink
+                                                href={`/${params.slug}/dashboard/misproductos`}
+                                                icon={<ArchiveIcon />}
+                                            >
+                                                Mis productos
+                                            </MobileSidebarLink>
+                                        </nav>
+                                    </SheetContent>
+                                </Sheet>
+                            </div>
+                            <UserNav user={session?.user} session={session} />
+                        </div>
+                    </header>
+                    <main className="flex-1 overflow-y-auto p-6">
+                        {children}
+                    </main>
+                </div>
             </div>
-        </div>
+        </Suspense>
     );
 }
 
