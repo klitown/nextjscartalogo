@@ -2,15 +2,44 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { updateSession } from "./supabase/middleware";
 
+// New function to check if a user is an admin
+async function isAdmin(supabase: any, userId: string) {
+    const { data, error } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+    if (error) {
+        console.error("Error checking admin status:", error);
+        return false;
+    }
+
+    return data?.role === "admin";
+}
+
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next();
     const supabase = await updateSession(req);
 
-    const { session, tienda } = await getSessionAndTienda(supabase);
+    const { session, tienda, isAdminUser } = await getSessionAndTienda(
+        supabase
+    );
 
     // Check if the request is for a dashboard
     const dashboardRegex = /^\/([^\/]+)\/dashboard/;
     const match = req.nextUrl.pathname.match(dashboardRegex);
+
+    // New check for admin dashboard
+    if (req.nextUrl.pathname === "/admin/dashboard") {
+        if (!session) {
+            return NextResponse.redirect(new URL("/login", req.url));
+        }
+        if (!isAdminUser) {
+            return NextResponse.redirect(new URL("/", req.url));
+        }
+        return NextResponse.next();
+    }
 
     if (match) {
         const requestedTiendaUrl = match[1];
@@ -47,11 +76,13 @@ export async function middleware(req: NextRequest) {
     }
 }
 
+// Updated function to include admin check
 async function getSessionAndTienda(supabase: any) {
     const {
         data: { session },
     } = await supabase.auth.getSession();
     let tienda = null;
+    let isAdminUser = false; // New variable to store admin status
 
     if (session) {
         const { data } = await supabase
@@ -60,9 +91,10 @@ async function getSessionAndTienda(supabase: any) {
             .eq("user_id", session.user.id)
             .single();
         tienda = data;
+        isAdminUser = await isAdmin(supabase, session.user.id); // Check if user is admin
     }
 
-    return { session, tienda };
+    return { session, tienda, isAdminUser }; // Return admin status along with session and tienda
 }
 
 function handleRegistrarPage(req: NextRequest, session: any, tienda: any) {
@@ -100,6 +132,7 @@ export const config = {
         "/",
         "/login",
         "/registrar",
+        "/admin/dashboard", // New matcher for admin dashboard
         "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
     ],
 };
