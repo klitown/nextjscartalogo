@@ -7,8 +7,8 @@ export interface ITienda {
     redes?: string[] | null;
     colores?: string[] | null;
     plan_id?: number | null;
-    inserted_at: string; // Debes usar un tipo adecuado para manejar timestamps
-    updated_at: string; // Debes usar un tipo adecuado para manejar timestamps
+    inserted_at: string;
+    updated_at: string;
     url: string;
     descripcion: string;
     imagen_portada?: string | null;

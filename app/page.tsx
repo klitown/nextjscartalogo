@@ -243,7 +243,9 @@ function Home() {
                                         </span>
                                     </p>
 
-                                    <button
+                                    <Link
+                                        href={`https://bspy.com.py/icases`}
+                                        target="__blank"
                                         className="my-6 group relative inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium 
                                 text-black"
                                     >
@@ -282,7 +284,7 @@ function Home() {
                                                 </svg>
                                             </div>
                                         </div>
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

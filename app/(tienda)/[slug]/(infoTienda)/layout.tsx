@@ -4,9 +4,9 @@ import { cache } from "react";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import CarritoProvider from "../../../components/CarritoProvider";
-import Image from "next/image";
 import { Toaster } from "@/components/ui/toaster";
 import { ITienda } from "@/lib/interfaces/ITienda";
+import TiendaFooter from "@/app/components/footer/TiendaFooter";
 
 const createServerClient = cache(() => {
     const cookieStore = cookies();
@@ -55,6 +55,7 @@ export default async function Layout({
                 {children}
                 <Toaster />
             </CarritoProvider>
+            <TiendaFooter tienda={tienda} />
         </>
     );
 }
