@@ -1,8 +1,9 @@
+"use server";
 import {
     createServerClient,
     getTiendaInfo,
 } from "../../../(infoTienda)/layout";
-import { Edit, Plus } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -23,6 +24,8 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import { createClient } from "@/supabase/server";
+import { DeleteProductoButton } from "@/app/components/delete-producto/DeleteProductoButton";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     async function getProductosData() {
@@ -36,6 +39,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         return data;
     }
 
+    const supabase = createClient();
     const productos = await getProductosData();
     const tienda = await getTiendaInfo(params.slug);
 
@@ -82,9 +86,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
                             <TableHead className="font-bold text-black">
                                 Precio
                             </TableHead>
-                            <TableHead className="hidden md:table-cell font-bold text-black">
-                                Más buscado
-                            </TableHead>
                             <TableHead className="font-bold text-black">
                                 Acciones
                             </TableHead>
@@ -122,18 +123,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                                         10
                                     ).toLocaleString("es-ES")}
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                    {producto.mas_buscado ? (
-                                        <span className="bg-green-500 text-white rounded-full px-2 py-1 text-xs">
-                                            Producto marcado como más buscado
-                                        </span>
-                                    ) : (
-                                        <span className="bg-red-500 text-white rounded-full px-2 py-1 text-xs">
-                                            No marcado como más buscado
-                                        </span>
-                                    )}
-                                </TableCell>
-                                <TableCell>
+                                <TableCell className="flex flex-col md:flex-row gap-4">
                                     <Drawer>
                                         <DrawerTrigger asChild>
                                             <Button className="bg-lime-500 hover:bg-lime-700">
@@ -167,6 +157,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                                             </div>
                                         </DrawerContent>
                                     </Drawer>
+                                    <DeleteProductoButton producto={producto} />
                                 </TableCell>
                             </TableRow>
                         ))}

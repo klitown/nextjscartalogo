@@ -143,8 +143,10 @@ const useProductSubmission = (tienda: Tienda, user: User) => {
             .from("productos")
             .update({ imagenes: imagenesSubidas })
             .eq("id", idProducto);
-        if (error)
+        if (error) {
+            console.log("error her!");
             throw new Error(`Error updating product images: ${error.message}`);
+        }
     };
 
     const handleSuccessfulSubmission = (): void => {
