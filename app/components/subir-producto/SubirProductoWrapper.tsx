@@ -15,7 +15,7 @@ export default function SubirProductoWrapper({
     const router = useRouter();
 
     const handleProductAdded = () => {
-        router.push(`/${tiendaSlug}/dashboard/misproductos`);
+        router.push(`/${tiendaSlug}/dashboard/productos`);
         router.refresh();
     };
 

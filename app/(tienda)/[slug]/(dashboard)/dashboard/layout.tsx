@@ -44,16 +44,16 @@ export default async function ProductDetailLayout({
                             Inicio
                         </DesktopSidebarLink>
                         <DesktopSidebarLink
+                            href={`/${params.slug}/dashboard/productos`}
+                            icon={<ArchiveIcon />}
+                        >
+                            Mis productos
+                        </DesktopSidebarLink>
+                        <DesktopSidebarLink
                             href={`/${params.slug}/dashboard/mitienda`}
                             icon={<HeartIcon />}
                         >
                             Mi tienda
-                        </DesktopSidebarLink>
-                        <DesktopSidebarLink
-                            href={`/${params.slug}/dashboard/misproductos`}
-                            icon={<ArchiveIcon />}
-                        >
-                            Mis productos
                         </DesktopSidebarLink>
                     </nav>
                 </aside>
@@ -90,16 +90,16 @@ export default async function ProductDetailLayout({
                                                 Inicio
                                             </MobileSidebarLink>
                                             <MobileSidebarLink
+                                                href={`/${params.slug}/dashboard/productos`}
+                                                icon={<ArchiveIcon />}
+                                            >
+                                                Mis productos
+                                            </MobileSidebarLink>
+                                            <MobileSidebarLink
                                                 href={`/${params.slug}/dashboard/mitienda`}
                                                 icon={<HeartIcon />}
                                             >
                                                 Mi tienda
-                                            </MobileSidebarLink>
-                                            <MobileSidebarLink
-                                                href={`/${params.slug}/dashboard/misproductos`}
-                                                icon={<ArchiveIcon />}
-                                            >
-                                                Mis productos
                                             </MobileSidebarLink>
                                         </nav>
                                     </SheetContent>

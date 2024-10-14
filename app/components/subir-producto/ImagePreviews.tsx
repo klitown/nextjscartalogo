@@ -26,7 +26,7 @@ const ImagePreviews: React.FC<ImagePreviewProps> = ({
                     <Button
                         type="button"
                         onClick={() => handleDeleteImage(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-2 right-2 bg-red-500 rounded-full p-3"
                     >
                         <X size={16} />
                     </Button>

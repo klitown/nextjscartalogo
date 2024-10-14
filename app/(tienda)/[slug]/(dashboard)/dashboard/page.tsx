@@ -150,7 +150,7 @@ function Dashboard({ params }: DashboardProps) {
                             : "..."
                     }
                     icon={<Package />}
-                    link={`/${params.slug}/dashboard/misproductos`}
+                    link={`/${params.slug}/dashboard/productos`}
                 />
             </div>
         </motion.div>
