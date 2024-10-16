@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import * as Form from "@radix-ui/react-form";
 import {
     Select,
@@ -12,7 +12,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import {
     Check,
-    CheckCheck,
     CheckCircle,
     LucideShieldClose,
     Trash2,
@@ -25,10 +24,9 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import { ToastAction } from "@/components/ui/toast";
 import { createClient } from "@/supabase/client";
 import { motion } from "framer-motion";
-import useProductSubmission from "@/app/hooks/useProductSubmission";
-import { useUser } from "@/app/hooks/user-user";
 import { Button } from "@/components/ui/button";
 import ImagePreviews from "../subir-producto/ImagePreviews";
+import { DeleteImageControl } from "./DeleteImagenProducto";
 
 type Props = {
     producto: IProducto;
@@ -70,6 +68,8 @@ export default function EditarProducto({
     const [selectedCategory, setSelectedCategory] = useState(
         formulario.categoria_id?.toString() || ""
     );
+
+    const refImg = useRef<ImageGallery | null>(null);
 
     useEffect(() => {
         if (producto.imagenes) {
@@ -118,12 +118,20 @@ export default function EditarProducto({
         }
     }
 
-    const handleDeleteImage = useCallback((index: number) => {
-        setImagePreviews((prevPreviews) =>
-            prevPreviews.filter((_, i) => i !== index)
-        );
-        // You might need to update the actual file list here as well
-    }, []);
+    const handleDeleteImage = useCallback(
+        (index: number) => {
+            setImagePreviews((prevPreviews) =>
+                prevPreviews.filter((_, i) => i !== index)
+            );
+            setProductoImagenes((prevImages) =>
+                prevImages.filter((_, i) => i !== index)
+            );
+
+            // Revoke the object URL to free up memory
+            URL.revokeObjectURL(imagePreviews[index]);
+        },
+        [imagePreviews]
+    );
 
     const handleChange = (event: any) => {
         const { name, value, type, checked } = event.target;
@@ -136,7 +144,6 @@ export default function EditarProducto({
     };
 
     async function handleSubmit() {
-        console.log("Formulario data:", formulario);
         if (formulario.nombre === "" || String(formulario.price) === "") {
             toast({
                 variant: "destructive",
@@ -148,15 +155,17 @@ export default function EditarProducto({
         setProcesandoCreacion(true);
 
         try {
+            // Actualiza el producto basado en el ID
             const { data, error } = await supabase
                 .from("productos")
                 .update({ ...formulario })
                 .eq("id", producto.id);
             if (error) {
-                console.log("Error aca: ", error);
+                throw error;
             } else {
+                // Si se cargaron nuevas imagenes, actualizar
                 if (productoImagenes.length >= 1) {
-                    const promesas = [manageImagenes].map(
+                    const promesas = [addNewImages].map(
                         async (funcionAsync) => {
                             return funcionAsync();
                         }
@@ -193,12 +202,11 @@ export default function EditarProducto({
         }
     }
 
-    const manageImagenes = async () => {
-        let imagenesSubidas: string[] = [];
+    const addNewImages = async () => {
+        let newImageUrls: string[] = [];
         const promesas = productoImagenes.map(async (imagen: any) => {
             const { data, error } = await supabase.storage
                 .from("bspy")
-                //@ts-ignore
                 .upload(
                     `${tienda.url}/${
                         Math.floor(Math.random() * 1000000) + 1
@@ -206,25 +214,32 @@ export default function EditarProducto({
                     imagen
                 );
             if (error) {
-                console.error("Error acá: ", error);
+                console.error("Error uploading image: ", error);
             } else {
                 const { data: url } = supabase.storage
                     .from("bspy")
                     .getPublicUrl(data.path);
-                imagenesSubidas.push(url.publicUrl);
+                newImageUrls.push(url.publicUrl);
             }
         });
         await Promise.all(promesas);
 
-        // Esperar a que todas las promesas se resuelvan antes de continuar
-        const { data: testing, error: errorAca } = await supabase
+        // Combine current images with new images
+        const updatedImages = [...(producto.imagenes || []), ...newImageUrls];
+
+        // Update the product with the combined image array
+        const { data: updatedProduct, error: updateError } = await supabase
             .from("productos")
-            .update({ imagenes: imagenesSubidas })
+            .update({ imagenes: updatedImages })
             .eq("id", producto.id)
             .select();
-        if (errorAca) {
-            throw errorAca;
+
+        if (updateError) {
+            console.error("Error updating product: ", updateError);
+            throw updateError;
         }
+
+        return updatedProduct;
     };
 
     const fadeIn = {
@@ -232,12 +247,27 @@ export default function EditarProducto({
         visible: { opacity: 1, transition: { duration: 0.5 } },
     };
 
+    const handleDeleteAllImages = () => {
+        // Implement the logic to delete all images
+        console.log("Delete all images");
+        // You'll need to update this function to actually delete the images
+    };
+
+    const renderCustomControls = () => {
+        let i: number | undefined = undefined;
+        if (refImg) {
+            i = refImg.current?.getCurrentIndex();
+        }
+
+        return <DeleteImageControl producto={producto} currentIndex={i} />;
+    };
+
     return (
         <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="max-w-7xl mx-auto p-8 bg-white rounded-2xl shadow-lg"
+            className="w-[80vw] lg:max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-lg"
         >
             <Form.Root className="space-y-6">
                 <Form.Submit asChild>
@@ -258,9 +288,9 @@ export default function EditarProducto({
                     </Button>
                 </Form.Submit>
                 <hr />
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
                     {/* Left column: Product Information */}
-                    <div className="flex-1">
+                    <div className="flex-1 w-full lg:w-1/2">
                         <motion.div variants={fadeIn} className="mb-4">
                             <Form.Field name="nombre" id="nombre">
                                 <Form.Label className="text-sm font-semibold text-gray-700">
@@ -443,7 +473,7 @@ export default function EditarProducto({
                     </div>
 
                     {/* Right column: Images */}
-                    <div className="flex-1">
+                    <div className="flex-1 w-full lg:w-1/2 mt-8 lg:mt-0">
                         <motion.div variants={fadeIn} className="space-y-6">
                             <h2 className="text-2xl font-semibold text-gray-800">
                                 Imágenes del producto
@@ -457,12 +487,16 @@ export default function EditarProducto({
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="picture"
-                                            className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-indigo-500 focus:outline-none"
+                                            className="flex flex-col sm:flex-row items-center justify-center w-full h-24 sm:h-32 px-2 sm:px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-indigo-500 focus:outline-none"
                                         >
                                             <span className="flex items-center space-x-2">
                                                 <Upload className="w-6 h-6 text-gray-600" />
-                                                <span className="font-medium text-gray-600">
-                                                    Seleccionar archivos
+                                                <span className="font-medium text-gray-600 text-sm sm:text-base">
+                                                    Seleccionar
+                                                    <span className="hidden sm:inline">
+                                                        {" "}
+                                                        archivos
+                                                    </span>
                                                 </span>
                                             </span>
                                             <input
@@ -476,11 +510,8 @@ export default function EditarProducto({
                                             />
                                         </label>
                                         <span className="block text-xs text-gray-500 italic">
-                                            * Las imágenes subidas reemplazarán{" "}
-                                            <span className="text-red-500 font-semibold">
-                                                completamente
-                                            </span>{" "}
-                                            las actuales
+                                            * Las imagenes subidas se agregaran
+                                            a las ya existentes.
                                         </span>
                                     </div>
                                 </Form.Control>
@@ -506,14 +537,18 @@ export default function EditarProducto({
                                     Imágenes actuales
                                 </h3>
                                 {galleryImages.length > 0 ? (
-                                    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md">
+                                    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md w-full">
                                         <ImageGallery
                                             items={galleryImages}
                                             showPlayButton={false}
-                                            showFullscreenButton={true}
+                                            showFullscreenButton={false}
                                             showNav={true}
                                             showBullets={true}
                                             showThumbnails={true}
+                                            ref={refImg}
+                                            renderCustomControls={
+                                                renderCustomControls
+                                            }
                                         />
                                     </div>
                                 ) : (
